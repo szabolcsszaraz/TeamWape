@@ -1,0 +1,464 @@
+// This file is generated. Do not modify by hand.
+// XML documentation file not found. To check if public methods have XML comments,
+// make sure the XML doc file is present and located next to the scraped dll
+[UnityEditor.FilePath(@"TimelinePreferences.asset", UnityEditor.FilePathAttribute.Location.PreferencesFolder)] public class TimelinePreferences : UnityEditor.ScriptableSingleton<TimelinePreferences>
+{
+    [UnityEngine.SerializeField] public bool edgeSnap = true;
+    [UnityEngine.SerializeField] public UnityEditor.Timeline.PlaybackScrollMode playbackScrollMode;
+    [UnityEngine.SerializeField] public bool showAudioWaveform = true;
+    [UnityEngine.SerializeField] public bool snapToFrame = true;
+    [UnityEngine.SerializeField] public UnityEditor.Timeline.TimeFormat timeFormat;
+    [System.Obsolete(@"timeUnitInFrame is deprecated. Use timeFormat instead", false)] public bool timeUnitInFrame;
+    public bool audioScrubbing { get; set; }
+    public bool playbackLockedToFrame { get; set; }
+    public TimelinePreferences() {}
+    public void Save();
+}
+
+[UnityEditor.FilePath(@"ProjectSettings/TimelineSettings.asset", UnityEditor.FilePathAttribute.Location.ProjectFolder)] public class TimelineProjectSettings : UnityEditor.ScriptableSingleton<TimelineProjectSettings>
+{
+    public double defaultFrameRate { get; set; }
+    public TimelineProjectSettings() {}
+    public void Save();
+}
+
+namespace UnityEditor.Timeline
+{
+    public static class AnimationTrackExtensions
+    {
+        public static bool CanStartRecording(this UnityEngine.Timeline.AnimationTrack track);
+        public static bool IsRecording(this UnityEngine.Timeline.AnimationTrack track);
+        public static bool StartRecording(this UnityEngine.Timeline.AnimationTrack track);
+        public static void StopRecording(this UnityEngine.Timeline.AnimationTrack track);
+    }
+
+    public struct ClipBackgroundRegion
+    {
+        public double endTime { get; }
+        public UnityEngine.Rect position { get; }
+        public double startTime { get; }
+        public ClipBackgroundRegion(UnityEngine.Rect _position, double _startTime, double _endTime) {}
+        public override bool Equals(object obj);
+        public bool Equals(ClipBackgroundRegion other);
+        public override int GetHashCode();
+        public static bool operator ==(ClipBackgroundRegion region1, ClipBackgroundRegion region2);
+        public static bool operator !=(ClipBackgroundRegion region1, ClipBackgroundRegion region2);
+    }
+
+    public struct ClipDrawOptions
+    {
+        public bool displayClipName { get; set; }
+        public string errorText { get; set; }
+        public bool hideScaleIndicator { get; set; }
+        public UnityEngine.Color highlightColor { get; set; }
+        public System.Collections.Generic.IEnumerable<UnityEngine.Texture2D> icons { get; set; }
+        public string tooltip { get; set; }
+        public override bool Equals(object obj);
+        public bool Equals(ClipDrawOptions other);
+        public override int GetHashCode();
+        public static bool operator ==(ClipDrawOptions options1, ClipDrawOptions options2);
+        public static bool operator !=(ClipDrawOptions options1, ClipDrawOptions options2);
+    }
+
+    public class ClipEditor
+    {
+        public ClipEditor() {}
+        public virtual void DrawBackground(UnityEngine.Timeline.TimelineClip clip, ClipBackgroundRegion region);
+        public virtual ClipDrawOptions GetClipOptions(UnityEngine.Timeline.TimelineClip clip);
+        public UnityEngine.Color GetDefaultHighlightColor(UnityEngine.Timeline.TimelineClip clip);
+        public string GetErrorText(UnityEngine.Timeline.TimelineClip clip);
+        public virtual void GetSubTimelines(UnityEngine.Timeline.TimelineClip clip, UnityEngine.Playables.PlayableDirector director, System.Collections.Generic.List<UnityEngine.Playables.PlayableDirector> subTimelines);
+        public virtual void OnClipChanged(UnityEngine.Timeline.TimelineClip clip);
+        public virtual void OnCreate(UnityEngine.Timeline.TimelineClip clip, UnityEngine.Timeline.TrackAsset track, UnityEngine.Timeline.TimelineClip clonedFrom);
+    }
+
+    [JetBrains.Annotations.MeansImplicitUse] [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = false, Inherited = true)] public sealed class CustomTimelineEditorAttribute : System.Attribute
+    {
+        public System.Type classToEdit { get; }
+        public CustomTimelineEditorAttribute(System.Type type) {}
+    }
+
+    public interface IInspectorChangeHandler
+    {
+        public void OnPlayableAssetChangedInInspector();
+    }
+
+    public struct MarkerDrawOptions
+    {
+        public string errorText { get; set; }
+        public string tooltip { get; set; }
+        public override bool Equals(object obj);
+        public bool Equals(MarkerDrawOptions other);
+        public override int GetHashCode();
+        public static bool operator ==(MarkerDrawOptions options1, MarkerDrawOptions options2);
+        public static bool operator !=(MarkerDrawOptions options1, MarkerDrawOptions options2);
+    }
+
+    public class MarkerEditor
+    {
+        public MarkerEditor() {}
+        public virtual void DrawOverlay(UnityEngine.Timeline.IMarker marker, MarkerUIStates uiState, MarkerOverlayRegion region);
+        public virtual MarkerDrawOptions GetMarkerOptions(UnityEngine.Timeline.IMarker marker);
+        public virtual void OnCreate(UnityEngine.Timeline.IMarker marker, UnityEngine.Timeline.IMarker clonedFrom);
+    }
+
+    public struct MarkerOverlayRegion
+    {
+        public double endTime { get; }
+        public UnityEngine.Rect markerRegion { get; }
+        public double startTime { get; }
+        public UnityEngine.Rect timelineRegion { get; }
+        public UnityEngine.Rect trackRegion { get; }
+        public MarkerOverlayRegion(UnityEngine.Rect _markerRegion, UnityEngine.Rect _timelineRegion, double _startTime, double _endTime) {}
+        public MarkerOverlayRegion(UnityEngine.Rect _markerRegion, UnityEngine.Rect _timelineRegion, double _startTime, double _endTime, float _trackOffset) {}
+        public override bool Equals(object obj);
+        public bool Equals(MarkerOverlayRegion other);
+        public override int GetHashCode();
+        public static bool operator ==(MarkerOverlayRegion region1, MarkerOverlayRegion region2);
+        public static bool operator !=(MarkerOverlayRegion region1, MarkerOverlayRegion region2);
+    }
+
+    [System.Flags] public enum MarkerUIStates
+    {
+        Collapsed = 2,
+        None = 0,
+        Selected = 1,
+    }
+
+    public enum PlaybackScrollMode
+    {
+        None = 0,
+        Pan = 1,
+        Smooth = 2,
+    }
+
+    [System.Flags] public enum RefreshReason
+    {
+        ContentsAddedOrRemoved = 8,
+        ContentsModified = 4,
+        SceneNeedsUpdate = 2,
+        WindowNeedsRedraw = 1,
+    }
+
+    public readonly struct SequenceContext : System.IEquatable<SequenceContext>
+    {
+        public UnityEngine.Timeline.TimelineClip clip { get; }
+        public UnityEngine.Playables.PlayableDirector director { get; }
+        public SequenceContext(UnityEngine.Playables.PlayableDirector director, UnityEngine.Timeline.TimelineClip clip) {}
+        public override bool Equals(object obj);
+        public bool Equals(SequenceContext other);
+        public override int GetHashCode();
+        public bool IsValid();
+        public static bool operator ==(SequenceContext left, SequenceContext right);
+        public static bool operator !=(SequenceContext left, SequenceContext right);
+    }
+
+    public enum TimeFormat
+    {
+        Frames = 0,
+        Seconds = 2,
+        Timecode = 1,
+    }
+
+    public static class TimelineEditor
+    {
+        public static UnityEngine.Timeline.TimelineAsset inspectedAsset { get; }
+        public static UnityEngine.Playables.PlayableDirector inspectedDirector { get; }
+        public static UnityEngine.Timeline.TimelineAsset masterAsset { get; }
+        public static UnityEngine.Playables.PlayableDirector masterDirector { get; }
+        [System.Obsolete(@"playableDirector is ambiguous. Please select either inspectedDirector or masterDirector instead.", false)] public static UnityEngine.Playables.PlayableDirector playableDirector { get; }
+        public static UnityEngine.Timeline.TimelineClip selectedClip { get; set; }
+        public static UnityEngine.Timeline.TimelineClip[] selectedClips { get; set; }
+        [System.Obsolete(@"timelineAsset is ambiguous. Please select either inspectedAsset or masterAsset instead.", false)] public static UnityEngine.Timeline.TimelineAsset timelineAsset { get; }
+        public static double GetInspectedTimeFromMasterTime(double masterTime);
+        public static double GetMasterTimeFromInspectedTime(double inspectedTime);
+        public static TimelineEditorWindow GetOrCreateWindow();
+        public static TimelineEditorWindow GetWindow();
+        public static void Refresh(RefreshReason reason);
+    }
+
+    public abstract class TimelineEditorWindow : EditorWindow
+    {
+        public abstract bool locked { get; set; }
+        public abstract TimelineNavigator navigator { get; }
+        public abstract TimelinePlaybackControls playbackControls { get; }
+        protected TimelineEditorWindow() {}
+        public abstract void ClearTimeline();
+        public abstract void SetTimeline(UnityEngine.Playables.PlayableDirector director);
+        public abstract void SetTimeline(UnityEngine.Timeline.TimelineAsset sequence);
+    }
+
+    [System.Flags] public enum TimelineModes
+    {
+        Active = 1,
+        AssetEdition = 16,
+        Default = 17,
+        Disabled = 8,
+        Inactive = 4,
+        ReadOnly = 2,
+    }
+
+    public sealed class TimelineNavigator
+    {
+        public System.Collections.Generic.IEnumerable<SequenceContext> GetBreadcrumbs();
+        public System.Collections.Generic.IEnumerable<SequenceContext> GetChildContexts();
+        public SequenceContext GetCurrentContext();
+        public SequenceContext GetParentContext();
+        public SequenceContext GetRootContext();
+        public void NavigateTo(SequenceContext context);
+    }
+
+    public sealed class TimelinePlaybackControls
+    {
+        public int GetCurrentFrame(TimelinePlaybackControls.Context context = TimelinePlaybackControls.Context.Local);
+        public double GetCurrentTime(TimelinePlaybackControls.Context context = TimelinePlaybackControls.Context.Local);
+        public void GoToFirstFrame();
+        public void GoToLastFrame();
+        public void NextFrame();
+        public void Pause();
+        public void Play();
+        public void PreviousFrame();
+        public void SetCurrentFrame(int frame, TimelinePlaybackControls.Context context = TimelinePlaybackControls.Context.Local);
+        public void SetCurrentTime(double time, TimelinePlaybackControls.Context context = TimelinePlaybackControls.Context.Local);
+        public enum Context
+        {
+            Global = 1,
+            Local = 0,
+        }
+    }
+
+    public enum TrackBindingErrors
+    {
+        All = 2147483647,
+        BehaviourIsDisabled = 4,
+        BoundGameObjectDisabled = 1,
+        InvalidBinding = 8,
+        None = 0,
+        NoValidComponent = 2,
+        PrefabBound = 16,
+    }
+
+    public struct TrackDrawOptions
+    {
+        public string errorText { get; set; }
+        public UnityEngine.Texture2D icon { get; set; }
+        public float minimumHeight { get; set; }
+        public UnityEngine.Color trackColor { get; set; }
+        public override bool Equals(object obj);
+        public bool Equals(TrackDrawOptions other);
+        public override int GetHashCode();
+        public static bool operator ==(TrackDrawOptions options1, TrackDrawOptions options2);
+        public static bool operator !=(TrackDrawOptions options1, TrackDrawOptions options2);
+    }
+
+    public class TrackEditor
+    {
+        public static readonly float DefaultTrackHeight = 30f;
+        public static readonly float MaximumTrackHeight = 256f;
+        public static readonly float MinimumTrackHeight = 10f;
+        public TrackEditor() {}
+        public virtual UnityEngine.Object GetBindingFrom(UnityEngine.Object candidate, UnityEngine.Timeline.TrackAsset track);
+        public System.Type GetBindingType(UnityEngine.Timeline.TrackAsset track);
+        public string GetErrorText(UnityEngine.Timeline.TrackAsset track, UnityEngine.Object boundObject, TrackBindingErrors detectErrors);
+        public UnityEngine.Color GetTrackColor(UnityEngine.Timeline.TrackAsset track);
+        public virtual TrackDrawOptions GetTrackOptions(UnityEngine.Timeline.TrackAsset track, UnityEngine.Object binding);
+        public virtual bool IsBindingAssignableFrom(UnityEngine.Object candidate, UnityEngine.Timeline.TrackAsset track);
+        public virtual void OnCreate(UnityEngine.Timeline.TrackAsset track, UnityEngine.Timeline.TrackAsset copiedFrom);
+        public virtual void OnTrackChanged(UnityEngine.Timeline.TrackAsset track);
+    }
+
+    public static class TrackExtensions
+    {
+        public static bool IsCollapsed(this UnityEngine.Timeline.TrackAsset track);
+        public static bool IsVisibleInHierarchy(this UnityEngine.Timeline.TrackAsset track);
+        public static void SetCollapsed(this UnityEngine.Timeline.TrackAsset track, bool collapsed);
+    }
+
+    public static class UndoExtensions
+    {
+        public static void RegisterClip(UnityEngine.Timeline.TimelineClip clip, string undoTitle, bool includePlayableAsset = true);
+        public static void RegisterClips(System.Collections.Generic.IEnumerable<UnityEngine.Timeline.TimelineClip> clips, string name, bool includePlayableAssets = true);
+        public static void RegisterCompleteTimeline(UnityEngine.Timeline.TimelineAsset asset, string undoTitle);
+        public static void RegisterContext(Actions.ActionContext context, string undoTitle);
+        public static void RegisterMarker(UnityEngine.Timeline.IMarker marker, string undoTitle);
+        public static void RegisterMarkers(System.Collections.Generic.IEnumerable<UnityEngine.Timeline.IMarker> markers, string undoTitle);
+        public static void RegisterPlayableAsset(UnityEngine.Playables.PlayableAsset asset, string undoTitle);
+        public static void RegisterTimeline(UnityEngine.Timeline.TimelineAsset asset, string undoTitle);
+        public static void RegisterTrack(UnityEngine.Timeline.TrackAsset asset, string undoTitle);
+        public static void RegisterTracks(System.Collections.Generic.IEnumerable<UnityEngine.Timeline.TrackAsset> tracks, string undoTitle);
+    }
+}
+
+namespace UnityEditor.Timeline.Actions
+{
+    public struct ActionContext
+    {
+        public UnityEngine.Playables.PlayableDirector director;
+        public System.Nullable<double> invocationTime;
+        public UnityEngine.Timeline.TimelineAsset timeline;
+        public System.Collections.Generic.IEnumerable<UnityEngine.Timeline.TimelineClip> clips { get; set; }
+        public System.Collections.Generic.IEnumerable<UnityEngine.Timeline.IMarker> markers { get; set; }
+        public System.Collections.Generic.IEnumerable<UnityEngine.Timeline.TrackAsset> tracks { get; set; }
+    }
+
+    public enum ActionValidity
+    {
+        Invalid = 2,
+        NotApplicable = 1,
+        Valid = 0,
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Class)] public class ActiveInModeAttribute : System.Attribute
+    {
+        public TimelineModes modes { get; }
+        public ActiveInModeAttribute(TimelineModes timelineModes) {}
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = false, Inherited = false)] public class ApplyDefaultUndoAttribute : System.Attribute
+    {
+        public string UndoTitle;
+        public ApplyDefaultUndoAttribute(string undoTitle = default(string)) {}
+    }
+
+    [ActiveInMode(TimelineModes.Default)] public abstract class ClipAction
+    {
+        protected ClipAction() {}
+        public abstract bool Execute(System.Collections.Generic.IEnumerable<UnityEngine.Timeline.TimelineClip> clips);
+        public abstract ActionValidity Validate(System.Collections.Generic.IEnumerable<UnityEngine.Timeline.TimelineClip> clips);
+    }
+
+    public static class Invoker
+    {
+        public static bool Invoke<T>(this System.Collections.Generic.IEnumerable<UnityEngine.Timeline.IMarker> markers) where T : MarkerAction;
+        public static bool Invoke<T>(this System.Collections.Generic.IEnumerable<UnityEngine.Timeline.TimelineClip> clips) where T : ClipAction;
+        public static bool Invoke<T>(this System.Collections.Generic.IEnumerable<UnityEngine.Timeline.TrackAsset> tracks) where T : TrackAction;
+        public static bool Invoke<T>(this ActionContext context) where T : TimelineAction;
+        public static bool InvokeWithSelected<T>() where T : TimelineAction;
+        public static bool InvokeWithSelectedClips<T>() where T : ClipAction;
+        public static bool InvokeWithSelectedMarkers<T>() where T : MarkerAction;
+        public static bool InvokeWithSelectedTracks<T>() where T : TrackAction;
+    }
+
+    [ActiveInMode(TimelineModes.Default)] public abstract class MarkerAction
+    {
+        protected MarkerAction() {}
+        public abstract bool Execute(System.Collections.Generic.IEnumerable<UnityEngine.Timeline.IMarker> markers);
+        public abstract ActionValidity Validate(System.Collections.Generic.IEnumerable<UnityEngine.Timeline.IMarker> markers);
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Class)] public class MenuEntryAttribute : System.Attribute
+    {
+        public MenuEntryAttribute(string path = default(string), int priority = 9000) {}
+    }
+
+    public static class MenuPriority
+    {
+        public const int defaultPriority = 9000;
+        public const int separatorAt = 1000;
+        public static class AddItem
+        {
+            public const int addClip = 13000;
+            public const int addCustomClip = 14000;
+            public const int addCustomMarker = 16000;
+            public const int addCustomTrack = 12000;
+            public const int addGroup = 10000;
+            public const int addMarker = 15000;
+            public const int addTrack = 11000;
+        }
+        public static class AddTrackMenu
+        {
+            public const int addLayerTrack = 3000;
+            public const int start = 3000;
+        }
+        public static class ClipActionSection
+        {
+            public const int completeLastLoop = 6000;
+            public const int doubleSpeed = 7000;
+            public const int findSourceAsset = 5400;
+            public const int halfSpeed = 7110;
+            public const int matchDuration = 6120;
+            public const int resetAll = 8120;
+            public const int resetDuration = 8000;
+            public const int resetSpeed = 8110;
+            public const int split = 5120;
+            public const int start = 5000;
+            public const int tile = 5300;
+            public const int trimEnd = 5110;
+            public const int trimLastLoop = 6110;
+            public const int trimStart = 5100;
+        }
+        public static class ClipEditActionSection
+        {
+            public const int editInAnimationWindow = 4100;
+            public const int editSubTimeline = 4200;
+            public const int start = 4000;
+        }
+        public static class CustomClipActionSection
+        {
+            public const int customClipAction = 9900;
+            public const int matchNext = 9110;
+            public const int matchPrevious = 9100;
+            public const int resetOffset = 9120;
+            public const int start = 9000;
+        }
+        public static class CustomTimelineActionSection
+        {
+            public const int start = 7000;
+        }
+        public static class CustomTrackActionSection
+        {
+            public const int addOverrideTrack = 8500;
+            public const int applyAutoOffset = 8320;
+            public const int applySceneOffset = 8310;
+            public const int applyTrackOffset = 8300;
+            public const int convertFromClipMode = 8200;
+            public const int convertToClipMode = 8100;
+            public const int customTrackAction = 8900;
+            public const int start = 8000;
+        }
+        public static class MarkerActionSection
+        {
+            public const int start = 6000;
+        }
+        public static class TimelineActionSection
+        {
+            public const int copy = 1100;
+            public const int delete = 1400;
+            public const int duplicate = 1300;
+            public const int keyAllAnimated = 1450;
+            public const int matchContent = 1500;
+            public const int paste = 1200;
+            public const int start = 1000;
+        }
+        public static class TrackActionSection
+        {
+            public const int editInAnimationWindow = 2800;
+            public const int lockSelected = 2150;
+            public const int lockTrack = 2100;
+            public const int mute = 2200;
+            public const int muteSelected = 2250;
+            public const int removeInvalidMarkers = 2400;
+            public const int showHideMarkers = 2300;
+            public const int start = 2000;
+        }
+    }
+
+    [ActiveInMode(TimelineModes.Default)] public abstract class TimelineAction
+    {
+        protected TimelineAction() {}
+        public abstract bool Execute(ActionContext context);
+        public abstract ActionValidity Validate(ActionContext context);
+    }
+
+    public class TimelineShortcutAttribute : UnityEditor.ShortcutManagement.ShortcutAttribute
+    {
+        public TimelineShortcutAttribute(string id, UnityEngine.KeyCode defaultKeyCode, UnityEditor.ShortcutManagement.ShortcutModifiers defaultShortcutModifiers = UnityEditor.ShortcutManagement.ShortcutModifiers.None) {}
+    }
+
+    [ActiveInMode(TimelineModes.Default)] public abstract class TrackAction
+    {
+        protected TrackAction() {}
+        public abstract bool Execute(System.Collections.Generic.IEnumerable<UnityEngine.Timeline.TrackAsset> tracks);
+        public abstract ActionValidity Validate(System.Collections.Generic.IEnumerable<UnityEngine.Timeline.TrackAsset> tracks);
+    }
+}

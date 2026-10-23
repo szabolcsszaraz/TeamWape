@@ -1,0 +1,72 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/com.unity.multiplayer.center/Editor/MultiplayerCenterWindow/UI/QuestionDescription.uss?fileID=7433441132597879392&amp;guid=c9e2efc56fdf45a8bbf2841612e452ce&amp;type=3#QuestionDescription"/>
+    <ui:VisualElement data-source-type="Unity.Multiplayer.Center.Editor.GameGenreDescription, Unity.Multiplayer.Center.Editor" style="flex-grow: 1;">
+        <ui:VisualElement name="genre-header-container" class="genre-header"/>
+        <ui:Label text="Title" class="section">
+            <Bindings>
+                <ui:DataBinding property="text" data-source-path="Description" binding-mode="ToTarget"/>
+            </Bindings>
+        </ui:Label>
+        <ui:VisualElement class="section">
+            <ui:Foldout text="Complexity" name="complexity-foldout" value="false" class="foldout-header">
+                <ui:Label text="Complexity Description" name="complexity-description" class="unity-foldout__content">
+                    <Bindings>
+                        <ui:DataBinding property="text" data-source-path="ComplexityDescription" binding-mode="ToTarget"/>
+                    </Bindings>
+                </ui:Label>
+            </ui:Foldout>
+            <ui:VisualElement picking-mode="Ignore" class="foldout-sidekick" style="flex-direction: row; flex-shrink: 0;">
+                <ui:VisualElement picking-mode="Ignore" class="place-holder"/>
+                <ui:Label text="Medium" name="Label" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" class="min-max-slider__label">
+                    <Bindings>
+                        <ui:DataBinding property="text" data-source-path="ComplexitySummary" binding-mode="ToTarget"/>
+                    </Bindings>
+                </ui:Label>
+                <Unity.Multiplayer.Center.Editor.ColoredMinMaxSlider value="0,100" low-limit="0" high-limit="100" enabled="true" focusable="false" class="min-max-slider">
+                    <Bindings>
+                        <ui:DataBinding property="value" data-source-path="Complexity" binding-mode="ToTarget"/>
+                    </Bindings>
+                </Unity.Multiplayer.Center.Editor.ColoredMinMaxSlider>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement class="section">
+            <ui:Foldout text="Cost" name="cost-foldout" value="false" class="foldout-header">
+                <ui:Label text="Cost Description" name="cost-description" class="unity-foldout__content">
+                    <Bindings>
+                        <ui:DataBinding property="text" data-source-path="CostDescription" binding-mode="ToTarget"/>
+                    </Bindings>
+                </ui:Label>
+            </ui:Foldout>
+            <ui:VisualElement picking-mode="Ignore" class="foldout-sidekick" style="flex-direction: row; flex-shrink: 0;">
+                <ui:VisualElement picking-mode="Ignore" style="flex-grow: 0; width: 120px;"/>
+                <ui:Label text="Low/Medium" name="Label" class="min-max-slider__label">
+                    <Bindings>
+                        <ui:DataBinding property="text" data-source-path="CostSummary" binding-mode="ToTarget"/>
+                    </Bindings>
+                </ui:Label>
+                <Unity.Multiplayer.Center.Editor.ColoredMinMaxSlider value="0,100" low-limit="0" high-limit="100" enabled="true" focusable="false" class="min-max-slider">
+                    <Bindings>
+                        <ui:DataBinding property="value" data-source-path="Cost" binding-mode="ToTarget"/>
+                    </Bindings>
+                </Unity.Multiplayer.Center.Editor.ColoredMinMaxSlider>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="VisualElement" class="section--last">
+            <ui:Foldout text="Architecture" value="false">
+                <ui:Label text="Architecture description" class="unity-foldout__content">
+                    <Bindings>
+                        <ui:DataBinding property="text" data-source-path="Architecture" binding-mode="ToTarget"/>
+                    </Bindings>
+                </ui:Label>
+            </ui:Foldout>
+            <ui:VisualElement picking-mode="Ignore" class="foldout-sidekick" style="flex-direction: row; flex-shrink: 0;">
+                <ui:VisualElement picking-mode="Ignore" style="flex-grow: 0; width: 120px; flex-shrink: 0;"/>
+                <ui:Label text="Client hosting" name="Label" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" class="min-max-slider__label architecture-summary">
+                    <Bindings>
+                        <ui:DataBinding property="text" data-source-path="ArchitectureSummary" binding-mode="ToTarget"/>
+                    </Bindings>
+                </ui:Label>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

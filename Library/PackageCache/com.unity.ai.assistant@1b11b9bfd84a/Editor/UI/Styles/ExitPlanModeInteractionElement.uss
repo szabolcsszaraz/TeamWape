@@ -1,0 +1,111 @@
+.plan-review-container {
+    border-radius: 4px;
+    border-width: 1px;
+    border-color: var(--unity-colors-inspector_titlebar-border);
+    margin-bottom: 12px;
+}
+
+.plan-review-topbar {
+    flex-direction: row;
+    align-items: center;
+    padding: 6px 4px 6px 8px;
+    background-color: var(--unity-colors-alternated_rows-background);
+    border-bottom-width: 1px;
+    border-bottom-color: var(--unity-colors-inspector_titlebar-border);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.plan-review-plan-icon {
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+    flex-shrink: 0;
+    align-self: center;
+}
+
+.plan-review-title {
+    font-size: 12px;
+    -unity-font-style: bold;
+    color: var(--muse-chat-text-primary);
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -unity-text-overflow-position: end;
+}
+
+.plan-review-content {
+    background-color: var(--muse-chat-backgrounds-100);
+    max-height: 300px;
+}
+
+.plan-review-content .unity-scroll-view__content-container {
+    padding: 8px;
+}
+
+.plan-review-expand-btn {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    margin: 0;
+    border-width: 0;
+    background-color: transparent;
+    border-radius: 4px;
+    flex-shrink: 0;
+    align-self: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.plan-review-expand-icon {
+    width: 18px;
+    height: 18px;
+}
+
+.plan-review-expand-btn:hover {
+    background-color: var(--muse-chat-foregrounds-320);
+}
+
+.plan-review-copy-btn {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    margin: 0;
+    border-width: 0;
+    background-color: transparent;
+    border-radius: 4px;
+    flex-shrink: 0;
+    align-self: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.plan-review-copy-icon {
+    width: 18px;
+    height: 18px;
+}
+
+.plan-review-copy-btn:hover {
+    background-color: var(--muse-chat-foregrounds-320);
+}
+
+.exitplanmodeinteractionelement__element {
+    flex-shrink: 0;
+}
+
+.plan-review-root {
+    flex-direction: column;
+}
+
+.plan-review-heading {
+    font-size: 14px;
+    -unity-font-style: bold;
+    margin-bottom: 4px;
+}
+
+.plan-review-path-label {
+    margin-bottom: 8px;
+}

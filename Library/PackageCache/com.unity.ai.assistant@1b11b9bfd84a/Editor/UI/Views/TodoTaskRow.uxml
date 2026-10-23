@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="todo-progress-task-row">
+        <ui:VisualElement name="spinnerSlot" class="todo-progress-task-icon"/>
+        <ui:Label name="iconLabel" class="todo-progress-task-icon"/>
+        <ui:Label name="descLabel" class="todo-progress-task-desc"/>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,207 @@
+.mui-prompt-suggestions-root {
+    flex-direction: column;
+    flex-shrink: 0;
+    background-color: var(--muse-chat-backgrounds-175);
+    border-radius: var(--muse-chat-border-radius);
+    margin-bottom: 4px;
+}
+
+/* ── Connected border: when the bar lives inside the chat input root ── */
+
+.mui-has-prompt-suggestions .mui-prompt-suggestions-root {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-bottom: 0;
+}
+
+.mui-has-prompt-suggestions .mui-mtf-root {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top-width: 0;
+}
+
+/* ── Tab row ── */
+
+.mui-prompt-suggestions-tab-row {
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 12px;
+}
+
+.mui-prompt-suggestions-tab-row .mui-icon-lightning {
+    margin-right: 4px;
+}
+
+.mui-prompt-suggestions-tabs {
+    flex-direction: row;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.mui-prompt-suggestions-tab {
+    padding: 4px 10px;
+    border-radius: 6px;
+    border-width: 1px;
+    border-color: var(--muse-chat-foregrounds-310);
+    background-color: transparent;
+    margin-right: 6px;
+    cursor: link;
+    font-size: var(--muse-chat-default-font-size);
+    -unity-text-align: middle-center;
+    flex-shrink: 0;
+}
+
+.mui-prompt-suggestions-tab:hover {
+    background-color: var(--muse-chat-backgrounds-175);
+}
+
+.mui-prompt-suggestions-tab.mui-prompt-suggestions-tab-active {
+    background-color: var(--muse-chat-backgrounds-200);
+}
+
+.mui-prompt-suggestions-close-button {
+    background-color: transparent;
+    border-width: 0;
+    padding: 2px;
+    margin: 0;
+    width: 24px;
+    height: 24px;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 3px;
+    cursor: link;
+}
+
+/* ── Expanded content ── */
+
+.mui-prompt-suggestions-expanded {
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.mui-prompt-suggestions-divider {
+    height: 1px;
+    background-color: var(--muse-chat-foregrounds-310);
+    flex-shrink: 0;
+}
+
+.mui-prompt-suggestions-list {
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+/* ── Prompt items ── */
+
+.mui-prompt-suggestions-item {
+    flex-direction: row;
+    align-items: center;
+    padding: 9px 12px 9px 8px;
+    margin: 2px 6px;
+    border-radius: 6px;
+    cursor: link;
+}
+
+.mui-prompt-suggestions-item:hover {
+    background-color: var(--muse-chat-backgrounds-175);
+}
+
+.mui-prompt-suggestions-item-label {
+    flex-grow: 1;
+    flex-shrink: 1;
+    font-size: var(--muse-chat-default-font-size);
+    -unity-text-align: middle-left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mui-prompt-suggestions-upload-hint {
+    display: none;
+    flex-direction: row;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.mui-prompt-suggestions-item:hover .mui-prompt-suggestions-upload-hint {
+    display: flex;
+}
+
+.mui-prompt-suggestions-upload-hint-label {
+    font-size: var(--muse-chat-default-font-size);
+    color: var(--muse-chat-text-secondary);
+    -unity-font-style: italic;
+    white-space: nowrap;
+}
+
+.mui-prompt-suggestions-upload-hint-icon {
+    width: 14px;
+    height: 14px;
+    margin-left: 4px;
+    --unity-image-size: scale-to-fit;
+    flex-shrink: 0;
+}
+
+/* ── New chat topic bar ── */
+
+.mui-new-chat-topic-bar-root {
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.mui-new-chat-suggestion-card {
+    flex-direction: column;
+    flex-shrink: 0;
+    background-color: var(--muse-chat-backgrounds-100);
+    border-radius: var(--muse-chat-border-radius);
+    margin-top: 4px;
+    overflow: hidden;
+}
+
+.mui-new-chat-suggestion-list {
+    flex-direction: column;
+    flex-shrink: 0;
+    padding: 4px 0;
+}
+
+.mui-new-chat-topic-row {
+    flex-direction: column;
+    flex-shrink: 0;
+    align-items: stretch;
+}
+
+.mui-new-chat-explore-label {
+    font-size: var(--muse-chat-default-font-size);
+    color: var(--muse-chat-text-secondary);
+    margin-bottom: 10px;
+    -unity-text-align: middle-center;
+}
+
+.mui-new-chat-chip-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.mui-new-chat-chip {
+    padding: 4px 10px;
+    border-radius: 6px;
+    border-width: 1px;
+    border-color: var(--muse-chat-foregrounds-310);
+    background-color: transparent;
+    margin-left: 4px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    cursor: link;
+    font-size: var(--muse-chat-default-font-size);
+    -unity-text-align: middle-center;
+    flex-shrink: 0;
+}
+
+.mui-new-chat-chip:hover {
+    background-color: var(--muse-chat-backgrounds-175);
+}
+
+.mui-new-chat-chip.mui-new-chat-chip-active {
+    background-color: var(--muse-chat-foregrounds-300);
+    border-color: var(--muse-chat-foregrounds-300);
+}

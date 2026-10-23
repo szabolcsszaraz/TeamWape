@@ -1,0 +1,425 @@
+#pragma kernel k_WindowedDFTMatrixSplitReImTo2Rows_Half_32x32Data_256T MainName=k_WindowedDFTMatrixSplitReImTo2Rows_Half_32x32Data_256T SPLIT_REAL_IMA_ON_ALTERNATE_ROWS HALF_DISPATCH NUMTHREADS_X=256 NUMTHREADS_Y=1 TILE_SIZE=32 ELEM_PER_THREAD_Y=4
+#pragma kernel k_WindowedDFTMatrixPackedComplex_Half_32x32Data_256T MainName=k_WindowedDFTMatrixPackedComplex_Half_32x32Data_256T HALF_DISPATCH NUMTHREADS_X=256 NUMTHREADS_Y=1 TILE_SIZE=32 ELEM_PER_THREAD_Y=4
+
+#pragma kernel k_IDFTMatrixSplitReImTo2Rows_Half_32x32Data_256T MainName=k_IDFTMatrixSplitReImTo2Rows_Half_32x32Data_256T SPLIT_REAL_IMA_ON_ALTERNATE_ROWS HALF_DISPATCH INVERSE_DFT NUMTHREADS_X=256 NUMTHREADS_Y=1 TILE_SIZE=32 ELEM_PER_THREAD_Y=4
+#pragma kernel k_IDFTMatrixPackedComplex_Half_32x32Data_256T MainName=k_IDFTMatrixPackedComplex_Half_32x32Data_256T HALF_DISPATCH INVERSE_DFT NUMTHREADS_X=256 NUMTHREADS_Y=1 TILE_SIZE=32 ELEM_PER_THREAD_Y=4
+
+#pragma multi_compile_local _ NO_WINDOW
+
+//#define SPLIT_REAL_IMA_ON_ALTERNATE_ROWS // used when the intent is to process real signals
+
+#if defined(SPLIT_REAL_IMA_ON_ALTERNATE_ROWS)
+    #define DATA_TYPE_SPEC DATA_TYPE_SPEC_NATIVE
+#else
+    #define DATA_TYPE_SPEC DATA_TYPE_SPEC_COMPLEX
+#endif
+
+#include "Packages/com.unity.ai.inference/Runtime/Core/ShaderLibrary/DataTypeSpec.hlsl"
+
+#if defined(SPLIT_REAL_IMA_ON_ALTERNATE_ROWS)
+    #define IF_SPLIT_REAL_IMA_ON_ALTERNATE_ROWS_ELSE(a, b) (a)
+#else
+    #define IF_SPLIT_REAL_IMA_ON_ALTERNATE_ROWS_ELSE(a, b) (b)
+#endif
+
+#if (defined(SHADER_API_XBOXONE) || defined(SHADER_API_GAMECORE_XBOXSERIES)) && (DATA_TYPE_SPEC==DATA_TYPE_SPEC_COMPLEX)
+    // The reason why all platforms work is because there is no such thing as something like D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS
+    // in modern graphics APIs (this is an old *permission* flag) and also the stride for StructuredBuffer is in the view not the resource,
+    // which the engine presumably takes from shader introspection, but it seems this path is broken on XBOX.
+    //
+    // Also ideally we should remove the resource restriction (ComputeBufferType = Default/Structured) at CcmputeBuffer creation time.
+    // This might not fix the problem though, as if the stride is incorrectly fetched from the old underlying resource creation data
+    // and not the created view, bug would still be there. Requires proper engine side fix.
+    // We still want to avoid building different buffer memory pools for different data types while also keeping the indexing simple
+    // by using StructuredBuffer<DATA_TYPE> instead of a ByteAddressBuffer.
+    #define USE_OUT_BYTEADDRESSBUFFER
+#endif
+
+
+#if !defined(NO_WINDOW)
+StructuredBuffer<float> Wptr; // Window
+#endif
+
+
+#if defined(USE_OUT_BYTEADDRESSBUFFER)
+
+RWByteAddressBuffer Optr;
+
+#if (DATA_TYPE_SPEC==DATA_TYPE_SPEC_COMPLEX)
+    #define WRITE_OUTPUT(idx, data) Optr.Store2(((idx) << (2 + DATA_TYPE_DWORD_SIZELOG2)), asuint(float2((data).re, (data).im)));
+#else
+    #define WRITE_OUTPUT(idx, data) Optr.Store(((idx) << (2 + DATA_TYPE_DWORD_SIZELOG2)), asuint(data));
+#endif
+
+#else // #if defined(USE_OUT_BYTEADDRESSBUFFER)
+
+RWStructuredBuffer<DATA_TYPE> Optr;
+#define WRITE_OUTPUT(idx, data) Optr[idx] = data;
+
+#endif // #define USE_OUT_BYTEADDRESSBUFFER
+
+uint O_width;     // frameLength, even if the matrix is built to process a complex signal, DATA_TYPE is complex and indexing stays the same
+
+                  // To re-use the same generation code for DFT where the matrix can imply the input signal is zero padded (and thus less columns are needed in the DFT vs rows),
+                  // the O_width is still the true number of input points needed, but the HALF_DISPATCH dispatch params should still be sized as if it was still symmetric (ie using dftLength),
+                  // so that the renumbered threads will correctly fill LDS with all needed dftLength sequence values that the rows will need.
+                  // Also the triangular renumbering (ConvertLinearIdxToLowerTriangleIdx) only works if the dispatch is implied symmetric.
+
+uint O_height;    // number of dft output frequencies (if direct DFT, not inverse), *2 if SPLIT_REAL_IMA_ON_ALTERNATE_ROWS and in that later case DATA_TYPE is not complex.
+
+float DFTFundamentalFreq; // ie 1/N or 1/dftLength even if ultimately we have half rows because we ouput one-sided only
+
+
+#if !defined(SHADER_API_D3D11)
+#define MIN_WHEN_NON_D3D(val, maxidx) (min((val), (maxidx)))
+#else
+#define MIN_WHEN_NON_D3D(val, maxidx) (val)
+#endif
+
+
+// ---------------------------------------------------------------------------------------------------------------------------------------
+// Main config:
+
+
+// ------------------------------------------------------------------
+// Main threadgroup config
+
+#define NB_THREADS_PER_TG (NUMTHREADS_X*NUMTHREADS_Y)
+#define LOG2_NB_THREADS_PER_TG uint(log2(NB_THREADS_PER_TG))
+
+
+#if defined(HALF_DISPATCH)
+
+    // Prevent compiler chain crash for unused variants (we divide by TILE_SIZE)
+    #ifndef TILE_SIZE
+    #define TILE_SIZE 32
+    #endif
+
+    // This is how half dispatch mode works: split the data into square tiles, consider the data as a 2D array of tiles,
+    // only half the diagonal of the tiles have a TG assigned as the data array is symmetric, so a TG can generate 2 tiles,
+    // but does an in-local-memory transpose of that data before outputting the 2nd, symmetric part.
+
+    #define NB_DATA_ROW_PER_TG (TILE_SIZE * IF_SPLIT_REAL_IMA_ON_ALTERNATE_ROWS_ELSE(2, 1)) // if splitting real/imaginary part, in the end we want to output twice O_width rows, alternating between a row for real part and a row for the imaginary part
+    #define NB_DATA_COL_PER_TG TILE_SIZE
+
+    #if (NUMTHREADS_Y != 1)
+    #error "Invalid config: HALF_DISPATCH and NUMTHREADS_Y != 1"
+    #endif
+
+    #if defined(ELEM_PER_THREAD_X)
+        #if (ELEM_PER_THREAD_X != 1)
+        #error "Invalid config: HALF_DISPATCH and ELEM_PER_THREAD_X != 1"
+        #endif
+    #else
+        #define ELEM_PER_THREAD_X 1
+    #endif
+
+
+    #define NEW_NUMTHREADS_X TILE_SIZE
+    #define NEW_NUMTHREADS_Y (NUMTHREADS_X / TILE_SIZE)
+
+    #if (NEW_NUMTHREADS_Y == 1)
+        #error "Should have a power of 2 threadids for rows"
+    #elif ( ((NEW_NUMTHREADS_Y) == 2) \
+            || ((NEW_NUMTHREADS_Y) == 4) \
+            || ((NEW_NUMTHREADS_Y) == 8) \
+            || ((NEW_NUMTHREADS_Y) == 16) \
+            || ((NEW_NUMTHREADS_Y) == 32) )
+    #else
+        #error "Check threadids for rows"
+    #endif
+
+    #if NB_THREADS_PER_TG != (NEW_NUMTHREADS_X * NEW_NUMTHREADS_Y)
+    #error "Invalid config: NUMTHREADS_X*NUMTHREADS_Y == NB_THREADS_PER_TG != (NEW_NUMTHREADS_X * NEW_NUMTHREADS_Y)"
+    #endif
+
+    #if TILE_SIZE != (NEW_NUMTHREADS_Y * ELEM_PER_THREAD_Y)
+    #error "Invalid config: TILE_SIZE should be == (NEW_NUMTHREADS_Y * ELEM_PER_THREAD_Y)"
+    #endif
+
+    #define NB_ELEMENT_PER_THREAD (ELEM_PER_THREAD_X * ELEM_PER_THREAD_Y) // == ELEM_PER_THREAD_Y here
+
+    #define LOG2_NEW_NUMTHREADS_X uint(log2(NEW_NUMTHREADS_X))
+    #define LOG2_NEW_NUMTHREADS_Y uint(log2(NEW_NUMTHREADS_Y))
+
+#endif// ...#if defined(HALF_DISPATCH)
+
+
+
+
+//#define NB_DATA_ROW_PER_TG (ELEM_PER_THREAD_Y*NUMTHREADS_Y)
+//#define LOG2_NB_DATA_ROW_PER_TG uint(log2(NB_DATA_ROW_PER_TG))
+
+//#define NB_DATA_COL_PER_TG (ELEM_PER_THREAD_X*NUMTHREADS_X)
+//#define LOG2_NB_DATA_COL_PER_TG uint(log2(NB_DATA_COL_PER_TG))
+// ------------------------------------------------------------------
+
+
+#define NB_BANKS 32
+#define LOG2_NB_BANKS 5
+
+//#define LDS_X_STRICT_SIZE (NB_DATA_ROW_PER_TG * NB_DATA_COL_PER_TG)
+//#define LDS_X_FINAL_SIZE (LDS_X_STRICT_SIZE + (LDS_X_STRICT_SIZE >> LOG2_NB_BANKS))
+//#define LDS_BCAO(off) (off + (off >> LOG2_NB_BANKS)) // bank conflict avoidance offset
+
+#define LDS_X_FINAL_SIZE (NB_DATA_ROW_PER_TG * (NB_DATA_COL_PER_TG+1))
+#define LDS_BCAO(row, col) ((row) * (NB_DATA_COL_PER_TG+1) + (col)) // bank conflict avoidance offset for straight and transposed wave-access
+
+groupshared DATA_TYPE LDS_X[LDS_X_FINAL_SIZE];
+#define LDS_ACCESS_X(row, col) LDS_X[LDS_BCAO(row, col)]
+
+
+// ------------------------------------------------------------------
+
+uint2 ConvertLinearIdxToLowerTriangleIdx(uint linearTriangleIdx, bool excludeDiagonal = true)
+{
+    float nf = (sqrt(1.0f + 8.0f * (float)linearTriangleIdx) - 1.0f) * 0.5f;
+    nf = trunc(nf);
+    int iTest = (int)nf;
+    int jTest = linearTriangleIdx - ((iTest + 1) * iTest / (uint)(2));
+
+    #ifdef TRIANGLE_INDEXING_FIXUP_LOOP
+    // this should not be required
+        int fixupNum = 0;
+        while (jTest < 0)
+        {
+            iTest -= 1;
+            jTest = linearTriangleIdx - ((iTest + 1) * iTest / (uint)(2));
+            if (fixupNum++ > 5)
+                break;
+        }
+    #else
+        // For IEEE754 compliant hw, even (10000+1)*10000/2 (even if past the 24bit mantissa)
+        // will work with a single patchup, no need to search further.
+        if (jTest < 0)
+        {
+            iTest -= 1;
+            jTest = linearTriangleIdx - ((iTest + 1) * iTest / (uint)(2));
+        }
+    #endif
+
+    if (excludeDiagonal)
+    {
+        iTest += 1;
+    }
+
+    // returns in (col, rows) format
+    return uint2(jTest, iTest);
+}
+
+float2 ComputeTwiddleFactor(uint row, uint col)
+{
+    // Returns TwiddleFactor W_{N}^{n * k}
+    // N = frameLength
+    // k = row
+    // n = col
+    // fundamental = 1/frameLength
+    // Thus returns cossin(-2*pi*k*n*fundamental);
+    // Final outputs are window[n] * cossin(-2*pi*k*n*fundamental);
+
+    //float code = row*100 + col*10;
+    //return float2(code, code + 1);
+
+    //float code = row+col;
+    //return float2(code, code*10);
+
+#if defined(INVERSE_DFT)
+    float signFactor = 1.0;
+#else
+    float signFactor = -1.0;
+#endif
+
+    float angle = signFactor * 2.0 * (3.14159265358979323846) * row * col * DFTFundamentalFreq;
+    float2 cossin;
+    sincos(angle, cossin.y, cossin.x);
+    return cossin; // .x is real part .y is imaginary part of the sequence
+}
+
+[numthreads(NUMTHREADS_X, NUMTHREADS_Y, 1)]
+void MainName(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint2 tileCoord = ConvertLinearIdxToLowerTriangleIdx(groupID.x, /*excludeDiagonal*/false);
+
+    // if (threadIndex == 0)
+    // {
+        // Optr[0] = tileCoord[0] + 120000;
+        // Optr[1] = tileCoord[1] + 130000;
+    // }
+
+#if 1
+
+    uint tx = threadIndex & (NEW_NUMTHREADS_X - 1);
+    uint ty = threadIndex >> LOG2_NEW_NUMTHREADS_X;
+    uint threadYIDParity = ty & 1;
+
+    // Compute symmetric part and dump it to LDS
+    {
+        // For the symmetric generator, we consider the TILE only,
+        // not the possible expansion of rows due to splitting real/imaginary parts
+        // on alternating rows (if SPLIT_REAL_IMA_ON_ALTERNATE_ROWS, used when the intent is to process real signals)
+        uint genTileTGBaseOffsetX = tileCoord[0] * TILE_SIZE;
+        uint genTileTGBaseOffsetY = tileCoord[1] * TILE_SIZE;
+
+        uint xx = genTileTGBaseOffsetX + tx;
+        uint yy = genTileTGBaseOffsetY + ty;
+
+        for (int i = 0; i < TILE_SIZE; i += NEW_NUMTHREADS_Y)
+        {
+            // Each thread generates 2 elements, which will be output in 2 rows if SPLIT_REAL_IMA_ON_ALTERNATE_ROWS
+            // both in LDS and final output, see points 1) and 2) below:
+            float2 dataElement = ComputeTwiddleFactor(/*row*/i + yy, xx);
+
+        #if defined(SPLIT_REAL_IMA_ON_ALTERNATE_ROWS)
+            //
+            // eg  of output a tile at (col,row) = (tileTGBaseOffsetX, tileTGBaseOffsetY)
+            // Optr[(i + yy)*O_width + xx] = data
+            //
+            // Here we don't output directly the symmetric generation,
+            // we get cos/sin terms and want to re-organize the data for 2 reasons
+            // 1) to group the cos and sin terms on alternating rows and
+            // 2) to apply the window along each cos/sin *rows* only.
+            //
+            uint ldsRow0 = (i + ty) * 2 + 0;
+            uint outRow0 = genTileTGBaseOffsetY * 2 + ldsRow0;
+            //if (outRow0 < O_height && xx < O_width)
+            //...no need to guard the compute + LDS store, not ouputting yet.
+            // Also, we need to be filling the LDS possibly beyond O_width in the case of DFT where
+            // the actual output matrix might have less columns than dftLength because the signal is considered zero padded,
+            // while the symmetric tile will need those trig components for the rows (which exist even for zero padded signals)
+            {
+                LDS_ACCESS_X(/*row*/ldsRow0, tx) = dataElement[0]; // cos
+                LDS_ACCESS_X(/*row*/ldsRow0 + 1, tx) = dataElement[1]; // sin
+            }
+        #else // #if defined(SPLIT_REAL_IMA_ON_ALTERNATE_ROWS)
+
+            // Simpler handling with complex packed float2 data type:
+            // we can also immediately output the result to main memory.
+            // We still store to LDS for the transposed tile output later
+            uint ldsRow = (i + ty);
+            uint outRow = genTileTGBaseOffsetY + ldsRow;
+
+            float w = 1.0;
+            #if !defined(NO_WINDOW)
+            if (xx < O_width)
+                w = Wptr[MIN_WHEN_NON_D3D(xx, O_width)];
+            #endif
+
+            Complex outdata, ldsdata;
+            ldsdata.re = dataElement[0];
+            ldsdata.im = dataElement[1];
+            outdata = ldsdata;
+            #if !defined(NO_WINDOW)
+            outdata.re *= w;
+            outdata.im *= w;
+            #endif
+
+            if (outRow < O_height && xx < O_width)
+            {
+                WRITE_OUTPUT((outRow * O_width + xx), outdata);
+            }
+
+            // output a single row of complex data
+            LDS_ACCESS_X(/*row*/ldsRow, tx) = ldsdata;
+
+        #endif // #if defined(SPLIT_REAL_IMA_ON_ALTERNATE_ROWS)
+        }
+    }
+
+    GroupMemoryBarrierWithGroupSync();
+
+     // Load from LDS and output the non-transposed final tile data,
+     // applying window:
+    #if defined(SPLIT_REAL_IMA_ON_ALTERNATE_ROWS)
+    {
+        uint outTileTGBaseOffsetX = tileCoord[0] * NB_DATA_COL_PER_TG; // columns, tile col num * TILE_SIZE
+        uint outTileTGBaseOffsetY = tileCoord[1] * NB_DATA_ROW_PER_TG; // rows, tile row num * TILE_SIZE and * 2 if SPLIT_REAL_IMA_ON_ALTERNATE_ROWS
+
+        uint xx = outTileTGBaseOffsetX + tx;
+        uint yy = outTileTGBaseOffsetY + ty;
+
+        for (int i = 0; i < NB_DATA_ROW_PER_TG; i += NEW_NUMTHREADS_Y)
+        {
+            uint ldsRow = (i + ty);
+            uint outRow = outTileTGBaseOffsetY + ldsRow;
+            if (outRow < O_height && xx < O_width)
+            {
+                float outScalarData;
+                outScalarData = LDS_ACCESS_X(/*row*/ldsRow, tx);
+
+            #if !defined(NO_WINDOW)
+                WRITE_OUTPUT((outRow * O_width + xx), outScalarData * Wptr[MIN_WHEN_NON_D3D(xx, O_width)]);
+            #else
+                WRITE_OUTPUT((outRow * O_width + xx), outScalarData);
+            #endif
+            }
+        }
+    }
+    #endif
+
+    // Output the transpose of the tile at tileCoord.xy = (col,row)
+    // This transposed-tile is at (newCol, newRow) = tileCoord.yx
+    //
+    // (TODO intrinsics allow removing barrier, usage of LDS and just do the tranpose
+    // by threads swapping their data)
+    // but only if we're not on a tile on the diagonal:
+    if (tileCoord[0] != tileCoord[1])
+    {
+       // Transposed tile column start: transposed(tile_coord).col =  tile_coord.row ie tile_coord.y.
+       // Note that we still have 2 times the number of rows than columns,
+       // because although the generator data is symmetric (DFT twiddle matrix), the output we generate is not
+       // (We want rows organized as alternation of real and ima part, and also a window modulates
+       // both part along the column axis, see 1) and 2) above)
+        uint outTileTGBaseOffsetX = tileCoord[1] * NB_DATA_COL_PER_TG;
+        uint outTileTGBaseOffsetY = tileCoord[0] * NB_DATA_ROW_PER_TG; // transposed(tile_coord).col == old_tile_coord.row, and * NB_DATA_ROW_PER_TG == TILE_SIZE*2
+
+        uint xx = outTileTGBaseOffsetX + tx; // important! notice we still use tx, ie the full NEW_NUMTHREADS_X for the columns
+        uint yy = outTileTGBaseOffsetY + ty;
+
+        uint threadRowParity = threadYIDParity;
+        for (int i = 0; i < NB_DATA_ROW_PER_TG; i += NEW_NUMTHREADS_Y)
+        {
+        #if defined(SPLIT_REAL_IMA_ON_ALTERNATE_ROWS)
+
+            uint relOutRowDiv2_ldsCol = (i + ty) / 2;
+            uint outRow = outTileTGBaseOffsetY + (i + ty);
+            if (outRow < O_height && xx < O_width)
+            {
+                float outScalarData;
+                // note transposed access: lds_row_param: xx_column
+                outScalarData = LDS_ACCESS_X(/*row*/tx * 2 + threadRowParity, relOutRowDiv2_ldsCol);
+
+            #if !defined(NO_WINDOW)
+                WRITE_OUTPUT((outRow * O_width + xx), outScalarData * Wptr[MIN_WHEN_NON_D3D(xx, O_width)]);
+            #else
+                WRITE_OUTPUT((outRow * O_width + xx), outScalarData);
+            #endif
+            }
+
+        #else
+
+            uint relOutRow = (i + ty);
+            uint outRow = outTileTGBaseOffsetY + relOutRow;
+            if (outRow < O_height && xx < O_width)
+            {
+                float w = 1.0;
+                #if !defined(NO_WINDOW)
+                w = Wptr[MIN_WHEN_NON_D3D(xx, O_width)];
+                #endif
+
+                // note transposed access: lds_row_param: xx_column
+                Complex outdata = LDS_ACCESS_X(/*row*/tx, relOutRow);
+
+                #if !defined(NO_WINDOW)
+                outdata.re *= w;
+                outdata.im *= w;
+                #endif
+
+                WRITE_OUTPUT((outRow * O_width + xx), outdata);
+            }
+
+        #endif // #if defined(SPLIT_REAL_IMA_ON_ALTERNATE_ROWS)
+        }
+    }
+
+#endif
+}

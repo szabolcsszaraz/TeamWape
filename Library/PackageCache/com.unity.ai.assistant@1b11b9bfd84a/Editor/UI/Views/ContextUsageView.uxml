@@ -1,0 +1,6 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="contextUsageRoot" class="mui-context-usage">
+        <ui:Label name="contextUsageLabel" picking-mode="Ignore" class="mui-context-usage-label" />
+        <ui:VisualElement name="contextUsageRing" class="mui-context-usage-ring" />
+    </ui:VisualElement>
+</UXML>

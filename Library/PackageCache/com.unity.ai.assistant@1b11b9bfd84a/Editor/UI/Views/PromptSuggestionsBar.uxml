@@ -1,0 +1,18 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="../Styles/PromptSuggestionsBar.uss" />
+    <ui:VisualElement name="barRoot" class="mui-prompt-suggestions-root">
+        <!-- Tab row: always visible. Close button only shown when expanded. -->
+        <ui:VisualElement name="tabRow" class="mui-prompt-suggestions-tab-row">
+            <ui:Image name="lightningIcon" class="mui-action-button-image-large mui-icon-lightning" picking-mode="Ignore"/>
+            <ui:VisualElement name="tabContainer" class="mui-prompt-suggestions-tabs"/>
+            <ui:VisualElement name="closeButton" class="mui-prompt-suggestions-close-button">
+                <ui:Image picking-mode="Ignore" class="mui-action-button-image-large mui-icon-close"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <!-- Prompt list: only visible when expanded -->
+        <ui:VisualElement name="expandedContent" class="mui-prompt-suggestions-expanded">
+            <ui:VisualElement class="mui-prompt-suggestions-divider"/>
+            <ui:VisualElement name="promptList" class="mui-prompt-suggestions-list"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

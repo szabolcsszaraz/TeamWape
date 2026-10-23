@@ -1,0 +1,40 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Unity.Multiplayer.Center.Editor.PackageItem class="recommendation__item">
+        <ui:VisualElement class="recommendation-box">
+            <ui:VisualElement style="flex-direction: row; justify-content: space-between;">
+                <ui:VisualElement style="flex-direction: row; align-items: flex-start;">
+                    <ui:Label text="" class="section-title">
+                        <Bindings>
+                            <Unity.Multiplayer.Center.Editor.DelayedPackageNameBinding property="text" binding-mode="ToTarget"/>
+                        </Bindings>
+                    </ui:Label>
+                    <ui:VisualElement class="checkmark-icon hidden">
+                        <Bindings>
+                            <Unity.Multiplayer.Center.Editor.DelayedPackageInstalledBinding property="IsInstalled" binding-mode="ToTarget"/>
+                        </Bindings>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement style="flex-direction: row;">
+                    <Unity.Multiplayer.Center.Editor.PackageIcon class="icon icon--package-manager">
+                        <Bindings>
+                            <Unity.Multiplayer.Center.Editor.DelayedPackageIdBinding property="PackageId" binding-mode="ToTarget"/>
+                        </Bindings>
+                    </Unity.Multiplayer.Center.Editor.PackageIcon>
+                    <Unity.Multiplayer.Center.Editor.HelpIcon class="icon icon--help">
+                        <Bindings>
+                            <Unity.Multiplayer.Center.Editor.DelayedPackageDocumentationBinding property="DocumentationUrl" binding-mode="ToTarget"/>
+                        </Bindings>
+                    </Unity.Multiplayer.Center.Editor.HelpIcon>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:Label text="" class="section-description">
+                <Bindings>
+                    <Unity.Multiplayer.Center.Editor.DelayedPackageDescriptionBinding property="text" binding-mode="ToTarget"/>
+                </Bindings>
+            </ui:Label>
+        </ui:VisualElement>
+        <Bindings>
+            <ui:DataBinding property="PackageId" binding-mode="ToTarget"/>
+        </Bindings>
+    </Unity.Multiplayer.Center.Editor.PackageItem>
+</ui:UXML>

@@ -1,0 +1,36 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/com.unity.multiplayer.center/Editor/MultiplayerCenterWindow/UI/GettingStartedSamples.uss?fileID=7433441132597879392&amp;guid=e3ff025771d34d4edb265538b05ebcb6&amp;type=3#GettingStartedSamples"/>
+    <ui:VisualElement data-source-type="Unity.Multiplayer.Center.Editor.GettingStartedSample, Unity.Multiplayer.Center.Editor">
+        <ui:Label text="Start by experimenting with a basic sample" class="section-headline"/>
+        <ui:HelpBox name="project-link-warning" message-type="Warning" class="hidden"/>
+        <ui:VisualElement class="getting-started-row">
+            <ui:VisualElement class="getting-started-container">
+                <ui:VisualElement>
+                    <ui:VisualElement class="sample-pill">
+                        <ui:Image class="learning-icon"/>
+                        <ui:Label text="Starting Sample"/>
+                    </ui:VisualElement>
+                    <ui:Label text="Multiplayer for ..." class="section-title">
+                        <Bindings>
+                            <ui:DataBinding property="text" data-source-path="Name" binding-mode="ToTarget"/>
+                        </Bindings>
+                    </ui:Label>
+                    <ui:Label text="Create and join game session&#10;Move players and objects&#10;&lt;a href=¨&gt;Relay&lt;/a&gt; integration for stable connexion" class="section-description">
+                        <Bindings>
+                            <ui:DataBinding property="text" data-source-path="Description" binding-mode="ToTarget"/>
+                        </Bindings>
+                    </ui:Label>
+                </ui:VisualElement>
+                <ui:VisualElement style="flex-direction: row;">
+                    <ui:Button text="Import" name="install-button" style="flex-grow: 1;"/>
+                    <ui:Button text="" name="remove-button" class="remove-button hidden"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <Unity.Multiplayer.Center.Editor.ImageWithPlaceholderElement class="sample-image">
+                <Bindings>
+                    <ui:DataBinding property="source" data-source-path="Icon" binding-mode="ToTarget"/>
+                </Bindings>
+            </Unity.Multiplayer.Center.Editor.ImageWithPlaceholderElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

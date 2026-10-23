@@ -1,0 +1,50 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" xmlns:assistant="Unity.AI.Assistant.UI.Editor.Scripts.Components" editor-extension-mode="False">
+    <ui:VisualElement name="optionsSection" class="mui-chat-footer">
+        <ui:VisualElement class="mui-control-section-buttons">
+            <ui:Button name="copyButton" tooltip="Copy Message" class="mui-action-button mui-chat-response-button">
+                <ui:Image class="mui-action-button-image-large" name="copyButtonImage"/>
+            </ui:Button>
+            <ui:Button name="upVoteButton" tooltip="Good Response" class="mui-action-button mui-chat-response-button">
+                <ui:Image class="mui-action-button-image-large mui-icon-upvote"/>
+            </ui:Button>
+            <ui:Button name="downVoteButton" tooltip="Bad Response" class="mui-action-button mui-chat-response-button">
+                <ui:Image class="mui-action-button-image-large mui-icon-downvote"/>
+            </ui:Button>
+            <assistant:ChatElementCheckpoint/>
+            <ui:Label name="messageCostLabel" class="mui-message-cost-label" style="display: none;" tooltip="Total credits used in this prompt, excluding asset generations."/>
+        </ui:VisualElement>
+        <ui:VisualElement name="feedbackParamSection" class="mui-feedback-parameters">
+            <ui:VisualElement name="feedbackPanel" class="mui-feedback-panel">
+                <ui:Label name="feedbackPanelTitle" class="mui-feedback-panel-title"/>
+                <ui:ScrollView class="mui-feedback-text-scrollroot">
+                    <ui:TextField name="feedbackValueText">
+                        <VisualElement name="placeholderContent" class="mui-mtf-placeholder-root">
+                            <Label picking-mode="ignore" name="placeholderText"/>
+                        </VisualElement>
+                    </ui:TextField>
+                </ui:ScrollView>
+                <ui:Label name="reportUnacceptableContentLink" enable-rich-text="true" class="mui-feedback-report-link" style="display: none;"/>
+                <ui:Foldout name="contactFoldout" class="mui-chat-foldout">
+                    <ui:VisualElement class="mui-feedback-email-row">
+                        <ui:Label text="Email" class="mui-feedback-email-label"/>
+                        <ui:TextField name="feedbackEmailText" class="mui-feedback-email-field"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="mui-feedback-checkbox-row">
+                        <ui:Toggle name="feedbackConsentCheckbox" class="mui-feedback-checkbox-toggle"/>
+                        <ui:Label name="feedbackConsentLabel" class="mui-feedback-checkbox-label"/>
+                    </ui:VisualElement>
+                </ui:Foldout>
+                <ui:Button name="feedbackSendButton" class="mui-action-button mui-feedback-send-button">
+                    <ui:Label class="mui-action-button-label-header" text="Send"/>
+                </ui:Button>
+            </ui:VisualElement>
+            <ui:VisualElement name="feedbackStatusRow" class="mui-feedback-status-row">
+                <ui:VisualElement class="mui-feedback-status-message-row">
+                    <ui:Image name="feedbackStatusIcon" class="mui-feedback-status-icon"/>
+                    <ui:Label name="feedbackStatusText" class="mui-feedback-status-text"/>
+                </ui:VisualElement>
+                <ui:Button name="feedbackStatusAction" class="mui-feedback-add-comment-button"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</UXML>

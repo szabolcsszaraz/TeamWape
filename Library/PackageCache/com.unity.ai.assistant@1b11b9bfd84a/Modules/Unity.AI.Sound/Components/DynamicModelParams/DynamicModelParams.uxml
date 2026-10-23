@@ -1,0 +1,4 @@
+<UXML xmlns="UnityEngine.UIElements">
+    <Style src="./DynamicModelParams.uss"/>
+    <VisualElement name="dynamic-model-params-container" />
+</UXML>

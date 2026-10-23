@@ -1,0 +1,130 @@
+.todo-progress-root {
+    flex-direction: column;
+}
+
+.todo-progress-header-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 2px;
+    margin-right: -9px;
+}
+
+.todo-progress-title {
+    flex-grow: 1;
+    -unity-font-style: bold;
+}
+
+.todo-progress-expand-btn {
+    background-color: transparent;
+    border-width: 0;
+    padding: 0;
+    margin: 0;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.mui-icon-caret-up-down-maximize,
+.mui-icon-caret-up-down-minimize {
+    width: 14px;
+    height: 14px;
+}
+
+.todo-progress-expand-btn:hover {
+    background-color: var(--muse-chat-foregrounds-310);
+    border-radius: 3px;
+}
+
+.todo-progress-subtitle {
+    font-size: 11px;
+    color: var(--muse-chat-text-secondary);
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.todo-progress-current-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.todo-progress-spinner-slot {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    margin-right: 6px;
+}
+
+.todo-progress-current-step {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--muse-chat-text-secondary);
+}
+
+.todo-progress-task-scroll {
+    max-height: 200px;
+    margin-right: -12px;
+}
+
+.todo-progress-task-scroll > .unity-scroll-view__content-and-vertical-scroll-container > .unity-scroll-view__content-viewport > .unity-scroll-view__content-container {
+    width: 95%;
+}
+
+.todo-progress-task-scroll > .unity-scroll-view__content-and-vertical-scroll-container > .unity-scroller--vertical {
+    margin-right: 3px;
+}
+
+.todo-progress-task-list {
+    flex-direction: column;
+    margin-top: 4px;
+}
+
+.todo-progress-task-row {
+    flex-direction: row;
+    align-items: flex-start;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.todo-progress-task-icon {
+    width: 16px;
+    flex-shrink: 0;
+    -unity-text-align: middle-center;
+    margin-right: 6px;
+}
+
+.todo-progress-task-desc {
+    flex-grow: 1;
+    min-width: 0;
+    white-space: normal;
+    overflow: hidden;
+}
+
+.todo-progress-task-icon--completed {
+    color: var(--muse-chat-icon-success-color);
+}
+
+.todo-progress-task-icon--cancelled {
+    color: var(--muse-chat-text-secondary);
+}
+
+.todo-progress-task-icon--pending {
+    color: var(--muse-chat-text-secondary);
+}
+
+.todo-progress-task-desc--cancelled {
+    color: var(--muse-chat-text-secondary);
+    -unity-font-style: italic;
+}
+
+.todo-progress-task-desc--in_progress {
+    -unity-font-style: bold;
+}

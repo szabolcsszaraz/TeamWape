@@ -1,0 +1,116 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:editorui="UnityEditor.UIElements">
+   <Style src="/Packages/com.unity.ai.assistant/Modules/Unity.AI.Generators.UI/StyleSheets/GenerationMetadataWindow.uss" />
+   <Style src="./GenerationMetadataWindow.uss" />
+   <ScrollView>
+      <VisualElement class="use-all-container">
+         <Label text="Generation Data"/>
+         <Button text="Use All" class="data-button" name="use-all-button" />
+      </VisualElement>
+      <VisualElement class="refinement-mode-container container">
+         <Label class="metadata-type" text="Operation" />
+         <Label class="metadata" name="refinement-mode-metadata" />
+         <Button text="Use" class="data-button" name="use-refinement-mode-button"/>
+      </VisualElement>
+      <VisualElement class="model-container container">
+         <Label class="metadata-type" text="Model" />
+         <Label class="metadata" name="model-metadata" />
+         <Button text="Copy" class="data-button" name="copy-model-button"/>
+         <Button text="Use" class="data-button" name="use-model-button"/>
+      </VisualElement>
+      <VisualElement class="prompt-container container">
+         <Label class="metadata-type" text="Prompt" />
+         <Label class="metadata" name="prompt-metadata" />
+         <Button text="Copy" class="data-button" name="copy-prompt-button"/>
+         <Button text="Use" class="data-button" name="use-prompt-button"/>
+      </VisualElement>
+      <VisualElement class="negative-prompt-container container">
+         <Label class="metadata-type" text="Negative Prompt" />
+         <Label class="metadata" name="negative-prompt-metadata" />
+         <Button text="Copy" class="data-button" name="copy-negative-prompt-button"/>
+         <Button text="Use" class="data-button" name="use-negative-prompt-button"/>
+      </VisualElement>
+      <VisualElement class="custom-seed-container container">
+         <Label class="metadata-type" text="Custom Seed" />
+         <Label class="metadata" name="custom-seed-metadata" />
+         <Button text="Copy" class="data-button" name="copy-custom-seed-button"/>
+         <Button text="Use" class="data-button" name="use-custom-seed-button"/>
+      </VisualElement>
+      <VisualElement class="prompt-image-reference-container container">
+         <Label class="metadata-type" text="Reference Image" />
+         <editorui:ObjectField class="metadata metadata-object-field__input-field"
+             type="UnityEngine.Texture2D, UnityEngine.CoreModule" picking-mode="Ignore" />
+         <Button text="Copy" class="data-button" name="copy-prompt-image-ref-button"/>
+         <Button text="Use" class="data-button" name="use-prompt-image-ref-button"/>
+      </VisualElement>
+      <VisualElement class="multiview-references-container">
+         <VisualElement class="multiview-front-container container">
+            <Label class="metadata-type" text="Front Reference" />
+            <editorui:ObjectField class="metadata metadata-object-field__input-field"
+                type="UnityEngine.Texture2D, UnityEngine.CoreModule" picking-mode="Ignore" />
+            <Button text="Copy" class="data-button" name="copy-multiview-front-button"/>
+            <Button text="Use" class="data-button" name="use-multiview-front-button"/>
+         </VisualElement>
+         <VisualElement class="multiview-back-container container">
+            <Label class="metadata-type" text="Back Reference" />
+            <editorui:ObjectField class="metadata metadata-object-field__input-field"
+                type="UnityEngine.Texture2D, UnityEngine.CoreModule" picking-mode="Ignore" />
+            <Button text="Copy" class="data-button" name="copy-multiview-back-button"/>
+            <Button text="Use" class="data-button" name="use-multiview-back-button"/>
+         </VisualElement>
+         <VisualElement class="multiview-left-container container">
+            <Label class="metadata-type" text="Left Reference" />
+            <editorui:ObjectField class="metadata metadata-object-field__input-field"
+                type="UnityEngine.Texture2D, UnityEngine.CoreModule" picking-mode="Ignore" />
+            <Button text="Copy" class="data-button" name="copy-multiview-left-button"/>
+            <Button text="Use" class="data-button" name="use-multiview-left-button"/>
+         </VisualElement>
+         <VisualElement class="multiview-right-container container">
+            <Label class="metadata-type" text="Right Reference" />
+            <editorui:ObjectField class="metadata metadata-object-field__input-field"
+                type="UnityEngine.Texture2D, UnityEngine.CoreModule" picking-mode="Ignore" />
+            <Button text="Copy" class="data-button" name="copy-multiview-right-button"/>
+            <Button text="Use" class="data-button" name="use-multiview-right-button"/>
+         </VisualElement>
+         <VisualElement class="multiview-left-front-container container">
+            <Label class="metadata-type" text="Left Front Reference" />
+            <editorui:ObjectField class="metadata metadata-object-field__input-field"
+                type="UnityEngine.Texture2D, UnityEngine.CoreModule" picking-mode="Ignore" />
+            <Button text="Copy" class="data-button" name="copy-multiview-left-front-button"/>
+            <Button text="Use" class="data-button" name="use-multiview-left-front-button"/>
+         </VisualElement>
+         <VisualElement class="multiview-right-front-container container">
+            <Label class="metadata-type" text="Right Front Reference" />
+            <editorui:ObjectField class="metadata metadata-object-field__input-field"
+                type="UnityEngine.Texture2D, UnityEngine.CoreModule" picking-mode="Ignore" />
+            <Button text="Copy" class="data-button" name="copy-multiview-right-front-button"/>
+            <Button text="Use" class="data-button" name="use-multiview-right-front-button"/>
+         </VisualElement>
+         <VisualElement class="multiview-top-container container">
+            <Label class="metadata-type" text="Top Reference" />
+            <editorui:ObjectField class="metadata metadata-object-field__input-field"
+                type="UnityEngine.Texture2D, UnityEngine.CoreModule" picking-mode="Ignore" />
+            <Button text="Copy" class="data-button" name="copy-multiview-top-button"/>
+            <Button text="Use" class="data-button" name="use-multiview-top-button"/>
+         </VisualElement>
+         <VisualElement class="multiview-bottom-container container">
+            <Label class="metadata-type" text="Bottom Reference" />
+            <editorui:ObjectField class="metadata metadata-object-field__input-field"
+                type="UnityEngine.Texture2D, UnityEngine.CoreModule" picking-mode="Ignore" />
+            <Button text="Copy" class="data-button" name="copy-multiview-bottom-button"/>
+            <Button text="Use" class="data-button" name="use-multiview-bottom-button"/>
+         </VisualElement>
+      </VisualElement>
+      <VisualElement class="model-reference-container container">
+         <Label class="metadata-type" text="Reference Model" />
+         <editorui:ObjectField class="metadata metadata-object-field__input-field"
+             type="UnityEngine.GameObject, UnityEngine.CoreModule" picking-mode="Ignore" />
+         <Button text="Copy" class="data-button" name="copy-model-ref-button"/>
+         <Button text="Use" class="data-button" name="use-model-ref-button"/>
+      </VisualElement>
+      <VisualElement class="face-count-container container">
+         <Label class="metadata-type" text="Face Count" />
+         <Label class="metadata" name="face-count-metadata" />
+         <Button text="Use" class="data-button" name="use-face-count-button"/>
+      </VisualElement>
+   </ScrollView>
+</UXML>

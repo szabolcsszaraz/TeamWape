@@ -1,0 +1,41 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Packages/com.unity.multiplayer.center/Editor/MultiplayerCenterWindow/UI/BuildingBlock.uss?fileID=7433441132597879392&amp;guid=eef2722d11da0cb4dbc1b337005bb84a&amp;type=3#BuildingBlock"/>
+    <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+        <ui:VisualElement name="DetailContainer" class="building-block_details" style="padding-top: 16px; padding-right: 16px; padding-bottom: 16px;">
+            <ui:VisualElement class="horizontal-container--space-between">
+                <ui:VisualElement class="sample-pill">
+                    <ui:VisualElement name="VisualElement" class="building-block-icon" style="flex-grow: 1;"/>
+                    <ui:Label text="Building Block" name="Label"/>
+                </ui:VisualElement>
+                <ui:Label text="Intermediate" enabled="false" selectable="true" focusable="true"/>
+            </ui:VisualElement>
+            <ui:Label text="Placeholder title" name="Title" class="building-block_title" style="-unity-text-auto-size: none; -unity-text-generator: standard;">
+                <Bindings>
+                    <ui:DataBinding property="text" data-source-path="Title" data-source-type="Unity.Multiplayer.Center.Editor.Models.BuildingBlockDescription, Unity.Multiplayer.Center.Editor" binding-mode="ToTarget"/>
+                </Bindings>
+            </ui:Label>
+            <ui:VisualElement class="building-block_content-container">
+                <ui:Label text="Lorem ipsum sit dolorem" name="Description" style="white-space: normal;">
+                    <Bindings>
+                        <ui:DataBinding property="text" data-source-path="Description" data-source-type="Unity.Multiplayer.Center.Editor.Models.BuildingBlockDescription, Unity.Multiplayer.Center.Editor" binding-mode="ToTarget"/>
+                    </Bindings>
+                </ui:Label>
+            </ui:VisualElement>
+            <ui:VisualElement name="Footer" style="flex-direction: row; align-self: flex-start; align-items: center;">
+                <Unity.Multiplayer.Center.Editor.HyperLink text="See in Asset Store" emoji-fallback-support="false" enable-rich-text="false" double-click-selects-word="false" triple-click-selects-line="false" enabled="true" style="flex-grow: 0; flex-direction: row; flex-shrink: 1;">
+                    <ui:VisualElement style="flex-grow: 0; width: 120px; align-self: stretch; align-items: flex-end; flex-shrink: 0;">
+                        <ui:VisualElement class="building-block_asset-store-link" style="width: 16px; height: 16px; align-content: flex-end; flex-shrink: 0;"/>
+                    </ui:VisualElement>
+                    <Bindings>
+                        <ui:DataBinding property="URL" data-source-path="AssetStoreURL" data-source-type="Unity.Multiplayer.Center.Editor.Models.BuildingBlockDescription, Unity.Multiplayer.Center.Editor" binding-mode="ToTarget"/>
+                    </Bindings>
+                </Unity.Multiplayer.Center.Editor.HyperLink>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <Unity.Multiplayer.Center.Editor.ImageWithPlaceholderElement name="Image" class="building-block_image">
+            <Bindings>
+                <ui:DataBinding property="source" data-source-path="Preview" data-source-type="Unity.Multiplayer.Center.Editor.Models.BuildingBlockDescription, Unity.Multiplayer.Center.Editor" binding-mode="ToTarget"/>
+            </Bindings>
+        </Unity.Multiplayer.Center.Editor.ImageWithPlaceholderElement>
+    </ui:VisualElement>
+</ui:UXML>

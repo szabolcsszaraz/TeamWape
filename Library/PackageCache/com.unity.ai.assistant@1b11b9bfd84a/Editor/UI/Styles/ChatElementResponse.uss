@@ -1,0 +1,44 @@
+.mui-chat-response {
+    -unity-text-align: upper-left;
+}
+
+.mui-chat-response-separatorline {
+    margin: 4px 0 12px 0;
+    background-color: var( --muse-chat-separator-line);
+    width: 100%;
+    height: 1px;
+}
+
+#responseHeading.mui-chat-response-heading {
+    margin: 18px 0 6px 0;
+    -unity-font-style: bold;
+}
+
+#responseHeading.mui-chat-response-heading-size-1 {
+    font-size: 16px;
+}
+
+#responseHeading.mui-chat-response-heading-size-2 {
+    font-size: 14px;
+}
+
+#responseHeading.mui-chat-response-heading-size-3 {
+    font-size: 12px;
+}
+
+#responseHeading.mui-chat-response-heading-size-4 {
+    font-size: 12px;
+}
+
+#responseHeading.mui-chat-response-heading-size-5 {
+    font-size: 12px;
+}
+
+#responseHeading.mui-chat-response-heading-size-6 {
+    font-size: 12px;
+}
+
+.mui-chat-response-textelement {
+    -unity-text-generator: Standard;
+}
+

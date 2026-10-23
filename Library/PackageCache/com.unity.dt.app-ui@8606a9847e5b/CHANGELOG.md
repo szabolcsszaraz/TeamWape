@@ -1,0 +1,1894 @@
+# Changelog
+All notable changes to this package will be documented in this file.
+
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+
+## [2.2.4] - 2026-09-25
+
+### Fixed
+
+- Fixed Tabs throwing "Cannot scroll to a VisualElement that's not a child of the ScrollView content-container" when TabItems are deleted from it in UI Builder. Tabs now picks up TabItems added to or removed from its item container directly, and keeps the same tab selected when it can (UUM-154225).
+
+## [2.2.3] - 2026-09-19
+
+### Fixed
+
+- The native platform P/Invoke declarations that return a `bool` now pin one-byte marshalling with `[return: MarshalAs(UnmanagedType.I1)]`. Without it a `[DllImport]` returning `bool` marshals as the 4-byte `UnmanagedType.Bool`, while every `NativeAppUI_*` entry point returns a 1-byte C++ `bool`; on x86-64 `setcc %al` writes only the low byte, so register residue in bits 8-31 could read back as `true` when the native answer was `false`.
+- App UI shaders no longer fail to compile on Unity 7000, where the `UnityCG.hlsl` / `UnityUI.hlsl` includes they expected do not exist; they now include `UnityCG.cginc` on every Unity version.
+
+## [2.1.13] - 2026-09-16
+
+### Fixed
+
+- The native platform P/Invoke declarations that return a `bool` now pin one-byte marshalling with `[return: MarshalAs(UnmanagedType.I1)]`. Without it a `[DllImport]` returning `bool` marshals as the 4-byte `UnmanagedType.Bool`, while every `NativeAppUI_*` entry point returns a 1-byte C++ `bool`; on x86-64 `setcc %al` writes only the low byte, so register residue in bits 8-31 could read back as `true` when the native answer was `false`.
+- App UI shaders no longer fail to compile on Unity 7000, where the `UnityCG.hlsl` / `UnityUI.hlsl` includes they expected do not exist; they now include `UnityCG.cginc` on every Unity version.
+
+## [2.2.2] - 2026-08-24
+
+### Fixed
+
+- Fixed `Unity.AppUI.Markdown` failing when `APPUI_ENABLE_MARKDOWN` is defined. The bundled `Markdig.dll` was the `netstandard2.0` build, which references the `System.Runtime.CompilerServices.Unsafe`, `System.Memory` and `System.Buffers` facades. Unity ships shims for the latter two but not for `Unsafe`, so parsing markdown threw `FileNotFoundException` at runtime. Replaced it with Markdig's `netstandard2.1` build, which targets the same profile Unity uses and references nothing but `netstandard` itself.
+- Fixed ArgumentOutOfRangeException in Tabs when all items are disabled, and cancelled pending indicator refreshes when the selection is cleared.
+- Fixed Tabs arrow-key navigation throwing ArgumentOutOfRangeException and not skipping disabled tabs (it scanned the empty content container instead of the tab items).
+- Fixed `TextField.isPassword = true` throwing a `NullReferenceException` on Unity versions before 6000.0. Enabling UITK's `isPasswordField` forces multiline off, and that setter calls `text.Replace("\n", "")` with no null check on those versions. `TextField` seeded the underlying UITK field with a null value, so `new TextField { isPassword = true }` — and any `isPassword` toggle after the value was cleared — threw. The underlying field is now never given a null text, which also means `TextField.value` returns an empty string rather than null for an empty field.
+
+## [3.0.0-pre.1] - 2026-08-21
+
+### Changed
+
+- The minimum supported Unity version is now **6000.3 LTS** (previously 2021.3). The package manifest declares `"unity": "6000.3"`, and the CI editor matrix (validation, API validation, preview APV, package/project tests and player tests) now covers 6000.3, 6000.5, 6000.6 and trunk only. This is a major bump because the new floor drops Unity 6000.0 LTS, which is still under support — raising the minimum editor is only a non-breaking change when every dropped release line is already past end-of-support.
+
+### Removed
+
+- The APIs that were marked `[Obsolete]` are now gone, as part of the 3.0 major release. `Badge.content`, `Badge.max` and `Badge.showZero` have been removed — a Badge can hold any content, so use `Badge.label` for textual content or add child elements. The `TextFieldExtensions.BlinkingCursor()` extension method has been removed in favour of the `Unity.AppUI.UI.BlinkingCursor` manipulator (`textField.AddManipulator(new BlinkingCursor())`). `AppUISettings.autoOverrideAndroidManifest` has been removed; it had no effect, since App UI applies the changes it needs to the existing Android manifest during the build instead of shipping its own.
+- Conditional compilation for editor versions below the new 6000.3 minimum. The `versionDefines` that can no longer change value at 6000.3+ were dropped from the `.asmdef` files and the `#if` branches they guarded were resolved in place: `ENABLE_UXML_TRAITS` and `ENABLE_ENABLED_UXML_PROPERTY` (never defined at 6000.3+) were deleted along with the code they guarded, while `ENABLE_UXML_SERIALIZED_DATA`, `ENABLE_RUNTIME_DATA_BINDINGS`, `ENABLE_VALUEFIELD_INTERFACE`, `ENABLE_UITK_TEXT_SELECTION`, `UITK_NESTED_INTERACTION_KIND`, `UITK_SELECTED_INDICES_CHANGED`, `UITK_MAKE_NONE_ELEMENT`, `CONDITIONAL_WEAK_TABLE_IL2CPP`, `UI_DOCUMENT_ROOT_ELEMENT_TYPE_EXISTS`, `UNITY_ENABLE_TABVIEW` and `UNITY_ENABLE_SLIDER_FILL` (always defined at 6000.3+) are now unconditional. Legacy `#if !UNITY_2022_*` and `#if !UNITY_2023_*` fallbacks were removed too. Because every one of these symbols already had a fixed value on 6000.3, the compiled API surface is unchanged for supported editors.
+
+### Added
+
+- Added App UI Visual Documentation window. This window builds its pages dynamically from the XML documentation of the components (extracted at compile time by a Roslyn source generator) and from the package's markdown documentation, instead of loading pre-generated UXML pages. The Visual Documentation window requires the `APPUI_ENABLE_MARKDOWN` scripting define.
+- Add display scale factor and DPI support on Linux, exposing `scaleFactor`, `textScaleFactor` and `referenceDpi` on the Linux platform via new native plugin display-info APIs.
+
+### Fixed
+
+- Fixed `Unity.AppUI.Markdown` failing when `APPUI_ENABLE_MARKDOWN` is defined. The bundled `Markdig.dll` was the `netstandard2.0` build, which references the `System.Runtime.CompilerServices.Unsafe`, `System.Memory` and `System.Buffers` facades. Unity ships shims for the latter two but not for `Unsafe`, so parsing markdown threw `FileNotFoundException` at runtime. Replaced it with Markdig's `netstandard2.1` build, which targets the same profile Unity uses and references nothing but `netstandard` itself.
+- Fixed ArgumentOutOfRangeException in Tabs when all items are disabled, and cancelled pending indicator refreshes when the selection is cleared.
+- Fixed Tabs arrow-key navigation throwing ArgumentOutOfRangeException and not skipping disabled tabs (it scanned the empty content container instead of the tab items).
+- Fixed `TextField.isPassword` throwing a `NullReferenceException` when set before the field is attached to a panel, which made `new TextField { isPassword = true }` unusable. Enabling UITK's `isPasswordField` forces multiline off and walks text backing that only exists once the field belongs to a panel, so the value is now stored and applied on attach.
+
+## [2.2.1] - 2026-07-19
+
+## [2.1.12] - 2026-07-16
+
+### Fixed
+
+- Fix headless Windows IL2CPP build crash caused by the native plugin activating WinRT settings objects at static scope on Windows Server Core (game-ci/unity-builder#702)
+
+## [2.2.0] - 2026-07-15
+
+### Added
+
+- A reference of the latest opened StyleSheet in IconBrowser tool is now stored per project. The next time you will open the tool, it will reload the latest StyleSheet.
+- Added `sizeModifier` callback property to `ResizeHandle` to allow custom size adjustments during resize.
+- Added Thread UI components including Thread, ThreadMessage, ThreadComposer, ThreadReaction, ThreadReactionBar, ThreadResolveMessage, ThreadUnresolveMessage, MentionPicker, and ReactionPicker, along with their associated interfaces (IEmojiProvider, IMentionProvider, IThreadAttachment), base classes, enums, and USS styles. Renamed ThreadMessage `content` property to `message`, removed `isEditing` property in favor of `state = Draft`, moved `emojiProvider` and `mentionProvider` from ThreadMessage to ThreadContext, removed `Active` message state, and exposed explicit `attachments` container on ThreadMessage and ThreadComposer
+- Added new icons (arrow-up, paperclip, pen, paper-plane-tilt, smiley, thumbs-up, thumbs-down) to the minimal icon set and IconBrowser required icons list
+- Added TextMate grammar-based syntax highlighting support via native TextMateLib integration, including C# bindings (Registry, Grammar, Theme, Token), ScriptableObject assets (TextMateGrammarAsset, TextMateThemeAsset), ScriptedImporters for .tmLanguage and .tmTheme files, and a high-level TextMateSyntaxHighlighter API
+- Added support of DevicePixelRatio in WebGL native plugin to determine the current ScaleFactor applied to the canvas.
+- Added `UxmlTraits` support for `ResizeHandle` component.
+- Added Edit and Delete text action constants with localization support in TextActions
+- Added Uxml cloneTree and element binding by name source generators. See the documentation for more information.
+- Added Conditional Resolution in Dependency Injection system.
+- Add `destroyItem` callback to BaseGridView and fix doc comments
+- Added HelpBox UI element
+- Added runtime data binding support to `BaseGridView` component.
+- Added the support of custom ColorPicker inside the ColorField element via customPicker property.
+- Added `disableAnimation` property on Popup elements in order to force disable display animation for a given Popup UI Element.
+- New `CodeBlock` UITK component (`Unity.AppUI.UI.CodeBlock`): rounded card with a header row (language label + hover-revealed copy button using `Platform.SetPasteboardData`) above a monospaced body. Syntax highlighting is configured declaratively from USS via two `CustomStyleProperty<string>` values (`--codeblock-grammar`, `--codeblock-theme`) holding TextMate asset GUIDs; setting the `language` property toggles a `appui-code-block--lang-<value>` modifier class so per-language grammar mappings can be expressed in the design system. When a `TextMateThemeAsset` resolves, the body's background and foreground colors are pulled from `Theme.GetDefaultBackground()`/`GetDefaultForeground()` so the card adopts the theme's palette.
+- `IServiceCollection.AddSingleton<T>(T instance)` and `AddSingleton(Type, object)` overloads (plus matching `AddSingletonWhen(Type, object, ContextMatch)`) for registering pre-existing instances as singletons in the MVVM DI container. The supplied instance is returned as-is on every resolution; the container does not invoke a constructor or apply `[Service]` field/property injection on it.
+- Added `SetPosition` and `SetSize` methods to `Popover` for programmatic positioning and sizing.
+- Added `movable` property to `Popover` UI elements.
+- Shipped Roboto Mono (`PackageResources/Fonts/RobotoMono-Regular.ttf`) as a runtime font asset and exposed it as a new design token `--appui-code-font-family` (declared in `Components/CodeBlock.uss`). The font was previously buried under `Editor/Editor Default Resources/Fonts/` and only reachable from editor windows; the Redux DevTools `--mono-font` reference was migrated to the new token.
+- SplitViewSplitterCountChangedEvent dispatched when the number of splitters changes in a SplitView, allowing consumers to defer collapse/expand operations until splitters are ready
+- Added `movable` property to `DialogTrigger` to support movable popovers via UXML.
+- Bundled TextMate grammars (csharp, lua, css, xml, json) and themes (dark-plus, light-plus) under `PackageResources/SyntaxHighlighting/`. The XML and Lua grammars were stripped of their cross-language `source.java` / `source.c` includes so they tokenize standalone in our single-grammar `Registry`. Used by the new `CodeBlock` component for syntax highlighting when `APPUI_ENABLE_SYNTAX_HIGHLIGHTING` is enabled.
+- Added support of system theme in WebGL. Use `Platform.darkMode` or register your callback on the `Platform.darkModeChanged` event to make changes in your application based on the current system theme.
+- Added SortingOrder proeprty in Popups. This enable the possibility to insert popups in behind others exisiting ones.
+- PanelRenderer support in UIToolkitAppBuilder<T> for hosting MVVM apps on Unity 6.5+
+- Added support of drag-to-increment-value feature in `InputLabel` UI element.
+- Added support of system clipboard in WebGL platform for text fields.
+- New `MarkdownView` UITK component (`Unity.AppUI.Markdown` namespace) gated behind the `APPUI_ENABLE_MARKDOWN` scripting symbol. It parses CommonMark + GFM via the bundled Markdig 0.37.0 (`Runtime/Markdown/Plugins/Markdig.dll`) and renders into App UI components only — `Heading`, `Quote`, `Divider`, `LocalizedTextElement`, `Link`, plus the new `CodeBlock` — through a custom `RendererBase` (`UITKMarkdownRenderer`) with one object-renderer per CommonMark node type.
+- Added **AI Agent Skills** pane in **Unity Package Manager UI**: You can now install/remove App UI skills for AI Agents in your workspace from the Package Manager window.
+- Added support of Unity 6000.6
+- UxmlCloneTreeGenerator now collects UxmlElementNameAttribute bindings from inherited base classes, respecting C# shadowing rules.
+- `CodeBlock.showLineNumbers` property: when enabled, a 1-based line-number gutter appears on the left of the body. Both the gutter and the body live inside the same `ScrollView`, so vertical and horizontal scrolling keep the numbers aligned with their corresponding source lines.
+- Added `check-circle` and `x-circle` icons as part of the minimal icons set
+- Added support of CoreCLR for the migration from Mono scripting backend for Unity 6.5+
+- Added support for the new EntityId API in Unity 6000.3.0a1 and newer.
+- Registered the `copy` icon (regular variant) in `Icons - Minimal.uss` and `IconBrowser`'s required-icons list, so any consumer using the App UI minimal icon set has access to it. Used by the new `CodeBlock` component's hover-revealed copy-to-clipboard button.
+- Added documentation about getting started using UI Builder.
+
+### Removed
+
+- Removed Android Activity (AppUIActivity, AppUIGameActivity) and AndroidManifest.xml from the App UI package. The Android platform integration now operates without a custom Activity or manifest.
+
+### Changed
+
+- `AnchorPopup.RefreshPosition` is now `public` instead of `protected`.
+- Streamlined AI skill content by removing duplicated sections from the main skill, consolidating reference documentation pointers, and fixing a Task/TodoItem naming conflict in the MVVM example
+- `ColorField` popover is now movable by default.
+- Improved AI skill descriptions with richer trigger phrases for more reliable skill activation
+- Default `resizeDirection` for `DialogTrigger` changed from `Vertical` to `Free`.
+- Added CSS transition animations for background-color, border-color, and color properties on Button and ActionButton components
+- Switch CodeBlock syntax highlighting to themed batch tokenization (TextMateLib v0.2.0) for faster rendering and reduced GC allocations
+
+### Fixed
+
+- Fixed the AppUI settings assets search and auto-assignation before building a project.
+- Fix theme color matching in syntax-highlighted code blocks
+- Fixed runtime bindings for `DateField` and `DateRangeField` `value` property.
+- Composite Numerical fields (such as Vector fields, Bounds fields, etc) previous value returned in the ChangeEvent is now the correct one.
+- Fixed UpHandler calls in Draggable manipulator.
+- Fixed the help url in the inspector for App UI Settings assets.
+- Fixed exception thrown on Tabs element when refreshing the indicator with an out of range value.
+- Fixed columns size and added more info in Storybook window.
+- Added missing `[CreateProperty]` attribute on `clickable` property across all pressable components to fix runtime data binding for `clickable.command` path (UUM-138492)
+- Fixed the search bar in the Icon Browser remaining enabled when filtering yields no results
+- Disable "Delete selected icons" context menu option in Icon Browser when only required icons are selected
+- Set minimum window sizes for IconBrowser, NavigationGraphWindow, and DevToolsWindow to prevent layout issues when resized too small
+- Fixed an issue when trying to dismiss ColorPicker popup consecutively from ColorField
+- Fixed the use of obsolete API in Trackpad sample
+- Fixed `VisualElementExtensions.IsOnScreen` method which gave wrong result in world-space panels.
+- Fixed applying anchored popup positions only if the computed values are different than the existing ones to avoid floating point precision issues in the layout.
+- Build the Linux x86_64 TextMateLib native plugin against an older glibc baseline with a statically linked C++ runtime, so it loads on Unity 2021.3 Linux (resolves the `GLIBC_2.32 not found` load error)
+- Fixed TextArea auto-resize calculation to use explicit padding/border/margin measurements and trigger resize on geometry changes
+- Added `CreateProperty` attribute to generated command properties for Unity 2023.2+ to enable Unity Properties Serialization support in the MVVM CommandGenerator.
+- Fixed overlapping scrollbar arrow icons that appeared when resizing the Properties section in the App UI Storybook window
+- Fixed code path activation for native plugins depending on target platform
+- Fixed ActionButton CSS selector ordering for `.is-selected` to follow BEM conventions and corrected `--appui-alias-actions-border-color-selected` to reference the selected background color alias instead of a hardcoded base token
+- Fixed iOS Simulator linker errors by shipping separate Device and Simulator native plugin binaries (libAppUINativePlugin.a and libAppUITextMateLib.a with bundled oniguruma)
+- Fixed exception thrown inside the MVVM & Redux sample.
+- Fixed sending ChangeEvent in numerical fields as soon as they are attached to a panel if their value has been changed already even without notification.
+- App UI Icons StyleSheet Asset now has a StyleSheet icon in the Project window when creating the StyleSheet Asset.
+- Fixed coordinates conversion in AnchorPopupUtils.ComputePosition method
+- Fix Icon Browser "Add icons" button not working on Unity 6000.4+ due to ObjectSelector.Show API change (List\<int\> to List\<EntityId\>)
+- Fixed a NullReferenceException in MenuItem.OpenSubMenu when Menu/MenuItem are declared inline in UXML without a MenuTrigger or MenuBuilder.Build() wrapper.
+- Fix headless Windows IL2CPP build crash caused by the native plugin activating WinRT settings objects at static scope on Windows Server Core (game-ci/unity-builder#702)
+
+### Deprecated
+
+- Deprecated Badge `content`, `max`, and `showZero` properties in favor of using child elements for badge content
+
+## [2.2.0-pre.12] - 2026-07-07
+
+### Fixed
+
+- Fix theme color matching in syntax-highlighted code blocks
+- Build the Linux x86_64 TextMateLib native plugin against an older glibc baseline with a statically linked C++ runtime, so it loads on Unity 2021.3 Linux (resolves the `GLIBC_2.32 not found` load error)
+- Fix headless Windows IL2CPP build crash caused by the native plugin activating WinRT settings objects at static scope on Windows Server Core (game-ci/unity-builder#702)
+
+### Changed
+
+- Switch CodeBlock syntax highlighting to themed batch tokenization (TextMateLib v0.2.0) for faster rendering and reduced GC allocations
+
+## [2.2.0-pre.11] - 2026-06-04
+
+### Added
+
+- `IServiceCollection.AddSingleton<T>(T instance)` and `AddSingleton(Type, object)` overloads (plus matching `AddSingletonWhen(Type, object, ContextMatch)`) for registering pre-existing instances as singletons in the MVVM DI container. The supplied instance is returned as-is on every resolution; the container does not invoke a constructor or apply `[Service]` field/property injection on it.
+
+### Fixed
+
+- Disable "Delete selected icons" context menu option in Icon Browser when only required icons are selected
+- Fixed iOS Simulator linker errors by shipping separate Device and Simulator native plugin binaries (libAppUINativePlugin.a and libAppUITextMateLib.a with bundled oniguruma)
+- Fix Icon Browser "Add icons" button not working on Unity 6000.4+ due to ObjectSelector.Show API change (List\<int\> to List\<EntityId\>)
+
+## [2.1.11] - 2026-06-04
+
+### Fixed
+
+- Improve Icon Browser selection visibility and tile contrast in light theme
+- Disable "Delete selected icons" context menu option in Icon Browser when only required icons are selected
+- Fixed iOS Simulator linker errors by shipping separate Device and Simulator native plugin binaries
+- Fix Icon Browser "Add icons" button not working on Unity 6000.4+ due to ObjectSelector.Show API change (List\<int\> to List\<EntityId\>)
+
+### Added
+
+- PanelRenderer support in UIToolkitAppBuilder<T> for hosting MVVM apps on Unity 6.5+
+
+## [2.0.6] - 2026-05-25
+
+### Fixed
+
+- Fixed a NullReferenceException in MenuItem.OpenSubMenu when Menu/MenuItem are declared inline in UXML without a MenuTrigger or MenuBuilder.Build() wrapper.
+
+## [2.1.10] - 2026-05-22
+
+### Fixed
+
+- Fixed a NullReferenceException in MenuItem.OpenSubMenu when Menu/MenuItem are declared inline in UXML without a MenuTrigger or MenuBuilder.Build() wrapper.
+
+## [2.2.0-pre.9] - 2026-05-20
+
+### Added
+
+- Added Thread UI components including Thread, ThreadMessage, ThreadComposer, ThreadReaction, ThreadReactionBar, ThreadResolveMessage, ThreadUnresolveMessage, MentionPicker, and ReactionPicker, along with their associated interfaces (IEmojiProvider, IMentionProvider, IThreadAttachment), base classes, enums, and USS styles. Renamed ThreadMessage `content` property to `message`, removed `isEditing` property in favor of `state = Draft`, moved `emojiProvider` and `mentionProvider` from ThreadMessage to ThreadContext, removed `Active` message state, and exposed explicit `attachments` container on ThreadMessage and ThreadComposer
+- Added new icons (arrow-up, paperclip, pen, paper-plane-tilt, smiley, thumbs-up, thumbs-down) to the minimal icon set and IconBrowser required icons list
+- Added TextMate grammar-based syntax highlighting support via native TextMateLib integration, including C# bindings (Registry, Grammar, Theme, Token), ScriptableObject assets (TextMateGrammarAsset, TextMateThemeAsset), ScriptedImporters for .tmLanguage and .tmTheme files, and a high-level TextMateSyntaxHighlighter API
+- Added Edit and Delete text action constants with localization support in TextActions
+- New `CodeBlock` UITK component (`Unity.AppUI.UI.CodeBlock`): rounded card with a header row (language label + hover-revealed copy button using `Platform.SetPasteboardData`) above a monospaced body. Syntax highlighting is configured declaratively from USS via two `CustomStyleProperty<string>` values (`--codeblock-grammar`, `--codeblock-theme`) holding TextMate asset GUIDs; setting the `language` property toggles a `appui-code-block--lang-<value>` modifier class so per-language grammar mappings can be expressed in the design system. When a `TextMateThemeAsset` resolves, the body's background and foreground colors are pulled from `Theme.GetDefaultBackground()`/`GetDefaultForeground()` so the card adopts the theme's palette.
+- Shipped Roboto Mono (`PackageResources/Fonts/RobotoMono-Regular.ttf`) as a runtime font asset and exposed it as a new design token `--appui-code-font-family` (declared in `Components/CodeBlock.uss`). The font was previously buried under `Editor/Editor Default Resources/Fonts/` and only reachable from editor windows; the Redux DevTools `--mono-font` reference was migrated to the new token.
+- Bundled TextMate grammars (csharp, lua, css, xml, json) and themes (dark-plus, light-plus) under `PackageResources/SyntaxHighlighting/`. The XML and Lua grammars were stripped of their cross-language `source.java` / `source.c` includes so they tokenize standalone in our single-grammar `Registry`. Used by the new `CodeBlock` component for syntax highlighting when `APPUI_ENABLE_SYNTAX_HIGHLIGHTING` is enabled.
+- New `MarkdownView` UITK component (`Unity.AppUI.Markdown` namespace) gated behind the `APPUI_ENABLE_MARKDOWN` scripting symbol. It parses CommonMark + GFM via the bundled Markdig 0.37.0 (`Runtime/Markdown/Plugins/Markdig.dll`) and renders into App UI components only — `Heading`, `Quote`, `Divider`, `LocalizedTextElement`, `Link`, plus the new `CodeBlock` — through a custom `RendererBase` (`UITKMarkdownRenderer`) with one object-renderer per CommonMark node type.
+- `CodeBlock.showLineNumbers` property: when enabled, a 1-based line-number gutter appears on the left of the body. Both the gutter and the body live inside the same `ScrollView`, so vertical and horizontal scrolling keep the numbers aligned with their corresponding source lines.
+- Registered the `copy` icon (regular variant) in `Icons - Minimal.uss` and `IconBrowser`'s required-icons list, so any consumer using the App UI minimal icon set has access to it. Used by the new `CodeBlock` component's hover-revealed copy-to-clipboard button.
+
+### Deprecated
+
+- Deprecated Badge `content`, `max`, and `showZero` properties in favor of using child elements for badge content
+
+### Fixed
+
+- Fixed TextArea auto-resize calculation to use explicit padding/border/margin measurements and trigger resize on geometry changes
+- Fixed ActionButton CSS selector ordering for `.is-selected` to follow BEM conventions and corrected `--appui-alias-actions-border-color-selected` to reference the selected background color alias instead of a hardcoded base token
+- Fixed a NullReferenceException in MenuItem.OpenSubMenu when Menu/MenuItem are declared inline in UXML without a MenuTrigger or MenuBuilder.Build() wrapper.
+
+### Changed
+
+- Added CSS transition animations for background-color, border-color, and color properties on Button and ActionButton components
+
+## [2.1.9] - 2026-04-07
+
+### Fixed
+
+- Added missing `[CreateProperty]` attribute on `clickable` property across all pressable components to fix runtime data binding for `clickable.command` path (UUM-138492)
+
+## [2.0.5] - 2026-04-07
+
+### Fixed
+
+- Added missing `[CreateProperty]` attribute on `clickable` property across all pressable components to fix runtime data binding for `clickable.command` path (UUM-138492)
+
+## [2.2.0-pre.8] - 2026-04-06
+
+### Added
+
+- Added `sizeModifier` callback property to `ResizeHandle` to allow custom size adjustments during resize.
+- Added `UxmlTraits` support for `ResizeHandle` component.
+- Added `SetPosition` and `SetSize` methods to `Popover` for programmatic positioning and sizing.
+- Added `movable` property to `Popover` UI elements.
+- Added `movable` property to `DialogTrigger` to support movable popovers via UXML.
+
+### Changed
+
+- `AnchorPopup.RefreshPosition` is now `public` instead of `protected`.
+- `ColorField` popover is now movable by default.
+- Default `resizeDirection` for `DialogTrigger` changed from `Vertical` to `Free`.
+
+### Fixed
+
+- Added missing `[CreateProperty]` attribute on `clickable` property across all pressable components to fix runtime data binding for `clickable.command` path (UUM-138492)
+
+## [2.2.0-pre.7] - 2026-03-25
+
+### Removed
+
+- Removed Android Activity (AppUIActivity, AppUIGameActivity) and AndroidManifest.xml from the App UI package. The Android platform integration now operates without a custom Activity or manifest.
+
+### Added
+
+- Added **AI Agent Skills** pane in **Unity Package Manager UI**: You can now install/remove App UI skills for AI Agents in your workspace from the Package Manager window.
+- Added support of Unity 6000.6
+
+### Changed
+
+- Streamlined AI skill content by removing duplicated sections from the main skill, consolidating reference documentation pointers, and fixing a Task/TodoItem naming conflict in the MVVM example
+- Improved AI skill descriptions with richer trigger phrases for more reliable skill activation
+
+## [2.1.8] - 2026-03-25
+
+### Added
+
+- Added support of Unity 6000.6
+
+## [2.1.7] - 2026-03-20
+
+### Fixed
+
+- Fixed the use of deprecated EndNameEditAction in IconBrowser
+
+## [2.2.0-pre.6] - 2026-03-02
+
+### Added
+
+- Add `destroyItem` callback to BaseGridView and fix doc comments
+- Added HelpBox UI element
+- Added `disableAnimation` property on Popup elements in order to force disable display animation for a given Popup UI Element.
+- Added SortingOrder proeprty in Popups. This enable the possibility to insert popups in behind others exisiting ones.
+- UxmlCloneTreeGenerator now collects UxmlElementNameAttribute bindings from inherited base classes, respecting C# shadowing rules.
+- Added `check-circle` and `x-circle` icons as part of the minimal icons set
+
+### Fixed
+
+- Fixed UpHandler calls in Draggable manipulator.
+- Fixed exception thrown on Tabs element when refreshing the indicator with an out of range value.
+- Fixed sending ChangeEvent in numerical fields as soon as they are attached to a panel if their value has been changed already even without notification.
+
+## [1.3.6] - 2026-02-18
+
+### Fixed
+
+- Fixed overlapping scrollbar arrow icons that appeared when resizing the Properties section in the App UI Storybook window
+
+## [1.3.5] - 2026-01-31
+
+### Fixed
+
+- Fixed the help url in the inspector for App UI Settings assets.
+
+## [2.2.0-pre.5] - 2026-01-30
+
+### Fixed
+
+- Fixed the help url in the inspector for App UI Settings assets.
+- Fixed the search bar in the Icon Browser remaining enabled when filtering yields no results
+- Set minimum window sizes for IconBrowser, NavigationGraphWindow, and DevToolsWindow to prevent layout issues when resized too small
+- Fixed the use of obsolete API in Trackpad sample
+- Fixed overlapping scrollbar arrow icons that appeared when resizing the Properties section in the App UI Storybook window
+- Fixed exception thrown inside the MVVM & Redux sample.
+
+## [2.1.6] - 2026-01-30
+
+### Fixed
+
+- Fixed type name conflict for MaskField in the UI Kit sample.
+- Fixed the help url in the inspector for App UI Settings assets.
+- Fixed the search bar in the Icon Browser remaining enabled when filtering yields no results
+- Set minimum window sizes for IconBrowser, NavigationGraphWindow, and DevToolsWindow to prevent layout issues when resized too small
+- Fixed the use of obsolete API in Trackpad sample
+- Fixed overlapping scrollbar arrow icons that appeared when resizing the Properties section in the App UI Storybook window
+- Fixed exception thrown inside the MVVM & Redux sample.
+
+## [2.0.4] - 2026-01-30
+
+### Fixed
+
+- Fixed type name conflict for MaskField in the UI Kit sample.
+- Fixed the help url in the inspector for App UI Settings assets.
+- Fixed the search bar in the Icon Browser remaining enabled when filtering yields no results
+- Set minimum window sizes for IconBrowser, NavigationGraphWindow, and DevToolsWindow to prevent layout issues when resized too small
+- Fixed overlapping scrollbar arrow icons that appeared when resizing the Properties section in the App UI Storybook window
+- Fixed exception thrown inside the MVVM & Redux sample.
+
+## [2.0.3] - 2026-01-25
+
+### Fixed
+
+- Composite Numerical fields (such as Vector fields, Bounds fields, etc) previous value returned in the ChangeEvent is now the correct one.
+- Fixed the use of obsolete API in Trackpad sample
+- Fixed applying anchored popup positions only if the computed values are different than the existing ones to avoid floating point precision issues in the layout.
+- Fixed the usage of obsolete InstanceId API.
+- App UI Icons StyleSheet Asset now has a StyleSheet icon in the Project window when creating the StyleSheet Asset.
+
+## [1.3.4] - 2026-01-25
+
+### Fixed
+
+- Fixed the usage of obsolete InstanceId API.
+- Fixed the trackpad sample.
+
+## [2.1.5] - 2026-01-24
+
+### Fixed
+
+- Fixed the usage of obsolete InstanceId API.
+
+## [2.2.0-pre.4] - 2026-01-23
+
+### Added
+
+- Added support of DevicePixelRatio in WebGL native plugin to determine the current ScaleFactor applied to the canvas.
+- Added Uxml cloneTree and element binding by name source generators. See the documentation for more information.
+- Added runtime data binding support to `BaseGridView` component.
+- Added the support of custom ColorPicker inside the ColorField element via customPicker property.
+- Added support of system theme in WebGL. Use `Platform.darkMode` or register your callback on the `Platform.darkModeChanged` event to make changes in your application based on the current system theme.
+- Added support of drag-to-increment-value feature in `InputLabel` UI element.
+- Added support of system clipboard in WebGL platform for text fields.
+
+### Fixed
+
+- Composite Numerical fields (such as Vector fields, Bounds fields, etc) previous value returned in the ChangeEvent is now the correct one.
+- Fixed applying anchored popup positions only if the computed values are different than the existing ones to avoid floating point precision issues in the layout.
+- App UI Icons StyleSheet Asset now has a StyleSheet icon in the Project window when creating the StyleSheet Asset.
+
+## [2.1.4] - 2026-01-23
+
+### Fixed
+
+- Composite Numerical fields (such as Vector fields, Bounds fields, etc) previous value returned in the ChangeEvent is now the correct one.
+- Fixed applying anchored popup positions only if the computed values are different than the existing ones to avoid floating point precision issues in the layout.
+- App UI Icons StyleSheet Asset now has a StyleSheet icon in the Project window when creating the StyleSheet Asset.
+
+## [2.1.3] - 2025-12-10
+
+### Fixed
+
+- Fixed the AppUI settings assets search and auto-assignation before building a project.
+- Fixed columns size and added more info in Storybook window.
+- Fixed `VisualElementExtensions.IsOnScreen` method which gave wrong results in world-space panels.
+- Fixed code path activation for native plugins depending on target platform
+
+### Added
+
+- Added support of CoreCLR for the migration from Mono scripting backend for Unity 6.5+
+
+## [2.0.2] - 2025-12-10
+
+### Fixed
+
+- Fixed the AppUI settings assets search and auto-assignation before building a project.
+- Fixed columns size and added more info in Storybook window.
+- Fixed `VisualElementExtensions.IsOnScreen` method which gave wrong results in world-space panels.
+- Fixed code path activation for native plugins depending on target platform
+
+### Added
+
+- Added support of CoreCLR for the migration from Mono scripting backend for Unity 6.5+
+
+## [1.3.3] - 2025-12-10
+
+### Fixed
+
+- Fixed columns size and added more info in Storybook window.
+- Fixed the AppUI settings assets search and auto-assignation before building a project.
+- Fixed code path activation for native plugins depending on target platform
+
+### Added
+
+- Added support of CoreCLR for the migration from Mono scripting backend for Unity 6.5+
+
+## [2.2.0-pre.3] - 2025-12-09
+
+### Added
+
+- A reference of the latest opened StyleSheet in IconBrowser tool is now stored per project. The next time you will open the tool, it will reload the latest StyleSheet.
+- Added support of CoreCLR for the migration from Mono scripting backend for Unity 6.5+
+
+### Fixed
+
+- Fixed the AppUI settings assets search and auto-assignation before building a project.
+- Fixed columns size and added more info in Storybook window.
+- Fixed `VisualElementExtensions.IsOnScreen` method which gave wrong result in world-space panels.
+- Fixed code path activation for native plugins depending on target platform
+
+## [2.0.1] - 2025-11-17
+
+### Fixed
+
+- Added `CreateProperty` attribute to generated command properties for Unity 2023.2+ to enable Unity Properties Serialization support in the MVVM CommandGenerator.
+
+## [2.1.2] - 2025-11-13
+
+### Fixed
+
+- Added `CreateProperty` attribute to generated command properties for Unity 2023.2+ to enable Unity Properties Serialization support in the MVVM CommandGenerator.
+
+## [1.3.2] - 2025-11-07
+
+### Fixed
+
+- Added `CreateProperty` attribute to generated command properties for Unity 2023.2+ to enable Unity Properties Serialization support in the MVVM CommandGenerator.
+- Fixed Source Generators culture for Turkish region.
+
+## [2.2.0-pre.2] - 2025-11-06
+
+### Fixed
+
+- Fixed runtime bindings for `DateField` and `DateRangeField` `value` property.
+- Added `CreateProperty` attribute to generated command properties for Unity 2023.2+ to enable Unity Properties Serialization support in the MVVM CommandGenerator.
+
+### Added
+
+- Added support for the new EntityId API in Unity 6000.3.0a1 and newer.
+
+## [2.2.0-pre.1] - 2025-08-31
+
+### Added
+
+- Added Conditional Resolution in Dependency Injection system.
+- Added documentation about getting started using UI Builder.
+
+### Fixed
+
+- Fixed an issue when trying to dismiss ColorPicker popup consecutively from ColorField
+- Fixed coordinates conversion in AnchorPopupUtils.ComputePosition method
+
+## [2.1.1] - 2025-08-01
+
+### Fixed
+
+- Fixed label of the blue channel slider in the ColorPicker
+- Fixed hiding Alpha channel label in `ColorPicker` when `showAlpha` is set to `false`.
+
+## [2.1.1-pre.1] - 2025-07-30
+
+### Fixed
+
+- Fixed label of the blue channel slider in the ColorPicker
+- Fixed hiding Alpha channel label in `ColorPicker` when `showAlpha` is set to `false`.
+
+## [2.1.0] - 2025-07-26
+
+### Added
+
+- Added input field text selection context menu to cut/copy/paste the currently selected text (starting Unity 2023.1).
+- Added EyeDropper system (runtime-only) to pick a color in the last game frame.
+- Added `goToStrategy` property in `SwipeView` component to choose how `GoTo` method should behave regarding animation direction.
+
+### Fixed
+
+- Fixed some Icons that had white horizontal or vertical borders.
+- fix: Add missing InsideTopLeft case in ComputePosition switch statement
+- Fixed App UI Settings registration in EditorBuildSettings.
+- fix: Add tip/arrow placement logic for Inside\* popover placements
+- Fixed event propagation bug in `Pressable` which sent the wrong pointer position value to ancestors when `keepEventPropagation` was `true`.
+- Fixed GTK initialization on Linux platform when checking if any windowing system is available.
+
+## [2.1.0-pre.3] - 2025-07-23
+
+### Fixed
+
+- Fixed GTK initialization on Linux platform when checking if any windowing system is available.
+
+## [1.3.1] - 2025-07-21
+
+### Removed
+
+- Removed warning messages about using obsolete code.
+
+## [2.1.0-pre.2] - 2025-07-11
+
+### Fixed
+
+- Fixed some Icons that had white horizontal or vertical borders.
+
+## [2.1.0-pre.1] - 2025-07-11
+
+### Added
+
+- Added input field text selection context menu to cut/copy/paste the currently selected text (starting Unity 2023.1).
+- Added EyeDropper system (runtime-only) to pick a color in the last game frame.
+- Added `goToStrategy` property in `SwipeView` component to choose how `GoTo` method should behave regarding animation direction.
+
+### Fixed
+
+- fix: Add missing InsideTopLeft case in ComputePosition switch statement
+- Fixed App UI Settings registration in EditorBuildSettings.
+- fix: Add tip/arrow placement logic for Inside\* popover placements
+- Fixed event propagation bug in `Pressable` which sent the wrong pointer position value to ancestors when `keepEventPropagation` was `true`.
+
+## [2.0.0] - 2025-06-25
+
+### Removed
+
+- Removed `Unity.AppUI.Core.AppUI.DismissAnyPopups` method. Popups are now registered per `Panel` element.
+- Removed `Canvas.scrollDirection` property in order to support correctly the scroll direction set in the Operating System's preferences.
+- Removed programatic construction of RadioGroup with IList object. Since App UI offers the possibility to have Radio component as deep as you want in the visual tree compared to its RadioGroup ancestor, we wanted to limit conflicts between construction kinds.
+- TextFieldExtensions.BlinkingCursor extension method has become obsolete. Please use the new BlinkingCursor manipulator instead.
+- Removed intrusive Debug.Log calls from Platform class on Windows platform.
+- Removed warning message when using Single selection type in an overflown ActionGroup.
+- Removed EventBaseExtensionsBridge class
+- [Canvas] Removed applying cursor styles during pointer events as it was too costly in terms of performance.
+- Removed the Popup message Handler that was used to dispatch the display or dismissal of Popups. While this removes thread safety, it fixes issues with ordering of events to dismiss popups.
+
+### Changed
+
+- Refactored SliderBase and BaseSlider for performance improvements and better features. The RangeSliderBase class has been removed and RangeSliderFloat/RangeSliderInt are now derived from SliderBase directly.
+- The `Platform`, `AppUIInput` and `GestureRecognizer` classes now use pre-allocated buffers to deal with Touch events in a single frame, and expects a `ReadOnlySpan<AppUITouch>` type to work with instead of `AppUITouch[]`.
+- Refactored switch statement builder for Redux slice construction.
+- The `NavDestination` node now uses a `NavDestinationTemplate` as a delegate to create and set up a `INavigationScreen` when reaching this destination.
+- Subscribing to a Redux Store returns a `IDisposableSubscription` object instead of a method. You can dispose it by calling its `Dispose` method.
+- Changed DialogTrigger.keyboardDismissDisabled to DialogTrigger.keyboardDismissEnabled for consistency.
+- Make Host optional when intializing an `App` implementation.
+- Renamed `IUIToolkitApp.mainPage` property into `IUIToolkitApp.rootVisualElement` for more clarity.
+- Moved `NavDestination` specific settings such as `showAppBar` inside the new `DefaultNavDestinationTemplate`.
+- Replaced ClickEvent action in MenuItem builder by an EventBase action
+- Refactored completely the DropZone UI element. Now the DropZone doesn't embed any logic, but uses a `DropZoneController` instead. You can access this controller via `DropZone.controller` property and attaches a callback method to accept dragged objects and listens to drop events.
+- Changed `ticks` related properties in Slider components with a new `marks` property. To configure marks you can you the new `step` property or directly set your `customMarks`
+- Changed StoryBookEnumProperty class to become a generic type. You need to specify the Enum type as typedef parameter.
+- Refactored Redux API fore more flexibility. See the migration guide in the package documentation.
+- Renamed Popup.parentView to Popup.containerView for more clarity.
+- Complete rewrite of the SplitView component. The SplitView is no more a derived from TwoPaneSplitView from UI-Toolkit, but a full custom component that supports any number of panes.
+- Scrollable manipulator now stops the propagation of WheelEvent. This affects only the Drawer and SwipeView elements.
+- Defer checking Popup's container candidate when the Popup is about to be shown, instead of during Popup creation.
+- Use `resolvedStyle.translate` instead of `transform.position` to move elements such as the `Canvas` container.
+- Changed DropZoneController to support any VisualElement as target instead of a DropZone element.
+- Changed the Text element inside the ColorField to become a selectable text.
+- Others assembly modules such as `Redux`, `MVVM` and `Navigation` has been configured to be auto-referenced in the Unity project's assemblies.
+- Refactored every native plugin provided by the package.
+- Updated App UI Native plugins for MacOS and iOS.
+- Refactored the styling of Chip UI element.
+- Moved Toast animation logic from code to USS.
+- Changed the Trackpad sample project to work properly with the new events coming from the new Gesture Recognizer System.
+- Refactored the SwipeView element logic, without impacting the public API.
+- The `RadioGroup` component uses a `string` type for its `value` property. This string value is equal to the currently checked `Radio` component's `key` property.
+- The `Toast.AddAction` method will now ask for a callback that takes a `Toast` object as argument (instead of no argument at all). This will give you an easier way to dismiss the toast from the action callback.
+- You can now pass an `autoDismiss` argument to the `Toast.AddAction` method. This will automatically dismiss the toast when the action is triggered. This argument is optional and defaults to `true` for backward compatibility.
+- Rewrite of App UI shaders in pure `HLSL` instead of legacy `CG` language.
+- Changed MemoryUtils.Concatenate implementation to not use variadic parameters and avoid implicit allocations.
+- Replaced the MacOS native plugin by a `.dylib` library instead of a `.bundle` one.
+- App UI shaders are now optionally embedded in Player builds. You can change this setting in your main App UI settings instance. The default value is `true`.
+- Storybook stories are now sorted alphabetically.
+- Upgraded the old Drag And Drop Sample to use the refactored DropZone and the new Drag And Drop system.
+- Renamed `Create/App UI/Settings` menu item into `Create/App UI/App UI Settings`
+- Changed the way MarkDirtyRepaint is scheduled on elements containing animated textures (check properly for visibility).
+- Replaced the dropdown with an ObjectField to pick an available App UI settings asset.
+- The Canvas now uses `Experimental.Animation` system from UI-Toolkit for its damping effect when releasing the mouse with some velocity. That replaces the previous implementation that was using the `VisualElementScheduledItem`.
+- Changed fade in animation in Tooltip to use USS transitions.
+- Changed the styling of primary action buttons in AlertDialog UI element.
+- Changed the Context API to propagate contexts over _internal_ components hierarchies and not just the high-level hierarchy (via `contentContainer`).
+- Refactored the `FindResponderInChain` native method in MacOS platform to avoid undefined behaviours.
+- Refactored the styling of DropZone UI element.
+- `CircularProgress` and `LinearProgress` elements with `Indeterminate` variant won't be marked as `DirtyRepaint` if they are off-screen anymore.
+- Refactored the dispatch process of Redux AsyncThunk.
+
+### Added
+
+- Added `scale` property on slider components to support custom non-linear scaling of displayed values in the UI.
+- Added the support of inverted track progress in slider components.
+- Added MaskField UI component.
+- Added support of Selectors for subscribing to state changes in Redux implementation.
+- Added support of UITK Runtime DataBinding system in ObervableObject class.
+- Added Redux Debugging tool.
+- Added a default implementation of `NavDestinationTemplate` named `DefaultNavDestinationTemplate` which handles the creation of default `NavigationScreen` objects.
+- Added the support `string` key in Context API to identify a Context not only byt its type. This will give the ability to provide and propagate contexts of the same type but with different keys.
+- Added `formatFunction` along with `formatString` and grouped them into a new `IFormattable<TValueType>` interface. The `formatFunction` will give you the possibility to customize entirely the string formatted value of a given `TValueType`.
+- Added a `RestrictedValuePolicy` on slider components where you can choose if the slider can take a value related to the `step` or `customMarks` with modifier keys or not.
+- Added support of Enhancers and Middlewares in Redux implementation.
+- Navigation: Added `NavigationRail` component which can be used inside NavigationScreen views.
+- Added AsyncThunk support for Redux implementation.
+- Added the `Unity.AppUI.UI.DropZoneController` Manipulator for a lower level approach to create your own "drop zones".
+- Added support of Attributes on fields and properties in the Dependency Injection system.
+- Added Anchor Position support for Toast UI elements.
+- Added `IApp.services` property which returns the current `IServiceProvider` available for this instance of `IApp`. Thanks to this property you should be able to load a service from anywhere in your application by calling `App.current.services`.
+- Added `PinchGestureRecognizer` implementation for the new Gesture Recognizer System.
+- Added `LangContext.GetLocalizedStringAsyncFunc` to delegate the localization operation to a user-defined function.
+- Added `justified` property on Tabs component to jusitfy tabs layout in horizontal direction.
+- `VisualElementExtensions.HasAncestorsOfType{T}` method to verify if an element as any ancestor of a specific type.
+- Added `IInitializableComponent` interface to `IApp` interface. Now when initializing a MVVM `App` object, the related `AppBuilder` will call `app.InitializeComponent` before hosting.
+- Added `editorOnly` setting in App UI's Settings panel. Enabling EditorOnly mode will add a scripting define symbol that will prevent App UI assemblies to get compiled for runtime builds. This can be useful to work in Editor only UI and avoid increasing the footprint of your builds.
+- Added `--appui-splitview-splitter-anchor-size` design token.
+- `Added Unity.AppUI.Core.DragAndDrop` class to handle drag and drop (in-panel and/or with the Editor). The support of external drag and drop at runtime is planned for future releases.
+- Added the `key` string property on `Radio` component to be used as unique identifier in their group.
+- Added PanAndZoom Manipulator
+- Added `EnumField` UI component.
+- Added the serialzation of last selected indices in Storybook window to save and restore selection.
+- Added support of UnityEditor ColorPicker in ColorField component.
+- Added `DatePicker`, `DateRangePicker`, `DateField` and `DateRangeField` components. Theses components use the new `Date` and `DateRange` data structure also provided by App UI.
+- Added Modal.outsideClickDismissEnabled and Modal.outsideClickStrategy properties to support dismissing Modals by clicking outside of them.
+- Added `VisualElementExtensions.SetTooltipContent` method to populate a tooltip template with new content.
+- Added `orientation` property on slider components, to support vertical sliders.
+- Added `RegisterUpdateCallback` to register a callback on VisualElement that needs to be notified when App UI's main loop has done a new iteration.
+- Added support of `ICommand` in `Pressable` manipulator.
+- Added CircularProgress story in Storybook sample.
+- Added AlertDialog icon Design Tokens to customize icons directly from USS.
+- Added ActionBar story in Storybook sample.
+- Added scoped service provider implementation.
+- Added support of Color without alpha information in ColorField and ColorPicker.
+- Added `rounded-progress-corners` boolean property in `CircularProgress` and `LinearProgress` to be able to disable rounded corners.
+- Added `SelectedLocaleListener` manipulator that reacts to Localization Package's SelectedLocale changes in order to provide a new `LangContext` in the visual tree.
+- Added the support of App UI settings asset file from packages. If there's no persistent App UI settings asset defined for your project, App UI Manager will try to find one not only in the Project assets but also in Packages. You can always switch between settings via the **Project Settings > App UI** settings pane.
+- Added `Unity.AppUI.UI.Chip.deletedWithEventInfo` and `Unity.AppUI.UI.Chip.clickedWithEventInfo` events.
+- Added `trailing-icon` property in `ActionButton` component.
+- Added `damping-effect-duration` property in Canvas element. The default value is 750ms.
+- Added an experimental method `Platform.GetSystemColor` to fetch color values defined by the Operating System for specific UI element types. This can be useful if you want to precisely follow the color palette of a high-contrast theme directed by the OS.
+- Added `MasonryGridView` component.
+- Added `autoShrink` property to the `TextArea` component to automatically shrink the component when the text fits in a smaller area. You need to set `autoResize` property to `true` to use the shrinking feature.
+- Added customization support for the size of the Color swatch inside the ColorField.
+- Added `VisualElementExtensions.GetLastAncestorOfType{T}` method to retrieve the last ancestor of a specific type in the tree.
+- Added AlertDialog examples in the UI Kit sample.
+- Added "Icon Browser", a new Editor tool that enables users to generate UI-Toolkit stylesheets with a specific list of icons.
+- Added a new experimental Gesture Recognizer System.
+- Added the ability to subscribe and check if the current operating system is in Reduce-Motion Accessibility Mode (Windows/Mac/Android/iOS).
+- Added the ability to subscribe and check if the current Text Scale Factor of the currently used window (Unity Player window or the Game view window in the Editor) (Windows/Mac/Android/iOS).
+- Added Phosphor Icons
+- Added `VisualElementExtensions.IsOnScreen` method to determine if a `VisualElement` is on-screen or off-screen.
+- Added `ResizeHandle` component. This special component can be added to your layout to resize a given `target` when dragging it. This component is currently used in the new resizable `Popover` element.
+- Added `resizable` and `resizableDirection` properties in `Popover` class. You are now able to resize a `Popover` using the bottom-right corner of the popover pane. A resizable Popover will not be repositionned.
+- Added `VisualElementExtensions.EnableDynamicTransform` method to set/unset the `UsageHints.DynamicTransform` flag in your element's usageHints.
+- Added the ability to subscribe and check if the current operating system is in High-Contrast Mode (Windows/Mac/Android/iOS).
+- Added `IsContextClick()` extension method for PointerEvent.
+- Added runtime binding support for commands in `Pressable` via `clickable.command` property in most interactable UI elements.
+- Added `RectExtensions.Approximately` method to verify if two Rect object are approximately the same.
+- Added Clipboard handling support for **UTF8 Text** and **PNG** format on _iOS_, _Windows_, _macOS_, and _Linux_ platforms. Please refer to the **Native Integration** documentation page for more information.
+- Added support of Localization package in the Storybook window. You can now change the current used Locale in the window via a dropdown in the Storybook context toolbar. This dropdown will appear only if you have the Unity Localization package installed and have at least one existing Locale set up in your Localiztion settings.
+- Added the ability to subscribe and check if the current operating system is in LeftToRight or RightToLeft layout direction (Windows/Mac/Android/iOS).
+- Added `INavigationScreen` interface, more extensible than the base class `NavigationScreen`.
+- Added `leadingContainer` and `leadingContentTemplate` properties to the `AccordionItem` element.
+- Popup elements such as `Popover`, `Modal` or `MenuBuilder` now get their view's `userData` filled with the `Popup` instance itself. This way you can retrieve information about the `Popup` instance that created this popup element from within the visual tree.
+- Added the ability to subscribe and check if the current Scale Factor of the currently used window (Unity Player window or the Game view window in the Editor) (Windows/Mac/Android/iOS).
+- Added `showExpandButtons` property to the `SplitView` UI element.
+- Added Popup<T>.SetContainerView method to set a custom container which will be the parent of the popup's view.
+- Added Source Generators for MVVM module. Source Generators helps to get rid of boilerplate code and focus on business logic.
+- Added `NavHost.makeScreen` property. By setting your own callback to this property, you will be able to customize the way to instantiate a `NavigationScreen` when navigating to a new destination. This can be useful when coupled to Dependency Injection so you can retreive instances of your screens from a `IServiceProvider`. By default, the property is set with the use of `System.Activator.CreateInstance`.
+- Added `indicatorPosition` property in `AccordionItem` component, in order to swap the indicator position either at start or end of the heading row.
+- Added tests for Pan and Magnify gesture data structures.
+- Made `AnchorPopup.GetMovableElement` method public for easier access and increase customization possibilities.
+- Added new Story in the Drag And Drop sample.
+- Added support of graceful fallback to lambda `Plafform` implementation if native plugins can not be loaded by the current plaftorm.
+- Added `PreserveAttribute` on certain constructor that are only called via `Activator` reflection class.
+- Added arrow-square-in icon.
+- Added USS custom properties to choose the font style of AccordionItem header and TabItem text.
+- Added a search bar and "Save as" button in the Icon Browser window.
+- Added the ability to subscribe and check if the current operating system is in Dark Mode (Windows/Mac/Android/iOS).
+- Added some warning messages (Standalone builds only) when a LocalizedTextElement value cannot be localized.
+- Added a safety check in TooltipManipulator to ensure the anchor element of the scheduled tooltip is still valid (not _invisible_) when it is time to _animate in_ the tooltip.
+- Added monitoring of key press events in the TooltipManipulator in order to dismiss any existing tooltip when the user interacts with the keyboard.
+- Added `check` regular icon as a required icon in App UI themes.
+- Added support of `TextElement.displayTooltipWhenElided` to show elided text as a tooltip using the App UI tooltip system.
+- Added unit tests for MemoryUtils utility class.
+
+### Fixed
+
+- Fixed the wrap system of the SwipeView element when swiping between elements quickly.
+- Fixed tooltip that weren't showing up anymore since last pre-release.
+- Fixed backgrounds color of the input fields.
+- Fixed pinch gesture recognition sensitivity.
+- Fixed styling of MenuItem element
+- Fixed TouchSlider progress element overlapping parent's borders.
+- Fixed reset of Dropdown value when changing its source items.
+- Fixed the merge of default and new `Argument` objects during navigation to a `NavDestination`.
+- Fixed `VisualElementExtensions.IsInvisible` method to check recursively in ancestors if any element is considered as _invisible_.
+- Fixed compilation errors when the Unity project's Input Handling is set to `Both` or `New Input System` and the package `com.unity.inputsystem` is not installed.
+- Fixed Daisy chaining window procedures on Windows platform.
+- Fixed Action Dispatch to every Slice Reducers
+- Every shared libraries of native plugins are now correctly signed with the correct Unity Technologies certificate (MacOS and Windows only)
+- Fixed styling issues in `ActionButton` component.
+- Fixed random segmentation fault on MacOS platform which appeared after domain reloads.
+- Fixed meta files for native plugins on Windows platform.
+- Fixed force mark as dirty repaint Progress UI element when swtiching its variant.
+- Fixed some SplitView styling issues when nesting SplitViews in a visual tree.
+- Fixed "Shape" icon.
+- Fixed drag events in drag and drop samples to disable the Dropzone when leaving the Editor window.
+- Fixed Dark Gray 1200 color value in Design Tokens for Editor-Dark theme.
+- Fixed a visual bug where the checkmark symbol didn't appear on DropdownItem or MenuItem that have a `selected` state.
+- Fixed Menu's backdrop to block pointer events
+- Fixed a bug where `Popover` elements were not correctly anchored in Unity versions older than 6.
+- Added one frame delay before processing Popover dismissal.
+- Fixed calling `shown` event callbacks when a `Modal` is displayed.
+- Fixed usage of AppCompat theme for AppUI GameActivity on Android platform.
+- Fixed MacOS native plugin memory leak when opening the Help menu in the Editor.
+- Fixed Tabs emphasized color in Editor-light theme.
+- Fixed notify property changes for Picker.selectedIndex.
+- Fixed text cursor for selectable text elements such as TextArea.
+- Fixed an edge case when popovers are dismissed as OutOfBounds as soon as Show() is called.
+- Fixed some namespace usage to avoid relative ones.
+- Fixed IL2CPP Compilation errors on Windows Platform due to non-static MonoPInvokeCallback.
+- Fixed Localization support in the ActionBar UI element.
+- Fixed path resolution of Stylesheets coming from Packages in Icon Browser tool.
+- Invoke click event only if Pressable is still hovered.
+- Fixed PInvoke delegate types on Windows platform.
+- Fixed ColorField styling issues.
+- Use correct color variables for Radio and Checkbox components
+- Use `RenderTexture.GetTemporary` instead of `new RenderTexture` to optimize RT allocations, especially on tile-based renderers such as mobile platforms.
+- Fixed an exception thrown when trying to update UXML schemas in the Editor.
+- Removed force blurring the BaseSlider (SliderFloat, TouchSliderFloat, etc) when the users stops interacting with it.
+- Fixed border color variable for AccordionItem.
+- Fixed warnings related to Dialog styling.
+- Register trickledown events for popups on the first child of the visual tree root element instead of the root element itself to avoid leaks.
+- Fixed styling of SplitView's Splitter Anchor size.
+- Fixed a regression where components using `Pressable` manipulator will not able to be clicked more than once if the cursor doesn't leave the component's layout rect.
+- Fixed context propoagation per key
+- Fixed styling of BaseGridView when containing a single column.
+- Popovers and Modals now correctly start checking for PointerDown events in the visual tree when they become visible.
+- Prevent GC to collect Platform configuration to not break communication with native plugins (MacOS and iOS).
+- Fixed NullReferenceException thrown when fetching Localization tables.
+- Removed console message when trying to add an Editor MonoBehaviour in the scene during PlayMode.
+- Fixed Screen Height calculation. UITK does not use Camera rect but blit on the whole screen instead.
+- Fixed `InvalidOperationException` thrown by the damping effect animation of the `Canvas` component.
+- Fixed CultureInfo used during source code generation.
+- Fixed support of Radio component that are deeper than the direct child of a RadioGroup.
+- Fixed styling of emphasized checkboxes.
+- Fixed an exception thrown when dismiss any popup of a panel when this panel becomes out of focus.
+- Fixed the calculation of off-screen items in SwipeView with vertical direction.
+- Fixed an early return in the PreProcessBuild callback of App UI when no persistent AppUISettings have been found.
+- Fixed a bug where tooltips stop being shown when the window is docked/undocked.
+
+## [2.0.0-pre.22] - 2025-06-18
+
+### Added
+
+- Added support of `ICommand` in `Pressable` manipulator.
+- Added runtime binding support for commands in `Pressable` via `clickable.command` property in most interactable UI elements.
+
+## [2.0.0-pre.21] - 2025-06-13
+
+### Changed
+
+- The `NavDestination` node now uses a `NavDestinationTemplate` as a delegate to create and set up a `INavigationScreen` when reaching this destination.
+- Moved `NavDestination` specific settings such as `showAppBar` inside the new `DefaultNavDestinationTemplate`.
+
+### Added
+
+- Added a default implementation of `NavDestinationTemplate` named `DefaultNavDestinationTemplate` which handles the creation of default `NavigationScreen` objects.
+- Added `INavigationScreen` interface, more extensible than the base class `NavigationScreen`.
+
+## [2.0.0-pre.20] - 2025-06-11
+
+### Removed
+
+- Removed `Canvas.scrollDirection` property in order to support correctly the scroll direction set in the Operating System's preferences.
+
+### Fixed
+
+- Fixed tooltip that weren't showing up anymore since last pre-release.
+- Fixed `VisualElementExtensions.IsInvisible` method to check recursively in ancestors if any element is considered as _invisible_.
+
+### Changed
+
+- Use `resolvedStyle.translate` instead of `transform.position` to move elements such as the `Canvas` container.
+- Replaced the dropdown with an ObjectField to pick an available App UI settings asset.
+
+### Added
+
+- Added a safety check in TooltipManipulator to ensure the anchor element of the scheduled tooltip is still valid (not _invisible_) when it is time to _animate in_ the tooltip.
+- Added monitoring of key press events in the TooltipManipulator in order to dismiss any existing tooltip when the user interacts with the keyboard.
+
+## [2.0.0-pre.19] - 2025-04-22
+
+### Fixed
+
+- Fixed pinch gesture recognition sensitivity.
+- Added one frame delay before processing Popover dismissal.
+
+### Removed
+
+- [Canvas] Removed applying cursor styles during pointer events as it was too costly in terms of performance.
+
+## [2.0.0-pre.18] - 2025-03-04
+
+### Added
+
+- Added MaskField UI component.
+- Added `EnumField` UI component.
+- Added Source Generators for MVVM module. Source Generators helps to get rid of boilerplate code and focus on business logic.
+
+### Fixed
+
+- Fixed backgrounds color of the input fields.
+- Fixed the merge of default and new `Argument` objects during navigation to a `NavDestination`.
+
+### Changed
+
+- Others assembly modules such as `Redux`, `MVVM` and `Navigation` has been configured to be auto-referenced in the Unity project's assemblies.
+
+## [2.0.0-pre.17] - 2025-01-31
+
+### Changed
+
+- Replaced ClickEvent action in MenuItem builder by an EventBase action
+
+### Fixed
+
+- Fixed styling of MenuItem element
+- Fixed some SplitView styling issues when nesting SplitViews in a visual tree.
+- Fixed context propoagation per key
+
+### Added
+
+- Added scoped service provider implementation.
+- Added `showExpandButtons` property to the `SplitView` UI element.
+
+### Removed
+
+- Removed EventBaseExtensionsBridge class
+
+## [2.0.0-pre.16] - 2025-01-19
+
+### Removed
+
+- Removed `Unity.AppUI.Core.AppUI.DismissAnyPopups` method. Popups are now registered per `Panel` element.
+
+### Changed
+
+- Refactored SliderBase and BaseSlider for performance improvements and better features. The RangeSliderBase class has been removed and RangeSliderFloat/RangeSliderInt are now derived from SliderBase directly.
+- The `Platform`, `AppUIInput` and `GestureRecognizer` classes now use pre-allocated buffers to deal with Touch events in a single frame, and expects a `ReadOnlySpan<AppUITouch>` type to work with instead of `AppUITouch[]`.
+- Changed `ticks` related properties in Slider components with a new `marks` property. To configure marks you can you the new `step` property or directly set your `customMarks`
+- Updated App UI Native plugins for MacOS and iOS.
+
+### Added
+
+- Added `scale` property on slider components to support custom non-linear scaling of displayed values in the UI.
+- Added the support of inverted track progress in slider components.
+- Added Redux Debugging tool.
+- Added `formatFunction` along with `formatString` and grouped them into a new `IFormattable<TValueType>` interface. The `formatFunction` will give you the possibility to customize entirely the string formatted value of a given `TValueType`.
+- Added a `RestrictedValuePolicy` on slider components where you can choose if the slider can take a value related to the `step` or `customMarks` with modifier keys or not.
+- `VisualElementExtensions.HasAncestorsOfType{T}` method to verify if an element as any ancestor of a specific type.
+- Added the serialzation of last selected indices in Storybook window to save and restore selection.
+- Added `orientation` property on slider components, to support vertical sliders.
+- Added `VisualElementExtensions.GetLastAncestorOfType{T}` method to retrieve the last ancestor of a specific type in the tree.
+- Added `VisualElementExtensions.EnableDynamicTransform` method to set/unset the `UsageHints.DynamicTransform` flag in your element's usageHints.
+- Added `RectExtensions.Approximately` method to verify if two Rect object are approximately the same.
+- Popup elements such as `Popover`, `Modal` or `MenuBuilder` now get their view's `userData` filled with the `Popup` instance itself. This way you can retrieve information about the `Popup` instance that created this popup element from within the visual tree.
+- Added USS custom properties to choose the font style of AccordionItem header and TabItem text.
+
+### Fixed
+
+- Fixed calling `shown` event callbacks when a `Modal` is displayed.
+- Fixed Tabs emphasized color in Editor-light theme.
+- Use `RenderTexture.GetTemporary` instead of `new RenderTexture` to optimize RT allocations, especially on tile-based renderers such as mobile platforms.
+- Fixed an exception thrown when dismiss any popup of a panel when this panel becomes out of focus.
+
+## [1.2.1] - 2024-12-17
+
+### Fixed
+
+- Avoid calling `WaitForCompletion` during Localization initialization to not get any error message in WebGL builds.
+
+## [2.0.0-pre.15] - 2024-12-12
+
+### Changed
+
+- Renamed `Create/App UI/Settings` menu item into `Create/App UI/App UI Settings`
+
+## [2.0.0-pre.14] - 2024-12-11
+
+### Changed
+
+- Refactored switch statement builder for Redux slice construction.
+- Subscribing to a Redux Store returns a `IDisposableSubscription` object instead of a method. You can dispose it by calling its `Dispose` method.
+- Refactored Redux API fore more flexibility. See the migration guide in the package documentation.
+- Changed DropZoneController to support any VisualElement as target instead of a DropZone element.
+- Refactored the dispatch process of Redux AsyncThunk.
+
+### Added
+
+- Added support of Selectors for subscribing to state changes in Redux implementation.
+- Added the support `string` key in Context API to identify a Context not only byt its type. This will give the ability to provide and propagate contexts of the same type but with different keys.
+- Added support of Enhancers and Middlewares in Redux implementation.
+- Added `editorOnly` setting in App UI's Settings panel. Enabling EditorOnly mode will add a scripting define symbol that will prevent App UI assemblies to get compiled for runtime builds. This can be useful to work in Editor only UI and avoid increasing the footprint of your builds.
+- Added the support of App UI settings asset file from packages. If there's no persistent App UI settings asset defined for your project, App UI Manager will try to find one not only in the Project assets but also in Packages. You can always switch between settings via the **Project Settings > App UI** settings pane.
+- Added `PreserveAttribute` on certain constructor that are only called via `Activator` reflection class.
+- Added a search bar and "Save as" button in the Icon Browser window.
+
+### Fixed
+
+- Fixed drag events in drag and drop samples to disable the Dropzone when leaving the Editor window.
+- Fixed text cursor for selectable text elements such as TextArea.
+- Fixed warnings related to Dialog styling.
+
+### Removed
+
+- Removed the Popup message Handler that was used to dispatch the display or dismissal of Popups. While this removes thread safety, it fixes issues with ordering of events to dismiss popups.
+
+## [2.0.0-pre.13] - 2024-12-02
+
+### Added
+
+- Added `RegisterUpdateCallback` to register a callback on VisualElement that needs to be notified when App UI's main loop has done a new iteration.
+- Added `VisualElementExtensions.IsOnScreen` method to determine if a `VisualElement` is on-screen or off-screen.
+- Added `leadingContainer` and `leadingContentTemplate` properties to the `AccordionItem` element.
+
+### Changed
+
+- Rewrite of App UI shaders in pure `HLSL` instead of legacy `CG` language.
+- Refactored the `FindResponderInChain` native method in MacOS platform to avoid undefined behaviours.
+- `CircularProgress` and `LinearProgress` elements with `Indeterminate` variant won't be marked as `DirtyRepaint` if they are off-screen anymore.
+
+### Fixed
+
+- Fixed random segmentation fault on MacOS platform which appeared after domain reloads.
+- Prevent GC to collect Platform configuration to not break communication with native plugins (MacOS and iOS).
+
+## [1.2.0] - 2024-11-30
+
+### Changed
+
+- Backported Localization package support from App UI 2.x.
+
+## [1.1.1] - 2024-11-27
+
+### Changed
+
+- App UI shaders are now optionally embedded in Player builds. You can change this setting in your main App UI settings instance. The default value is `true`.
+
+### Fixed
+
+- Fixed an exception thrown when trying to update UXML schemas in the Editor.
+
+## [2.0.0-pre.12] - 2024-11-18
+
+### Added
+
+- Navigation: Added `NavigationRail` component which can be used inside NavigationScreen views.
+- Added `autoShrink` property to the `TextArea` component to automatically shrink the component when the text fits in a smaller area. You need to set `autoResize` property to `true` to use the shrinking feature.
+- Added `ResizeHandle` component. This special component can be added to your layout to resize a given `target` when dragging it. This component is currently used in the new resizable `Popover` element.
+- Added `resizable` and `resizableDirection` properties in `Popover` class. You are now able to resize a `Popover` using the bottom-right corner of the popover pane. A resizable Popover will not be repositionned.
+- Added Clipboard handling support for **UTF8 Text** and **PNG** format on _iOS_, _Windows_, _macOS_, and _Linux_ platforms. Please refer to the **Native Integration** documentation page for more information.
+
+### Changed
+
+- App UI shaders are now optionally embedded in Player builds. You can change this setting in your main App UI settings instance. The default value is `true`.
+
+### Fixed
+
+- Fixed Dark Gray 1200 color value in Design Tokens for Editor-Dark theme.
+- Fixed a bug where `Popover` elements were not correctly anchored in Unity versions older than 6.
+- Fixed usage of AppCompat theme for AppUI GameActivity on Android platform.
+- Fixed an exception thrown when trying to update UXML schemas in the Editor.
+- Register trickledown events for popups on the first child of the visual tree root element instead of the root element itself to avoid leaks.
+
+## [2.0.0-pre.11] - 2024-10-01
+
+### Changed
+
+- Make Host optional when intializing an `App` implementation.
+- Changed StoryBookEnumProperty class to become a generic type. You need to specify the Enum type as typedef parameter.
+- Changed the styling of primary action buttons in AlertDialog UI element.
+- Changed the Context API to propagate contexts over _internal_ components hierarchies and not just the high-level hierarchy (via `contentContainer`).
+
+### Added
+
+- Added support of UITK Runtime DataBinding system in ObervableObject class.
+- Added PanAndZoom Manipulator
+- Added CircularProgress story in Storybook sample.
+- Added AlertDialog icon Design Tokens to customize icons directly from USS.
+- Added ActionBar story in Storybook sample.
+- Added AlertDialog examples in the UI Kit sample.
+- Added Phosphor Icons
+- Added support of Localization package in the Storybook window. You can now change the current used Locale in the window via a dropdown in the Storybook context toolbar. This dropdown will appear only if you have the Unity Localization package installed and have at least one existing Locale set up in your Localiztion settings.
+
+### Fixed
+
+- Fixed TouchSlider progress element overlapping parent's borders.
+- Fixed force mark as dirty repaint Progress UI element when swtiching its variant.
+- Fixed Localization support in the ActionBar UI element.
+- Removed force blurring the BaseSlider (SliderFloat, TouchSliderFloat, etc) when the users stops interacting with it.
+
+## [2.0.0-pre.10] - 2024-09-11
+
+### Changed
+
+- Renamed `IUIToolkitApp.mainPage` property into `IUIToolkitApp.rootVisualElement` for more clarity.
+- Storybook stories are now sorted alphabetically.
+
+### Added
+
+- Added `IApp.services` property which returns the current `IServiceProvider` available for this instance of `IApp`. Thanks to this property you should be able to load a service from anywhere in your application by calling `App.current.services`.
+- Added `LangContext.GetLocalizedStringAsyncFunc` to delegate the localization operation to a user-defined function.
+- Added `IInitializableComponent` interface to `IApp` interface. Now when initializing a MVVM `App` object, the related `AppBuilder` will call `app.InitializeComponent` before hosting.
+- Added `SelectedLocaleListener` manipulator that reacts to Localization Package's SelectedLocale changes in order to provide a new `LangContext` in the visual tree.
+- Added `NavHost.makeScreen` property. By setting your own callback to this property, you will be able to customize the way to instantiate a `NavigationScreen` when navigating to a new destination. This can be useful when coupled to Dependency Injection so you can retreive instances of your screens from a `IServiceProvider`. By default, the property is set with the use of `System.Activator.CreateInstance`.
+- Added some warning messages (Standalone builds only) when a LocalizedTextElement value cannot be localized.
+
+### Fixed
+
+- Fixed notify property changes for Picker.selectedIndex.
+- Fixed path resolution of Stylesheets coming from Packages in Icon Browser tool.
+- Fixed a regression where components using `Pressable` manipulator will not able to be clicked more than once if the cursor doesn't leave the component's layout rect.
+- Fixed NullReferenceException thrown when fetching Localization tables.
+- Fixed Screen Height calculation. UITK does not use Camera rect but blit on the whole screen instead.
+- Fixed `InvalidOperationException` thrown by the damping effect animation of the `Canvas` component.
+- Fixed the calculation of off-screen items in SwipeView with vertical direction.
+
+## [2.0.0-pre.9] - 2024-09-03
+
+### Changed
+
+- Scrollable manipulator now stops the propagation of WheelEvent. This affects only the Drawer and SwipeView elements.
+- Refactored the SwipeView element logic, without impacting the public API.
+- The Canvas now uses `Experimental.Animation` system from UI-Toolkit for its damping effect when releasing the mouse with some velocity. That replaces the previous implementation that was using the `VisualElementScheduledItem`.
+- Changed fade in animation in Tooltip to use USS transitions.
+
+### Fixed
+
+- Fixed the wrap system of the SwipeView element when swiping between elements quickly.
+- Fixed Daisy chaining window procedures on Windows platform.
+- Fixed an edge case when popovers are dismissed as OutOfBounds as soon as Show() is called.
+- Invoke click event only if Pressable is still hovered.
+- Fixed styling of emphasized checkboxes.
+- Fixed a bug where tooltips stop being shown when the window is docked/undocked.
+
+### Added
+
+- Added `justified` property on Tabs component to jusitfy tabs layout in horizontal direction.
+- Added `damping-effect-duration` property in Canvas element. The default value is 750ms.
+- Added `IsContextClick()` extension method for PointerEvent.
+- Added support of graceful fallback to lambda `Plafform` implementation if native plugins can not be loaded by the current plaftorm.
+
+## [2.0.0-pre.8] - 2024-08-12
+
+### Changed
+
+- Refactored completely the DropZone UI element. Now the DropZone doesn't embed any logic, but uses a `DropZoneController` instead. You can access this controller via `DropZone.controller` property and attaches a callback method to accept dragged objects and listens to drop events.
+- Defer checking Popup's container candidate when the Popup is about to be shown, instead of during Popup creation.
+- Refactored the styling of Chip UI element.
+- Upgraded the old Drag And Drop Sample to use the refactored DropZone and the new Drag And Drop system.
+- Changed the way MarkDirtyRepaint is scheduled on elements containing animated textures (check properly for visibility).
+- Refactored the styling of DropZone UI element.
+
+### Added
+
+- Added the `Unity.AppUI.UI.DropZoneController` Manipulator for a lower level approach to create your own "drop zones".
+- Added `--appui-splitview-splitter-anchor-size` design token.
+- `Added Unity.AppUI.Core.DragAndDrop` class to handle drag and drop (in-panel and/or with the Editor). The support of external drag and drop at runtime is planned for future releases.
+- Added `Unity.AppUI.UI.Chip.deletedWithEventInfo` and `Unity.AppUI.UI.Chip.clickedWithEventInfo` events.
+- Added new Story in the Drag And Drop sample.
+- Added support of `TextElement.displayTooltipWhenElided` to show elided text as a tooltip using the App UI tooltip system.
+
+### Fixed
+
+- Fixed compilation errors when the Unity project's Input Handling is set to `Both` or `New Input System` and the package `com.unity.inputsystem` is not installed.
+- Fixed IL2CPP Compilation errors on Windows Platform due to non-static MonoPInvokeCallback.
+- Fixed PInvoke delegate types on Windows platform.
+- Fixed styling of SplitView's Splitter Anchor size.
+- Fixed styling of BaseGridView when containing a single column.
+- Popovers and Modals now correctly start checking for PointerDown events in the visual tree when they become visible.
+- Removed console message when trying to add an Editor MonoBehaviour in the scene during PlayMode.
+
+## [2.0.0-pre.7] - 2024-07-30
+
+### Changed
+
+- Changed DialogTrigger.keyboardDismissDisabled to DialogTrigger.keyboardDismissEnabled for consistency.
+- Renamed Popup.parentView to Popup.containerView for more clarity.
+
+### Added
+
+- Added Modal.outsideClickDismissEnabled and Modal.outsideClickStrategy properties to support dismissing Modals by clicking outside of them.
+- Added Popup<T>.SetContainerView method to set a custom container which will be the parent of the popup's view.
+- Made `AnchorPopup.GetMovableElement` method public for easier access and increase customization possibilities.
+
+### Fixed
+
+- Fixed "Shape" icon.
+- Fixed border color variable for AccordionItem.
+- Fixed CultureInfo used during source code generation.
+
+### Removed
+
+- Removed intrusive Debug.Log calls from Platform class on Windows platform.
+- Removed warning message when using Single selection type in an overflown ActionGroup.
+
+## [2.0.0-pre.6] - 2024-07-08
+
+### Added
+
+- Added support of Attributes on fields and properties in the Dependency Injection system.
+- Added support of UnityEditor ColorPicker in ColorField component.
+- Added support of Color without alpha information in ColorField and ColorPicker.
+- Added `rounded-progress-corners` boolean property in `CircularProgress` and `LinearProgress` to be able to disable rounded corners.
+- Added `trailing-icon` property in `ActionButton` component.
+- Added customization support for the size of the Color swatch inside the ColorField.
+- Added arrow-square-in icon.
+
+### Changed
+
+- Changed the Text element inside the ColorField to become a selectable text.
+
+### Fixed
+
+- Fixed styling issues in `ActionButton` component.
+- Fixed Menu's backdrop to block pointer events
+- Fixed ColorField styling issues.
+- Use correct color variables for Radio and Checkbox components
+
+## [2.0.0-pre.5] - 2024-06-18
+
+### Changed
+
+- Complete rewrite of the SplitView component. The SplitView is no more a derived from TwoPaneSplitView from UI-Toolkit, but a full custom component that supports any number of panes.
+
+### Fixed
+
+- Fixed reset of Dropdown value when changing its source items.
+- Fixed a visual bug where the checkmark symbol didn't appear on DropdownItem or MenuItem that have a `selected` state.
+
+### Added
+
+- Added `indicatorPosition` property in `AccordionItem` component, in order to swap the indicator position either at start or end of the heading row.
+- Added `check` regular icon as a required icon in App UI themes.
+
+## [2.0.0-pre.4] - 2024-06-05
+
+### Fixed
+
+- Fixed MacOS native plugin memory leak when opening the Help menu in the Editor.
+
+## [2.0.0-pre.3] - 2024-05-30
+
+### Added
+
+- Added AsyncThunk support for Redux implementation.
+- Added Anchor Position support for Toast UI elements.
+- Added the `key` string property on `Radio` component to be used as unique identifier in their group.
+- Added unit tests for MemoryUtils utility class.
+
+### Removed
+
+- Removed programatic construction of RadioGroup with IList object. Since App UI offers the possibility to have Radio component as deep as you want in the visual tree compared to its RadioGroup ancestor, we wanted to limit conflicts between construction kinds.
+
+### Changed
+
+- Moved Toast animation logic from code to USS.
+- The `RadioGroup` component uses a `string` type for its `value` property. This string value is equal to the currently checked `Radio` component's `key` property.
+- The `Toast.AddAction` method will now ask for a callback that takes a `Toast` object as argument (instead of no argument at all). This will give you an easier way to dismiss the toast from the action callback.
+- You can now pass an `autoDismiss` argument to the `Toast.AddAction` method. This will automatically dismiss the toast when the action is triggered. This argument is optional and defaults to `true` for backward compatibility.
+- Changed MemoryUtils.Concatenate implementation to not use variadic parameters and avoid implicit allocations.
+
+### Fixed
+
+- Fixed Action Dispatch to every Slice Reducers
+- Every shared libraries of native plugins are now correctly signed with the correct Unity Technologies certificate (MacOS and Windows only)
+- Fixed support of Radio component that are deeper than the direct child of a RadioGroup.
+
+## [2.0.0-pre.2] - 2024-05-08
+
+### Added
+
+- Added `PinchGestureRecognizer` implementation for the new Gesture Recognizer System.
+- Added an experimental method `Platform.GetSystemColor` to fetch color values defined by the Operating System for specific UI element types. This can be useful if you want to precisely follow the color palette of a high-contrast theme directed by the OS.
+- Added "Icon Browser", a new Editor tool that enables users to generate UI-Toolkit stylesheets with a specific list of icons.
+- Added a new experimental Gesture Recognizer System.
+- Added the ability to subscribe and check if the current operating system is in Reduce-Motion Accessibility Mode (Windows/Mac/Android/iOS).
+- Added the ability to subscribe and check if the current Text Scale Factor of the currently used window (Unity Player window or the Game view window in the Editor) (Windows/Mac/Android/iOS).
+- Added the ability to subscribe and check if the current operating system is in High-Contrast Mode (Windows/Mac/Android/iOS).
+- Added the ability to subscribe and check if the current operating system is in LeftToRight or RightToLeft layout direction (Windows/Mac/Android/iOS).
+- Added the ability to subscribe and check if the current Scale Factor of the currently used window (Unity Player window or the Game view window in the Editor) (Windows/Mac/Android/iOS).
+- Added the ability to subscribe and check if the current operating system is in Dark Mode (Windows/Mac/Android/iOS).
+
+### Changed
+
+- Refactored every native plugin provided by the package.
+- Changed the Trackpad sample project to work properly with the new events coming from the new Gesture Recognizer System.
+
+### Fixed
+
+- Fixed meta files for native plugins on Windows platform.
+- Fixed an early return in the PreProcessBuild callback of App UI when no persistent AppUISettings have been found.
+
+## [1.0.6] - 2024-03-18
+
+### Fixed
+
+- Fixed the tooltip tip size to not be displayed over tooltip content.
+- Fixed the handling of Tab key to focus the next component from a TextArea
+- Fixed size of the Radio button for pixel alignment on 96dpi screens.
+
+## [1.0.5] - 2024-03-11
+
+### Fixed
+
+- Fixed Hero banner in the documentation homepage
+
+## [1.0.4] - 2024-03-11
+
+### Fixed
+
+- Fixed GridFour icon PNG file
+- Fixed font weight on AppBar title elements.
+- Fixed accent color in Editor Dark theme
+- Fixed ActionGroup Refresh strategy.
+
+### Added
+
+- Added gutter USS custom property for the GridView component.
+- Added answer in the FAQ documentation about MacOS quarantine attribute.
+
+## [1.0.3] - 2024-03-04
+
+### Fixed
+
+- Use equlity check while setting a new `text` value in a `LocalizedTextElement`.
+- Fixed performance issues with the blinking text cursor in input fields.
+- Fixed styling of the Toast Action container
+
+## [1.0.2] - 2024-02-28
+
+### Fixed
+
+- Fixed the clipping flag on the GridView's ScrollView content container to prevent overscroll on touch devices.
+- Fixed unit tests
+- Disabled the dragging feature in the GridView when used on touch devices.
+
+### Added
+
+- Improved Localization Unity Package support with `LangContext` propagation.
+
+## [1.0.1] - 2024-02-16
+
+### Fixed
+
+- Fixed ColorSwatch shader to support Shader Model older than 5.0
+
+## [1.0.0-pre.15] - 2024-02-09
+
+### Removed
+
+- Removed the `margin` property from the Tray component.
+- Removed the `size` property of the `Tray` component. The Tray component will fit its content in the screen automatically and doen't need anymore any specific size to be set.
+- Removed the `expandable` property from the Tray component. A Tray component is should not be expandable by definition. If you are willing to have some scrollable content inside a Tray component, a new component called ScrollableTray will be avilable in future release of App UI.
+
+### Fixed
+
+- Fixed styling on BottomNavBar items
+- Fixed refresh of the `ActionGroup` component
+- Fixed Tooltip maximum size
+
+### Added
+
+- Added monitoring of AccordionItem content size to make AccordionItem fit its content when it is already open.
+
+### Changed
+
+- Use the ConditionalWeakTable for new releases of Unity where a fix from IL2CPP has landed.
+
+## [1.0.0-pre.14] - 2024-01-31
+
+### Fixed
+
+- Fixed ColorSwatch refresh when the Gradient reference value didn't change but Gradient keys have changed
+- Added support of Windows 11 for ARM
+- Fixed ColorPicker Alpha channel slider refresh when the picked color has changed
+- Fixed calls for ContextChanged callbacks registered by the context provider itself
+
+### Added
+
+- Added new IInputElement interface in the public API
+- Added the possibility to setup navigation visual components from your NavigationScreen implementation directly. You are still able to create a global setup using your own implementation of the INavVisualController interface that you have set on your NavHost.
+- Added the support of a specific drag direction and drag threshold in the Draggable manipulator. Specifying a direction will avoid to prevent scrolling in the opposite direction if this maniuplator is used inside a ScrollView for example.
+- Added forceUseTooltipSystem property on the Panel component to force the use of App UI tooltips system regardless the state of UI-Toolkit default tooltip system. This can be useful in a context where UITK tooltips can't be displayed in the Editor.
+- Added mention about full integration of UI Toolkit with the New Input System starting 2023.2 in the documentation
+
+### Changed
+
+- All user input related UI controls now inherit from the new IInputElement interface. This has no impact on the current implementation (some addition in certain components).
+- Use ConditionalWeakTable whenever possible (Editor and no IL2CPP builds)
+
+## [1.0.0-pre.13] - 2024-01-15
+
+### Removed
+
+- Removed Relocations folder from MacOS native plugin debug symbols bundle
+
+### Fixed
+
+- Fixed TextField and NumericalField text offset during FocusOut event
+
+### Added
+
+- Added missing API documentation
+- Added more tests
+
+### Changed
+
+- Changed assembly definition files to support new UXML Serialization starting Unity 2023.3.0a1
+
+## [1.0.0-pre.12] - 2024-01-04
+
+### Changed
+
+- Color related components, such as `ColorSlider` or `ColorSwatch`, support now a value of type `UnityEngine.Gradient` instead of `UnityEngine.Color` for more flexibility.
+- Removed the `disabled` boolean property on App UI components from the public C# API. The `disabled` attribute in UXML has been replaced by `enabled` UXML attribute. This change has been made in order to be more consistent with Unity 2023.3, where `enabled` UXML attribute is provided by UI Toolkit on any VisualElement.
+- Replaced `Nullable<T>` properties in components by a custom serializable implementation called `Optional<T>`
+- Renamed `Panel.dir` property with `Panel.layoutDirection`.
+- Replaced the `Divider.vertical` property by `Divider.direction` enum property.
+- Removed the `ApplicationContext` class and `VisualElementExtensions.GetContext()` method, replaced by the ne `ProvideContext` and `RegisterContextChangedCallback` API.
+- Replaced `ActionGroup.vertical` property by `ActionGroup.direction` enum property.
+
+### Added
+
+- Added support of new UI Toolkit Runtime Bindings feature through bindable properties in each App UI components. More than 420 properties can now be bound (2023.2+).
+- Added support to new UI Toolkit Uxml Serialization using source code generators.
+- Added `BaseVisualElement` and `BaseTextElement` classes which are used as base class for mostly every App UI component
+- Added numerous custom PropertyDrawers for a better experience in UIBuilder (2023.3+)
+- Added the support of `Fixed` gradient blend mode in ColorSwatch shader.
+- Added `.appui-row` USS classes which support current layout direction context.
+
+### Removed
+
+- Starting Unity 2023.3, App UI will not provide any `UxmlFactory` or `UxmlTraits` implementation, as they become obsolete and replaced by the new UITK Uxml serialization system.
+
+### Fixed
+
+- Fixed Sliders handles to not exceed the range of track element.
+- Fixed color blending in the ColorSwatch custom shader.
+- Fixed `AppBar` story in Storybook samples.
+- Fixed some styling issues on different components.
+- Cleaned up some warning messages to not get anything written in the console during package installation.
+- Fixed small errors in UI Kit sample.
+- Fixed a refresh bug in the App UI Storybook window.
+
+## [1.0.0-pre.11] - 2023-12-21
+
+### Fixed
+
+- Fixed Scroller styling.
+- Fixed styling for Disabled Quiet Button component.
+- Fixed compilation errors while not having the new Input System installed but the Input Manager setting is set to 'New' in the Project Settings.
+- Fixed border gap in TouchSlider component.
+- Fixed margins on Checkbox component without label.
+
+### Changed
+
+- Removed `size` property from Checkbox and Toggle components.
+
+## [1.0.0-pre.10] - 2023-12-13
+
+### Fixed
+
+- Fixed auto scrolling to follow text edition's cursor in TextArea component.
+- Fixed layout for Bounds, Rect and Vector fields
+- Fixed some examples in the UI Kit Sample
+
+### Added
+
+- Added `maxLength` property in TextArea and TextField components.
+- Added `isPassword` and `maskChar` properties to TextField component.
+- Added Editor-Dark and Editor-Light themes.
+- Added `isReadonly` property to TextArea and TextField components.
+
+### Changed
+
+- Readjusted font sizes used on components to follow new design tokens
+- Most App UI component styling now use component-level design tokens for background and border colors
+
+## [1.0.0-pre.9] - 2023-12-06
+
+### Fixed
+
+- Fixed Selection handling in ActionGroup.
+- Fixed MacOS Native plugin to support Intel 64bits architecture with IL2CPP
+
+### Changed
+
+- In Numerical fields and sliders, the string formatting for percentage values follows now the C# standard. The formatted string of the value `1` using `0P` or `0%` will give you `100%`. If you want the user to be able to type `100` in order to get a `100%` as a formatted string in a numerical field, we suggest to use `0\%` string format (be sure that the `highValue` of your field is set to `100` too).
+
+### Added
+
+- Added `isOpen` property setter to be able to set the open state of the `Drawer` component without animation.
+
+## [1.0.0-pre.8] - 2023-11-30
+
+### Fixed
+
+- Fixed Unity crashes when polling TabItem elements inside Tabs component.
+- Fixed mouse capture during Pointer down event in Pressable manipulator for Unity versions older than 2023.1.
+- Fixed tab key handling to switch focus in `TextArea` component.
+- Fixed UI Kit Sample with Progress components' color overrides.
+- Fixed `border-radius` usage in `ExVisualElement` component.
+- Fixed typo in App UI Elevation's USS selector.
+- Fixed box-shadows border-radius calculation
+- Fixed `isPrimaryActionDisabled` and `isSecondaryActionDisabled` property setters
+
+### Added
+
+- Added new methods to push sub-menus in `MenuBuilder` class.
+- Added `submit-on-enter` property in `TextArea` component.
+- Added `submit-modifiers` property in `TextArea` component.
+- Added `submitted` event property in `TextArea` component.
+- Added `subMenuOpened` event property in `MenuItem` UI component.
+- Added `accent` property to the `FloatingActionButton` component.
+
+### Changed
+
+- Runtime Tooltips won't be displayed if the picked element has `.is-open` USS class currently applied.
+
+## [1.0.0-pre.7] - 2023-11-24
+
+### Added
+
+- Added others Inter font variants
+
+### Fixed
+
+- Fixed some unit tests
+
+## [1.0.0-pre.6] - 2023-11-19
+
+### Added
+
+- Added Layout Direction `dir` context in the App UI `ApplicationContext`.
+- Added support of LTR and RTL layout direction in most App UI components
+
+### Changed
+
+- Previously the Panel Constructor set the default scale context to "large" on mobile platforms, now the default scale context for any platform is "medium".
+
+## [1.0.0-pre.5] - 2023-11-16
+
+### Changed
+
+- Migrated code into the App UI monorepo at https://github.com/Unity-Technologies/unity-app-ui
+- Renamed `format` UXML Attribute to `format-string` to bind correctly in UIBuilder
+- The `MacroCommand.Flush` method will now call `UndoCommand.Flush` on its child commands from the most recent to the oldest one.
+  This is the same order as the one used by the `MacroCommand.Undo` method.
+- Renamed CircularProgress and LinearProgress `color` Uxml Attribute to `color-override` to bind correctly in UIBuilder
+- Float Fields using a string format set on Percentage (P) will now use the same value as what you typed
+
+### Added
+
+- Added `disabled` property on every components that needed it in order to bind correctly with UIBuilder
+- Added `Spacer` component.
+
+### Fixed
+
+- Fixed the height of Toast components to be `auto`.
+- Fixed `MacroCommand.Undo` and `MacroCommand.Redo` methods.
+
+## [1.0.0-pre.4] - 2023-11-13
+
+### Changed
+
+- The `Canvas` component now listens to `PointerDownEvent` in `TrickleDown` phase to avoid to miss the event when the pointer is over a child element.
+
+## [1.0.0-pre.3] - 2023-11-07
+
+### Added
+
+- Added public access to `Pressable.InvokePressed` and `Pressable.InvokeLongPressed` methods.
+- Added `trailingContainer` property to the `AccordionItem` component.
+
+### Changed
+
+- The `Pressable` manipulator now uses the `keepPropagation` property also in its `PointerUpEvent` callback to avoid to propagate the event to the parent element.
+
+### Fixed
+
+- Fixed warning message about Z-axis scale in the `AnchorPopup` component.
+- Fixed styling of the `AccordionItem` header component.
+- Fixed the `not-allowed` (disabled) cursor texture for Windows support at Runtime.
+- Fixed images in the package documentation.
+
+## [1.0.0-pre.2] - 2023-11-06
+
+### Added
+
+- Added missing XML documentation parts for the public API of the package.
+
+## [1.0.0-pre.1] - 2023-11-06
+
+### Added
+
+- Added debug symbols for native plugins.
+
+### Changed
+
+- Moved internal Engine API related code into a new assembly `Unity.AppUI.InternalAPIBridge`.
+
+## [0.6.5] - 2023-11-06
+
+### Added
+
+- Added missing XML documentation parts for the public API of the package.
+- Added the `primaryManipulator` property to the `Canvas` component to get the primary pointer manipulator used by the canvas when no modifier is pressed.
+- Added the `autoResize` property to the `TextArea` component to grow the text area when the text overflows.
+- Added the handling of double-click in the `TextArea` resizing handle to re-enable the auto-resize feature.
+- Added the `outsideScrollEnabled` property to the `AnchorPopup` components to enable or disable the outside scroll handling. The default value is `false`.
+- Added a smoother animation for the `AnchorPopup` components when the popup is about to be shown.
+
+### Changed
+
+- Changed the USS selector for component-level aliases to use directly `:root` selector instead of `<component_main_uss_class>` selector.
+
+### Fixed
+
+- Fixed the Canvas background to support light theme.
+- Fixed the styling of DropdownItem checkmark.
+- Fixed the styling of MenuItem checkmark.
+- Fixed the styling of Slider components.
+- Fixed the styling of TextArea component.
+- Fixed the styling of TouchSlider components.
+- Fixed the previous value sent in `ChangeEvent` of `NumericalField`, `VectorField` and `Picker` (Dropdown) components.
+- Improved the synchronization of the `AnchorPopup` components to refresh their position in the layout faster.
+
+## [0.6.4] - 2023-11-01
+
+### Fixed
+
+- Fixed `NullReferenceException` when testing accept drag in `GridView` component.
+
+## [0.6.3] - 2023-11-01
+
+### Added
+
+- Added `getItemId` property to the `GridView` component to get the id of an item.
+
+### Fixed
+
+- Fixed items selection persistence between refreshes in `GridView` component.
+
+## [0.6.2] - 2023-10-30
+
+### Added
+
+- Added `closeOnSelection` property to the `MenuTrigger` component.
+- Added `closeOnSelection` property to the `ActionGroup` component to close the popover menu (if any) when an item is selected.
+
+### Fixed
+
+- Fixed `closeOnSelection` property in `MenuBuilder` component.
+- Fixed `TextInput` styling for Unity 2023.1+
+- Fixed `InvalidCastException` at startup of santandlone builds (in both Mono and IL2CPP)
+- Fixed `NullReferenceException` when dismissing a Popup from a destroyed UI-Toolkit panel.
+- Fixed sub-menu indicator icon in `MenuItem` component.
+- Fixed context click handling in `GridView` component.
+
+## [0.5.5] - 2023-10-30
+
+### Added
+
+- [Backport] Added `closeOnSelection` property to the `MenuTrigger` component.
+- [Backport] Added `closeOnSelection` property to the `ActionGroup` component to close the popover menu (if any) when an item is selected.
+
+### Fixed
+
+- [Backport] Fixed `closeOnSelection` property in `MenuBuilder` component.
+- [Backport] Fixed `TextInput` styling for Unity 2023.1+
+- [Backport] Fixed `InvalidCastException` at startup of santandlone builds (in both Mono and IL2CPP)
+- [Backport] Fixed `NullReferenceException` when dismissing a Popup from a destroyed UI-Toolkit panel.
+- [Backport] Fixed context click handling in `GridView` component.
+
+## [0.6.1] - 2023-10-23
+
+### Added
+
+- Added `allowNoSelection` property to the `GridView` component to enable or disable the selection of no items.
+
+### Fixed
+
+- Fixed the support of nested components inside the `Button` component.
+- Fixed the reset of the previous selection when `GridView.SetSelectionWithoutNotify` method is called.
+
+## [0.5.4] - 2023-10-23
+
+### Added
+
+- Added `allowNoSelection` property to the `GridView` component to enable or disable the selection of no items.
+
+### Fixed
+
+- Fixed the support of nested components inside the `Button` component.
+- Fixed the reset of the previous selection when `GridView.SetSelectionWithoutNotify` method is called.
+
+## [0.6.0] - 2023-10-21
+
+### Added
+
+- Added the `Quote` component.
+- Added `FieldLabel` component.
+- Added `HelpText` component.
+- Added `AvatarGroup` component.
+- Added `required` property to the `InputLabel` component.
+- Added `indicatorType` property to the `InputLabel` component.
+- Added `helpMessage` property to the `InputLabel` component.
+- Added `helpVariant` property to the `InputLabel` component.
+- Added `variant` property to the `Avatar` component to support `square`, `rounded` and `circular` variants.
+
+### Changed
+
+- Added the `Button` `variant` property and removed the `primary` property.
+- Updated App UI icons with a default size of 256x256 and moved into a folder named `Regular`.
+- The `InputLabel` component uses the `FieldLabel` and `HelpText` components to display the label and the help text.
+- The `Avatar` component now listens to `AvatarVarianContext` and `SizeContext` changes to update the variant and size of the avatar.
+
+### Removed
+
+- Removed the `size` property from the `InputLabel` component.
+
+## [0.5.3] - 2023-10-18
+
+### Added
+
+- Added `useSpaceBar` property in `Canvas` component to enable or disable the handling of the space bar key.
+
+### Fixed
+
+- Removed the handling of the space bar key in the `Canvas` component when the used control scheme is `Editor`.
+
+## [0.5.2] - 2023-10-13
+
+### Added
+
+- Added `acceptDrag` property to the `GridView` component to enable or disable the drag and drop feature.
+- Added `menu` icon.
+- Added `AddDivider` and `AddSection` methods to the `MenuBuilder` component.
+
+### Fixed
+
+- Fixed handling `acceptDrag` property in `Dragger` manipulator.
+- Fixed MenuItem opening sub menus when the item is disabled.
+- Fixed mipmap limit for Icons when a global limit is set in the Quality settings of the project.
+- Fixed the capture of pointer during PointerDown event in `Dragger` manipulator. Now the pointer is captured only if the `Dragger` manipulator is active (i.e. the threshold has been reached).
+
+## [0.5.1] - 2023-09-21
+
+### Added
+
+- Added `selectedIndex` property to the `Picker` component to get or set the selected index for a single selection mode.
+- Added a new `Enumerable` extension method called `GetFirst` to get the first item of an enumerable collection or a default value if the collection is empty.
+- Added `isPrimaryActionDisabled` and `isSecondaryActionDisabled` properties to the `AlertDialog` component.
+- Added styling for `AlertDialog` component semantic variants.
+
+### Changed
+
+- Changed the picking mode of the `DropdownItem` component to `Position` instead of `Ignore`.
+
+### Fixed
+
+- Fixed the `Picker` component to avoid to select multiple items if the selection mode is set to `Single`.
+- Fixed `Menu.CloseSubMenus` method to close sub-menus opened by `MenuItem` components contained inside `MenuSection` components.
+- Fixed double click handling in `GridView` component.
+
+## [0.5.0] - 2023-09-18
+
+### Added
+
+- Added `outsideClickStrategy` property in `AnchorPopup` component.
+- Added `DropZone` component.
+- Added `DropTarget` manipulator.
+- Added a sample for `DropZone` and `DropTarget` components usage.
+- Added `--border-style` custom USS property to support `dotted` and `dashed` border styles.
+- Added `--border-speed` custom USS property to animate the border style.
+- Added `Picker` component.
+- Added `closeOnSelection` property for `Picker` and `Dropdown` components to close the picker when an item is selected.
+
+### Changed
+
+- The `Pressable` manipulator nows inherits from `PointerManipulator` instead of `Manipulator`.
+- Changed the `GridView.GetIndexByPosition` method to use a world-space position instead of a local-space position and renamed it to `GetIndexByWorldPosition`.
+- TouchSlider component will now loose focus when a slide interaction has ended.
+- When calling `GridView.Reset()` method, the selection won't be restored if no custom `GridView.getItemId` function has been provided.
+- When using `--box-shadow-type: 1` (inset box-shadow), the `--box-shadow-spread` value was interpreted with the same direction as outset box-shadow. This has been fixed so you can use a positive spread value to go inside the element and a negative spread value to go outside the element.
+- The `Dropdown` component inherits from `Picker` component. Users will be able to create custom dropdown-like components by inheriting from `Picker` component.
+- The `Dropdown` component now has a selection mode property to choose between single and multiple selection modes.
+- The `Dropdown` component now uses `DropdownItem` component instead of `MenuItem` component.
+- Removed `default-value` UXML property from `Dropdown` component. The preferred way to set the default value is by code.
+
+### Fixed
+
+- Fixed the `Pressable` manipulator to only handle the Left Mouse Button by default.
+- Fixed current tooltip element check in `TooltipManipulator`.
+- Fixed incremental value when interacting with keyboard in `ColorSlider` component.
+- Fixed clearing selection in `GridView` when a user clicks outside of the grid.
+- Fixed `itemsChosen` event in `GridView` to be fired only when the selection is not empty.
+- Fixed Navigation keys handling in the `GridView` to clamp the selection to the grid items.
+
+## [0.4.2] - 2023-09-07
+
+### Added
+
+- Added the `Picker` component.
+
+### Changed
+
+- Changed `Dropdown` implementation to use the new `Picker` component.
+
+### Fixed
+
+- Fixed the soft selection handling on `PointerUpEvent` in the `GridView` component.
+
+## [0.4.1] - 2023-08-30
+
+### Added
+
+- Added mouse and touchpad mapping presets to the `Canvas` component.
+- Added a setting to enable or disable gestures recognition on MacOS.
+- Added selection mode in `ActionGroup` component.
+
+## [0.4.0] - 2023-08-21
+
+### Added
+
+- Added the **Small** scale context to App UI. This context is now the preferred one for desktop platforms.
+- Added `RangeSlider` component.
+
+### Fixed
+
+- Fixed `ValueChanged` and `ValueChanging` events propagation in `NumericalField` and Vector components.
+
+## [0.3.9] - 2023-08-17
+
+### Added
+
+- Added Context API which is accessible through any `VisualElement` instance.
+- Added `preventScrollWithModifiers` property to the `GridView` component.
+
+### Fixed
+
+- Fixed `autoPlayDuration` property on PageView component.
+- Fixed value validation in `NumericalField` component.
+
+## [0.3.8] - 2023-08-09
+
+### Added
+
+- Added `tooltip-delay-ms` property to the `ContextProvider` component to customize the tooltip delay.
+- Added more shortcuts to the `Canvas` component.
+
+### Fixed
+
+- Fixed Editor crash when updating packages from UPM window.
+
+## [0.3.5] - 2023-07-26
+
+### Fixed
+
+- Regenerated the meta files inside MacOS bundle folder to avoid error messages in the console.
+
+## [0.3.4] - 2023-07-19
+
+### Changed
+
+- Draggable manipulator now is publicly accessible.
+
+### Fixed
+
+- Ensure shaders exist before creating materials.
+- Fixed random crashes during domain unload in Unity 2022.3+.
+- Fixed cursors variables for Editor context.
+
+## [0.3.3] - 2023-07-17
+
+### Added
+
+- Added Magic Trackpad gesture support for MacOS.
+- Added `PanGesture` and `MagnificationGesture` events for UITK dispatcher.
+
+### Fixed
+
+- Fixed `Pressable` post-processing for disabled targets.
+- Fixed visual content rendering synchronization in `Progress` and `ExVisualElement` components.
+- Fixed Animation Recycling in `NavHost` component.
+
+## [0.3.2] - 2023-06-14
+
+### Fixed
+
+- Fixed NavAction being added twice in NavGraph when deleting a linked NavDestination.
+
+## [0.2.12] - 2023-06-14
+
+### Added
+
+- Added `isExclusive` property to the `Accordion` component.
+- Added `shortcut` property to the `MenuItem` component.
+
+### Fixed
+
+- Fixed TextArea input size.
+- Fixed ValueChanged events on text based inputs.
+- Fixed depth tests in custom shaders for WebGL platform.
+
+## [0.3.1] - 2023-05-22
+
+### Fixed
+
+- Fixed warning messages about styling.
+- Fixed warning messages about GUID conflicts in UI Kit samples.
+- Fixed warning messages about unused events in NavController.
+
+## [0.2.11] - 2023-05-15
+
+### Added
+
+- Added `maxDistance` property to the World-Space UI Document component.
+
+## [0.2.9] - 2023-05-05
+
+### Changed
+
+- Removed `Replica` word from the documentation.
+
+## [0.2.7] - 2023-05-03
+
+### Added
+
+- Added `Refresh` method to the `Dropdown` component.
+- Added AutoPlay to the `SwipeView` component.
+
+### Fixed
+
+- Fixed the support of the New Input System.
+- Fixed the box-shadow shader with portrait aspect ratio.
+- Fixed async operations on LocalizedTextElement.
+

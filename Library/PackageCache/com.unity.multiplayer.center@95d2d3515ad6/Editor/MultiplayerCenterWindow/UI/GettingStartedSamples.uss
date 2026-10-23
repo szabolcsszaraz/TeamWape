@@ -1,0 +1,38 @@
+.getting-started-row {
+    flex-direction: row;
+}
+
+.getting-started-container {
+    justify-content: space-between;
+    width: 50%;
+    min-width: 230px;
+    padding: 10px 10px 15px 10px;
+    background-color: var(--unity-colors-window-secondary-background);
+}
+
+.learning-icon {
+    width: 11px;
+    height: 7px;
+    margin-right: 5px;
+    background-image: var(--learning-icon);
+    -unity-background-image-tint-color: var(--learning-tint);
+}
+
+.sample-image {
+    aspect-ratio: 1.887755;
+    align-self: flex-start;
+    width: 50%;
+    min-width: 255px;
+    background-color: var(--card-poster-image-bg-color);
+}
+
+.remove-button {
+    background-image: resource("remove@2x.png");
+    background-size: 12px;
+    width: 20px;
+    height: 20px;
+}
+
+.unity-help-box {
+    margin: 0px 0px 2px 0px;
+}

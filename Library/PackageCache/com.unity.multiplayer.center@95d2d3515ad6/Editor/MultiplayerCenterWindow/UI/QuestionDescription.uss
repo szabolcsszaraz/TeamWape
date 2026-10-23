@@ -1,0 +1,107 @@
+.section {
+    margin: 15px 15px 0 15px;
+    padding: 0 0 15px 0;
+    border-bottom-color: var(--unity-colors-inspector_titlebar-border_accent);
+    border-bottom-width: 1px;
+}
+
+Label.section {
+    white-space: normal;
+}
+
+.section--last {
+    margin: 15px 15px 15px 15px;
+    padding: 0;
+}
+
+.foldout-header {
+    flex-grow: 1;
+}
+
+.unity-foldout__content {
+    white-space: normal;
+    margin-top: 6px;
+}
+
+.foldout-sidekick {
+    position: absolute;
+    right: 8px;
+    width: 100%;
+    flex-direction: row;
+}
+
+.min-max-slider {
+    flex-grow: 1;
+    align-self: stretch;
+    flex-shrink: 0;
+}
+
+.min-max-slider .unity-min-max-slider__tracker {
+    background-color: var(--unity-colors-input_field-background);
+    border-color: var(--unity-colors-app_toolbar-background);
+    border-width: 1px;
+    height: 9px;
+    top: 2px;
+}
+
+.min-max-slider .unity-min-max-slider__dragger {
+    border-color: var(--unity-colors-input_field-border);
+    height: 9px;
+    background-image: url("project://database/Packages/com.unity.multiplayer.center/Editor/MultiplayerCenterWindow/UI/Icons/gradiant.png?fileID=2800000&guid=4fd230da4553f83f4b7d0e9b138cf65e&type=3#gradiant");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.min-max-slider .unity-min-max-slider__min-thumb {
+    background-color: var(--unity-colors-slider_thumb-background-hover);
+    height: 16px;
+    width: 1px;
+    margin-top: -4px;
+    border-width: 0;
+    border-radius: 0;
+}
+
+.min-max-slider .unity-min-max-slider__max-thumb {
+    background-color: var(--unity-colors-slider_thumb-background-hover);
+    height: 16px;
+    width: 1px;
+    margin-top: -4px;
+    border-width: 0;
+    border-radius: 0;
+}
+
+.unity-min-max-slider__min-thumb:hover {
+    cursor: arrow;
+}
+
+.unity-min-max-slider__max-thumb:hover {
+    cursor: arrow;
+}
+
+.genre-header {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.min-max-slider__label {
+    flex-grow: 0;
+    -unity-text-align: middle-left;
+    -unity-font-style: bold;
+    flex-shrink: 1;
+    width: 100px;
+}
+
+.place-holder {
+    flex-grow: 0;
+    width: 120px;
+}
+
+.architecture-summary {
+    -unity-text-align: lower-left;
+    white-space: normal;
+    -unity-font-style: bold;
+    flex-grow: 0;
+    align-self: flex-end;
+    justify-content: flex-end;
+    padding-top: 2.1px;
+    width: 120px;
+}

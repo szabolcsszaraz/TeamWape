@@ -1,0 +1,32 @@
+{
+    "name": "Unity.AI.Assistant.Editor",
+    "rootNamespace": "Unity.AI.Assistant.Editor",
+    "references": [
+        "Unity.AI.Assistant.Bridge.Editor",
+        "Unity.AI.Assistant.Agent.Dynamic.Extension.Editor",
+        "Unity.AI.Toolkit.Accounts",
+        "Unity.AI.Toolkit.Async",
+        "Unity.AI.Toolkit.Chat",
+        "Unity.AI.Toolkit.Asset",
+        "Unity.AI.Assistant.Runtime",
+        "Unity.AI.Tracing"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "System.Runtime.CompilerServices.Unsafe.dll",
+        "Newtonsoft.Json.dll",
+        "Mono.Cecil.dll",
+        "Microsoft.CodeAnalysis.CSharp_AIA.dll",
+        "Microsoft.CodeAnalysis_AIA.dll",
+        "System.Collections.Immutable_AIA.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

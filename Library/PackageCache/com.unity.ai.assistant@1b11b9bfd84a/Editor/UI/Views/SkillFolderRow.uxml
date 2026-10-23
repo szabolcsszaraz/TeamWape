@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="assistant-skills-folder-row">
+        <ui:Label name="folderLabel" class="assistant-skills-path-label" />
+        <ui:TextField name="folderPath" class="assistant-skills-path-text-field" />
+        <ui:Button name="browseButton" tooltip="Open folder in Explorer/Finder" class="assistant-skills-path-browse-button">
+            <ui:VisualElement class="mui-icon-folder" />
+        </ui:Button>
+    </ui:VisualElement>
+</ui:UXML>

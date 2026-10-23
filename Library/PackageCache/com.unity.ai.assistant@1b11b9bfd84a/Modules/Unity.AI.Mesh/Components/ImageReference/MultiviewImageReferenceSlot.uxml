@@ -1,0 +1,24 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:editorui="UnityEditor.UIElements">
+    <Style src="./MultiviewImageReference.uss" />
+    <VisualElement class="multiview-slot">
+        <VisualElement class="multiview-slot-header flex-row items-center">
+            <Label name="header-title" class="font-bold p-4 flex-grow" text="Front Reference *" />
+            <Button name="multiview-clear-button" tooltip="Clear" class="multiview-clear-button size-18px p-0">
+                <Image class="unity-button__image"/>
+            </Button>
+        </VisualElement>
+        <VisualElement name="multiview-object-field-container" class="multiview-object-field-container height-128px" focusable="true">
+            <editorui:ObjectField
+                name="multiview-object-field__input-field"
+                class="multiview-object-field__input-field"
+                type="UnityEngine.Texture2D, UnityEngine.CoreModule"
+                label="Select an object:">
+                <VisualElement name="multiview-object-field__overlay" class="multiview-object-field__overlay" picking-mode="Ignore">
+                    <Button name="multiview-settings-button" tooltip="More">
+                        <Image class="unity-button__image"/>
+                    </Button>
+                </VisualElement>
+            </editorui:ObjectField>
+        </VisualElement>
+    </VisualElement>
+</UXML>

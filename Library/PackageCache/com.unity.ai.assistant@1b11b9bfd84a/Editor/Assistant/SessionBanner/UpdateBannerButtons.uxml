@@ -1,0 +1,8 @@
+<UXML xmlns="UnityEngine.UIElements">
+    <Style src="./UpdateBannerButtons.uss" />
+    <VisualElement name="update-banner-row" class="update-banner-actions-row">
+        <Button name="update-button" class="update-banner-accent-button" text="Update" />
+        <Button name="dismiss-button" text="Dismiss" />
+        <Button name="dont-ask-again-button" text="Don't ask again" />
+    </VisualElement>
+</UXML>

@@ -1,0 +1,76 @@
+.mui-new-skills-notification-root {
+    flex-shrink: 0;
+    margin-bottom: 8px;
+    width: 100%;
+    flex-direction: column;
+    padding: 12px;
+    background-color: var(--muse-chat-backgrounds-100);
+    border-width: 1px;
+    border-color: var(--muse-chat-foregrounds-310);
+    border-radius: var(--muse-chat-border-radius);
+    overflow: hidden;
+}
+
+.mui-new-skills-notification-icon-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.mui-new-skills-notification-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    margin-right: 6px;
+}
+
+.mui-new-skills-notification-title {
+    -unity-font-style: bold;
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mui-new-skills-notification-body {
+    white-space: normal;
+    color: var(--muse-chat-text-secondary);
+    font-size: var(--muse-chat-default-font-size);
+    margin-bottom: 10px;
+}
+
+.mui-new-skills-notification-actions {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.mui-new-skills-notification-dismiss {
+    width: 16px;
+    height: 16px;
+    align-items: center;
+    justify-content: center;
+    margin-left: 4px;
+}
+
+.mui-new-skills-notification-dismiss .mui-action-button-image {
+    width: 16px;
+    height: 16px;
+}
+
+.mui-new-skills-notification-open-prefs {
+    align-self: center;
+    border-width: 0;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.mui-new-skills-notification-enable-all {
+    align-self: center;
+    border-width: 0;
+    border-radius: 4px;
+    padding-left: 4px;
+    padding-right: 4px;
+    margin-left: 4px;
+}

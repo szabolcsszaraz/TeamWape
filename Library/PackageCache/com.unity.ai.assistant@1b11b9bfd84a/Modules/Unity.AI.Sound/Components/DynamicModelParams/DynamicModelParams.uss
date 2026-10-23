@@ -1,0 +1,24 @@
+.voice-preview-row {
+    flex-direction: row;
+    overflow: hidden;
+    padding-bottom: 2px;
+}
+
+.voice-preview-row > DropdownField {
+    flex-grow: 1;
+    flex-shrink: 1;
+    overflow: hidden;
+}
+
+.voice-preview-button {
+    width: 30px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.voice-preview-icon {
+    width: 12px;
+    height: 12px;
+}

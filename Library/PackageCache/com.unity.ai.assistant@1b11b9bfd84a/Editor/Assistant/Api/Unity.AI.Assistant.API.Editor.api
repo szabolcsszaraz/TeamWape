@@ -1,0 +1,25 @@
+// This file is generated. Do not modify by hand.
+// XML documentation file not found. To check if public methods have XML comments,
+// make sure the XML doc file is present and located next to the scraped dll
+namespace Unity.AI.Assistant.Editor.Api
+{
+    public static class AssistantApi
+    {
+        public static async System.Threading.Tasks.Task PromptThenRun(UnityEngine.Rect parentRect, string placeholderPrompt = @"", AssistantApi.AttachedContext attachedContext = default(AssistantApi.AttachedContext), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public static async System.Threading.Tasks.Task PromptThenRun(UnityEngine.UIElements.VisualElement parent, string placeholderPrompt = @"", AssistantApi.AttachedContext attachedContext = default(AssistantApi.AttachedContext), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public static async System.Threading.Tasks.Task Run(string userPrompt, AssistantApi.AttachedContext attachedContext = default(AssistantApi.AttachedContext), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public static async System.Threading.Tasks.Task<string> RunHeadless(this Unity.AI.Assistant.Agents.IAgent agent, string userPrompt, AssistantApi.AttachedContext attachedContext = default(AssistantApi.AttachedContext), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public class AttachedContext
+        {
+            public bool IsEmpty { get; }
+            public System.Collections.Generic.List<UnityEngine.Object> Objects { get; }
+            public System.Collections.Generic.List<VirtualAttachment> VirtualAttachments { get; }
+            public AttachedContext() {}
+            public void Add(VirtualAttachment attachment);
+            public void Add(UnityEngine.Object obj);
+            public void AddImageContent(UnityEngine.Texture texture, string displayName = @"");
+            public void AddRange(System.Collections.Generic.IEnumerable<VirtualAttachment> attachments);
+            public void AddRange(System.Collections.Generic.IEnumerable<UnityEngine.Object> objs);
+        }
+    }
+}

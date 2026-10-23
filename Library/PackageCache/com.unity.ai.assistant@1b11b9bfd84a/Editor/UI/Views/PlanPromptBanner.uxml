@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="planPromptRoot" class="mui-plan-prompt-banner">
+        <ui:VisualElement name="inner" class="plan-prompt-banner-inner">
+            <ui:VisualElement name="textBlock" class="plan-prompt-banner-text-block">
+                <ui:Label name="title" text="Execute Implementation Plan" class="plan-prompt-banner-title"/>
+                <ui:Label name="subtitle" text="" class="plan-prompt-banner-subtitle"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="actionsRow" class="plan-prompt-banner-actions">
+                <ui:Button name="denyButton" text="Deny" class="plan-prompt-deny mui-action-button"/>
+                <ui:Button name="allowButton" text="Allow" class="plan-prompt-allow mui-action-button"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

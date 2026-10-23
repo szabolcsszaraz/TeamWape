@@ -1,0 +1,6 @@
+<UXML xmlns="UnityEngine.UIElements">
+    <Style src="./UnlabeledImageReferenceList.uss"/>
+    <VisualElement class="unlabeled-image-reference-list">
+        <VisualElement name="slots-container" class="flex-col p-4-2"/>
+    </VisualElement>
+</UXML>

@@ -1,0 +1,41 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:assistant="Unity.AI.Assistant.UI.Editor.Scripts.Components">
+    <Style src="../Styles/AssistantDisclaimer.uss" />
+    <ui:VisualElement class="gateway-settings-page">
+        <ui:Label text="Gateway" name="gatewaySettingsHeader" class="gateway-settings-header" />
+        <ui:ScrollView class="gateway-settings-scroll">
+            <ui:VisualElement name="gateway-disclaimer-section" class="disclaimer-section">
+                <ui:VisualElement class="disclaimer-box">
+                    <ui:ScrollView class="disclaimer-scroll">
+                        <ui:VisualElement class="disclaimer-heading-row">
+                            <ui:Image name="disclaimer-info-icon" class="disclaimer-info-icon" />
+                            <ui:Label text="Important: Using Third-Party AI Agents" class="disclaimer-heading" />
+                        </ui:VisualElement>
+                        <ui:Label text="By selecting a third-party AI agent, you acknowledge and agree to the following:" class="disclaimer-intro" />
+                        <!-- Bullet points are added dynamically in C# -->
+                        <ui:VisualElement name="disclaimer-bullets-container" />
+                        <ui:Label text="By proceeding, you authorize Unity to facilitate the connection to your chosen third-party provider." class="disclaimer-footer" />
+                    </ui:ScrollView>
+                    <ui:VisualElement class="disclaimer-button-row">
+                        <ui:Button name="disclaimer-accept-button" text="Accept" class="disclaimer-accept-button" />
+                    </ui:VisualElement>
+                    <ui:Label name="disclaimer-signin-label" text="Please sign in to a user account to use the AI Gateway" class="disclaimer-signin-label" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="gateway-settings-content" class="gateway-settings-content">
+                <ui:Label name="error-message"/>
+
+                <!-- Agent Type Selection -->
+                <ui:VisualElement class="gateway-settings-row">
+                    <ui:Label text="Agent Type" class="gateway-settings-label" />
+                    <ui:VisualElement class="gateway-dropdown-with-version">
+                        <ui:DropdownField name="agent-type-dropdown" class="gateway-settings-dropdown" />
+                        <ui:Label name="agent-version-label" class="gateway-version-label" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- Per-provider content built programmatically -->
+                <ui:VisualElement name="provider-content-section" />
+            </ui:VisualElement>
+        </ui:ScrollView>
+    </ui:VisualElement>
+</ui:UXML>

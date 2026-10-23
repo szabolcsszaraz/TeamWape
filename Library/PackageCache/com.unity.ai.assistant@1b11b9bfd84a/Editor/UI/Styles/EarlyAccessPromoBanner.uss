@@ -1,0 +1,325 @@
+#earlyAccessPromoBannerRoot {
+    max-width: 640px;
+    width: 100%;
+    align-self: center;
+    padding: 0 16px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    min-height: 0;
+}
+
+.mui-early-access-promo-active #earlyAccessPromoBannerRoot {
+    flex-grow: 1;
+}
+
+.mui-early-access-promo-active .earlyaccesspromobanner__element,
+.mui-early-access-promo-active .earlyaccesspromobanner__element-root {
+    flex-grow: 1;
+    align-self: stretch;
+    min-height: 0;
+}
+
+.mui-early-access-promo-root {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px;
+    background-color: var(--muse-chat-backgrounds-100);
+    border-width: 1px;
+    border-color: var(--muse-chat-foregrounds-310);
+    border-radius: var(--muse-chat-border-radius);
+    overflow: hidden;
+    position: relative;
+    flex-grow: 1;
+    min-height: 0;
+}
+
+.mui-early-access-promo-active #footerRoot {
+    display: none;
+}
+
+.mui-early-access-promo-active .mui-chat-hero {
+    display: none;
+}
+
+.mui-early-access-promo-active .mui-chat-input-root {
+    display: none;
+}
+
+.mui-early-access-promo-active .mui-new-chat-topic-bar-container {
+    display: none;
+}
+
+.mui-early-access-promo-active .mui-chat-empty-state .mui-chat-disclaimer {
+    display: none;
+}
+
+.mui-early-access-promo-active #emptyStateBannerSpacer {
+    display: none;
+}
+
+.mui-early-access-promo-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    min-height: 16px;
+    align-items: center;
+    justify-content: center;
+    cursor: link;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.mui-early-access-promo-close:hover {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.mui-early-access-promo-close:active {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.mui-early-access-promo-close:focus {
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+}
+
+.mui-early-access-promo-close:hover:active {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.mui-early-access-promo-close-icon {
+    width: 16px;
+    height: 16px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.mui-early-access-promo-hero {
+    width: 232px;
+    height: 232px;
+    align-self: center;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+}
+
+.mui-early-access-promo-headline {
+    font-size: 22px;
+    white-space: normal;
+    -unity-text-align: middle-left;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.mui-early-access-promo-body {
+    font-size: 13px;
+    white-space: normal;
+    -unity-text-align: middle-left;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.mui-early-access-promo-bullets {
+    flex-direction: column;
+    align-self: stretch;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.mui-early-access-promo-bullet-row {
+    flex-direction: row;
+    align-items: flex-start;
+    margin-bottom: 4px;
+}
+
+.mui-early-access-promo-bullet-glyph {
+    font-size: 13px;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.mui-early-access-promo-bullet-text {
+    font-size: 13px;
+    white-space: normal;
+    flex-grow: 1;
+    flex-shrink: 1;
+    -unity-text-align: middle-left;
+}
+
+.mui-early-access-promo-form {
+    flex-direction: column;
+    align-self: stretch;
+    align-items: stretch;
+}
+
+.mui-early-access-promo-email-wrapper {
+    position: relative;
+    margin-bottom: 12px;
+}
+
+.mui-early-access-promo-email-field {
+    margin: 0;
+    padding: 0;
+    min-height: 32px;
+}
+
+.mui-early-access-promo-email-field .unity-base-field__label {
+    display: none;
+}
+
+.mui-early-access-promo-email-field .unity-base-text-field__input {
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    margin: 0;
+    padding: 0;
+    min-height: 32px;
+}
+
+.mui-early-access-promo-email-field > #unity-text-input {
+    background-color: var(--muse-chat-backgrounds-175);
+    border-width: 1px;
+    border-color: var(--muse-chat-foregrounds-310);
+    border-radius: 4px;
+    min-height: 32px;
+    padding: 0 12px;
+    margin: 0;
+    -unity-text-align: middle-left;
+    align-items: center;
+    justify-content: center;
+}
+
+.mui-early-access-promo-email-field .unity-text-element {
+    -unity-text-align: middle-left;
+    align-self: center;
+    padding: 0;
+    margin: 0;
+}
+
+.mui-early-access-promo-email-placeholder {
+    position: absolute;
+    top: 0;
+    left: 12px;
+    right: 12px;
+    bottom: 0;
+    -unity-text-align: middle-left;
+    opacity: 0.4;
+}
+
+.mui-early-access-promo-email-wrapper.mui-early-access-promo-email--has-value .mui-early-access-promo-email-placeholder {
+    display: none;
+}
+
+.mui-early-access-promo-error {
+    color: var(--muse-chat-icon-error-color);
+    white-space: normal;
+    margin-bottom: 8px;
+    display: none;
+}
+
+.mui-early-access-promo-submit {
+    align-self: stretch;
+    min-height: 32px;
+    margin: 4px 0 0 0;
+    padding: 0 12px;
+    -unity-text-align: middle-center;
+}
+
+.mui-early-access-promo-submit .unity-text-element {
+    -unity-text-align: middle-center;
+    padding: 0;
+    margin: 0;
+}
+
+.mui-early-access-promo-success {
+    flex-direction: column;
+    align-self: stretch;
+    align-items: flex-start;
+    padding: 8px 0;
+    display: none;
+}
+
+.mui-early-access-promo-success-heading {
+    -unity-font-style: bold;
+    font-size: 16px;
+    white-space: normal;
+    -unity-text-align: middle-left;
+    width: 100%;
+    margin-bottom: 6px;
+}
+
+.mui-early-access-promo-success-sub {
+    font-size: 13px;
+    white-space: normal;
+    -unity-text-align: middle-left;
+    width: 100%;
+    opacity: 0.4;
+}
+
+.mui-early-access-promo-scroll {
+    flex-grow: 1;
+    align-self: stretch;
+    min-height: 0;
+}
+
+.mui-early-access-promo-scroll > .unity-scroll-view__content-viewport > .unity-scroll-view__content-container {
+    flex-grow: 1;
+    min-height: 100%;
+}
+
+.mui-early-access-promo-scroll .unity-scroller__low-button,
+.mui-early-access-promo-scroll .unity-scroller__high-button {
+    display: none;
+}
+
+.mui-early-access-promo-scroll .unity-scroll-view__vertical-scroller {
+    width: 8px;
+    margin-right: 4px;
+}
+
+.mui-early-access-promo-scroll .unity-base-slider__tracker {
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+}
+
+.mui-early-access-promo-scroll .unity-base-slider__dragger {
+    width: 6px;
+    border-radius: 3px;
+    border-width: 0;
+    background-color: rgba(128, 128, 128, 0.4);
+}
+
+.mui-early-access-promo-scroll .unity-base-slider__dragger:hover {
+    background-color: rgba(128, 128, 128, 0.6);
+}
+
+.mui-early-access-promo-content-block {
+    flex-direction: column;
+    align-self: stretch;
+    align-items: stretch;
+    flex-grow: 1;
+    justify-content: center;
+}
+
+.mui-early-access-promo-disclaimer {
+    font-size: 11px;
+    white-space: normal;
+    -unity-text-align: middle-left;
+    width: 100%;
+    margin-top: 12px;
+    opacity: 0.4;
+}
+
+.mui-early-access-promo-root.mui-early-access-promo--success .mui-early-access-promo-form {
+    display: none;
+}
+
+.mui-early-access-promo-root.mui-early-access-promo--success .mui-early-access-promo-success {
+    display: flex;
+}
+
+.mui-early-access-promo-root.mui-early-access-promo--invalid .mui-early-access-promo-error {
+    display: flex;
+}

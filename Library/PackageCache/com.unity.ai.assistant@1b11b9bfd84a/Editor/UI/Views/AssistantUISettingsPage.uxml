@@ -1,0 +1,25 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:assistant="Unity.AI.Assistant.UI.Editor.Scripts.Components">
+    <ui:ScrollView class="assistant-settings-page">
+        <ui:Label text="Assistant" name="assistantSettingsHeader" class="assistant-settings-header" />
+        <ui:VisualElement name="uiAuthoringContainer">
+            <ui:Label text="UI Authoring" />
+            <ui:VisualElement class="assistant-settings-content">
+                <ui:VisualElement name="figmaAccessTokenRow" class="assistant-figma-auth-row" >
+                    <ui:Label class="mui-action-button-label-header" text="Figma Access Token"/>
+                    <ui:TextField name="figmaAccessTokenField" password="true" class="assistant-figma-auth-token-field"/>
+                    <ui:Button name="figmaAccessTokenSaveButton" class="unity-button assistant-figma-auth-button" text="Verify &amp; Save"/>
+                </ui:VisualElement>
+            
+                <ui:VisualElement name="figmaAccessTokenValidationFailureWarningContainer" class="assistant-figma-access-token-validation-warning-container">
+                    <ui:Image name="warningIcon" class="mui-icon-warn-large" />
+                    <ui:Label name="figmaAccessTokenValidationFailureWarningText" />
+                </ui:VisualElement>
+
+                <ui:VisualElement name="figmaAccessTokenValidationSuccessContainer" class="assistant-warning-container">
+                    <ui:Image class="mui-icon-checkmark-green" />
+                    <ui:Label name="figmaAccessTokenValidationSuccessText" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:ScrollView>
+</ui:UXML>

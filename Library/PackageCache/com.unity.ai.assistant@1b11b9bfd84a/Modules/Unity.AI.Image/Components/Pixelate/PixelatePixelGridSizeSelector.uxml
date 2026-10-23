@@ -1,0 +1,4 @@
+<UXML xmlns="UnityEngine.UIElements">
+    <DropdownField tooltip="The size of the pixel grid in the output image"
+                   label="Pixel Grid Size" name="pixel-grid-size-dropdown"/>
+</UXML>

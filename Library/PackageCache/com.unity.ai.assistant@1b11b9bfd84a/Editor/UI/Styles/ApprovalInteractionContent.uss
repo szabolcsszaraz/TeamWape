@@ -1,0 +1,36 @@
+.approval-controls-row {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 16px;
+}
+
+.controls-spacer {
+    flex-grow: 1;
+}
+
+#denyButton {
+    background-color: transparent;
+    border-width: 0;
+}
+
+#denyButton:hover {
+    background-color: var(--muse-chat-foregrounds-320);
+}
+
+#viewButton {
+    background-color: transparent;
+    border-width: 0;
+    margin-right: 4px;
+}
+
+#viewButton:hover {
+    background-color: var(--muse-chat-foregrounds-320);
+}
+
+.approval-expanded-content {
+    padding: 8px 12px;
+}
+
+.approval-expanded-content-label {
+    white-space: normal;
+}

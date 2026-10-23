@@ -1,0 +1,90 @@
+.mui-root-empty #planPromptBannerRoot {
+    display: flex;
+}
+
+#planPromptBannerRoot {
+    display: none;
+    flex-shrink: 0;
+    flex-direction: column;
+    width: 100%;
+    max-width: 768px;
+    align-self: center;
+}
+
+.mui-plan-prompt-banner {
+    flex-shrink: 0;
+    margin-top: 12px;
+    margin-bottom: 8px;
+    width: 100%;
+    flex-direction: column;
+    padding: 0;
+    max-height: none;
+    background-color: var(--muse-chat-backgrounds-100);
+    border-width: 1px;
+    border-color: var(--muse-chat-foregrounds-310);
+    border-radius: var(--muse-chat-border-radius);
+    overflow: hidden;
+}
+
+.light .mui-plan-prompt-banner {
+    background-color: var(--muse-chat-backgrounds-100);
+    border-width: 1px;
+    border-color: var(--muse-chat-foregrounds-310);
+    border-radius: var(--muse-chat-border-radius);
+}
+
+.mui-plan-prompt-banner .plan-prompt-banner-inner {
+    flex-direction: column;
+    align-items: stretch;
+    flex-grow: 1;
+    padding: 12px;
+}
+
+.mui-plan-prompt-banner .plan-prompt-banner-text-block {
+    flex-direction: column;
+    flex-grow: 0;
+}
+
+.mui-plan-prompt-banner .plan-prompt-banner-title {
+    flex-grow: 0;
+    flex-shrink: 0;
+    -unity-font-style: bold;
+    white-space: normal;
+    height: 18px;
+}
+
+.mui-plan-prompt-banner .plan-prompt-banner-subtitle {
+    flex-grow: 0;
+    flex-shrink: 0;
+    white-space: normal;
+    height: 18px;
+}
+
+.mui-plan-prompt-banner .plan-prompt-banner-actions {
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    flex-shrink: 0;
+    margin-top: 14px;
+}
+
+.mui-plan-prompt-banner .plan-prompt-deny {
+    align-self: center;
+    border-width: 0;
+    margin-right: 8px;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.mui-plan-prompt-banner .plan-prompt-deny:hover {
+    background-color: var(--muse-chat-backgrounds-50);
+}
+
+.mui-plan-prompt-banner .plan-prompt-allow {
+    align-self: center;
+    border-width: 0;
+    border-radius: 4px;
+    padding-left: 4px;
+    padding-right: 4px;
+    margin-left: 4px;
+}

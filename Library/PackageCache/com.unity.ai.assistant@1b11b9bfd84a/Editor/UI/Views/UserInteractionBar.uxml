@@ -1,0 +1,16 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
+         xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="userInteractionBarRoot" class="user-interaction-bar-root">
+        <ui:VisualElement class="interaction-bar-header">
+            <ui:Image name="titleIconElement"/>
+            <ui:Label name="titleLabel" class="interaction-bar-title"/>
+            <ui:VisualElement name="navControls" class="interaction-bar-nav">
+                <ui:Button name="navPrevButton" text="&lt;" class="interaction-bar-nav-button"/>
+                <ui:Label name="counterLabel" class="counter-label"/>
+                <ui:Button name="navNextButton" text="&gt;" class="interaction-bar-nav-button"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:Label name="detailLabel" class="interaction-bar-detail"/>
+        <ui:VisualElement name="contentSlot"/>
+    </ui:VisualElement>
+</ui:UXML>

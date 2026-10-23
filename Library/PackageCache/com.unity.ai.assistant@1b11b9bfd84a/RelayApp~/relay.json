@@ -1,0 +1,9 @@
+{
+    "name": "unity-ai-relay",
+    "version": "1.0.12-build.99",
+    "protocolVersion": "1.0",
+    "capabilities": [
+        "acp",
+        "replay"
+    ]
+}

@@ -1,0 +1,32 @@
+{
+  "name": "com.unity.timeline",
+  "displayName": "Timeline",
+  "version": "6.6.0",
+  "keywords": [
+    "unity",
+    "animation",
+    "editor",
+    "timeline",
+    "tools"
+  ],
+  "description": "Use Unity Timeline to create cinematic content, game-play sequences, audio sequences, and complex particle effects.",
+  "dependencies": {
+    "com.unity.modules.director": "1.0.0",
+    "com.unity.modules.animation": "1.0.0",
+    "com.unity.modules.audio": "1.0.0",
+    "com.unity.modules.particlesystem": "1.0.0"
+  },
+  "samples": [
+    {
+      "displayName": "Timeline Customization Demo",
+      "description": "This sample project includes a Timeline instance with different custom tracks that demonstrate time dilation, video, text, tweening, and character animation.",
+      "path": "Samples~/Customization"
+    },
+    {
+      "displayName": "Timeline Gameplay Sequence Demo",
+      "description": "This sample project includes a Timeline instance with multiple Track groups, tracks, animated characters, effects, and camera switches that demonstrate how to use Unity's Timeline to create a cut-scene.",
+      "path": "Samples~/GameplaySequenceDemo"
+    }
+  ],
+  "_fingerprint": "5aa4cbea9cc5a1e5e3d679717fe8ef21bb5f291c"
+}

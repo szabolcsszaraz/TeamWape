@@ -1,0 +1,18 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="checkpoint-confirmation-dialog">
+        <ui:Label text="Restore Editor" class="checkpoint-confirmation-dialog__section-header"/>
+        <ui:Label name="bodyLabel" class="checkpoint-confirmation-dialog__body"/>
+        <ui:VisualElement class="checkpoint-confirmation-dialog__warning-banner">
+            <ui:Image class="checkpoint-confirmation-dialog__warning-icon mui-icon-warn"/>
+            <ui:Label name="warningLabel" class="checkpoint-confirmation-dialog__warning-text"/>
+        </ui:VisualElement>
+        <ui:Label text="Affected files" class="checkpoint-confirmation-dialog__files-header"/>
+        <ui:VisualElement class="checkpoint-confirmation-dialog__files-container">
+            <ui:ScrollView name="fileListContainer" class="checkpoint-confirmation-dialog__file-scroll"/>
+        </ui:VisualElement>
+        <ui:VisualElement class="checkpoint-confirmation-dialog__footer">
+            <ui:Button name="cancelButton" text="Cancel" class="checkpoint-confirmation-dialog__button"/>
+            <ui:Button name="confirmButton" text="Yes, discard changes" class="checkpoint-confirmation-dialog__button checkpoint-confirmation-dialog__button--primary"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</UXML>

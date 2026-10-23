@@ -1,0 +1,28 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/com.unity.multiplayer.center/Editor/MultiplayerCenterWindow/UI/Recommendations.uss?fileID=7433441132597879392&amp;guid=d7b952ba582c434d9eb0f94a617290b1&amp;type=3#Recommendations"/>
+    <ui:VisualElement data-source-type="Unity.Multiplayer.Center.Editor.PackageRecommendation, Unity.Multiplayer.Center.Editor" class="recommendation-section">
+        <ui:Label text="Discover the core technology" class="section-headline"/>
+        <ui:VisualElement name="essentials">
+            <ui:VisualElement class="recommendation-headline">
+                <ui:Label text="Essentials"/>
+                <ui:Button name="install-essentials" text="Install all"/>
+            </ui:VisualElement>
+            <Unity.Multiplayer.Center.Editor.RecommendationsGrid item-template="./RecommendationItem.uxml?fileID=9197481963319205126&amp;guid=f4485b1dfbf4e94ec9712e5a26e52515&amp;type=3#RecommendationItem" class="recommendation-grid">
+                <Bindings>
+                    <ui:DataBinding property="Recommendations" data-source-path="CorePackages" binding-mode="ToTarget"/>
+                </Bindings>
+            </Unity.Multiplayer.Center.Editor.RecommendationsGrid>
+        </ui:VisualElement>
+        <ui:VisualElement name="recommended">
+            <ui:VisualElement class="recommendation-headline">
+                <ui:Label text="Recommended"/>
+                <ui:Button name="install-recommended" text="Install all"/>
+            </ui:VisualElement>
+            <Unity.Multiplayer.Center.Editor.RecommendationsGrid item-template="./RecommendationItem.uxml?fileID=9197481963319205126&amp;guid=f4485b1dfbf4e94ec9712e5a26e52515&amp;type=3#RecommendationItem" class="recommendation-grid">
+                <Bindings>
+                    <ui:DataBinding property="Recommendations" data-source-path="RecommendedPackages" binding-mode="ToTarget"/>
+                </Bindings>
+            </Unity.Multiplayer.Center.Editor.RecommendationsGrid>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

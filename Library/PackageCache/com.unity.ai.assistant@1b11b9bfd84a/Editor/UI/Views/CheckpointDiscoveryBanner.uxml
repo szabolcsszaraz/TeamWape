@@ -1,0 +1,69 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="../Styles/CheckpointDiscoveryBanner.uss" />
+    <ui:VisualElement class="mui-checkpoint-discovery-root">
+        <!-- Progress bar pinned flush to the top edge of the card; shown only while syncing -->
+        <ui:VisualElement name="progressTrack" class="mui-checkpoint-discovery-progress-zone">
+            <ui:VisualElement class="mui-checkpoint-discovery-progress-bar" picking-mode="Ignore">
+                <ui:VisualElement name="progressFill" class="mui-checkpoint-discovery-progress-fill" picking-mode="Ignore"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- SyncingCollapsed: compact clickable row -->
+        <ui:VisualElement name="collapsedRow" class="mui-checkpoint-discovery-collapsed">
+            <ui:VisualElement class="mui-checkpoint-discovery-collapsed-header">
+                <ui:Image class="mui-checkpoint-discovery-icon mui-icon-checkpoint" picking-mode="Ignore"/>
+                <ui:Label name="collapsedTitle" text="Syncing Checkpoints..." class="mui-checkpoint-discovery-title"/>
+                <ui:Label name="collapsedTimeEstimate" class="mui-checkpoint-discovery-time-estimate"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- SyncingExpanded: full card -->
+        <ui:VisualElement name="expandedContent" class="mui-checkpoint-discovery-expanded">
+            <ui:VisualElement class="mui-checkpoint-discovery-header-row">
+                <ui:Image class="mui-checkpoint-discovery-icon mui-icon-checkpoint" picking-mode="Ignore"/>
+                <ui:Label name="expandedTitle" text="Syncing Checkpoints..." class="mui-checkpoint-discovery-header-title"/>
+                <ui:Label name="expandedTimeEstimate" class="mui-checkpoint-discovery-time-estimate"/>
+            </ui:VisualElement>
+            <ui:Label text="Checkpoints save a snapshot of your project before every action, so you can roll back with one click. Check the progress of the first sync in Background Tasks." class="mui-checkpoint-discovery-body"/>
+            <ui:Label text="Note: rollback also undoes your own changes, not just AI changes." class="mui-checkpoint-discovery-secondary"/>
+            <ui:VisualElement class="mui-checkpoint-discovery-actions">
+                <ui:Button name="disableButton" text="Disable Checkpoints" class="mui-checkpoint-discovery-button mui-action-button"/>
+                <ui:Button name="gotItButton" text="Got it" class="mui-checkpoint-discovery-button mui-action-button"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- Active: compact row with dismiss -->
+        <ui:VisualElement name="activeRow" class="mui-checkpoint-discovery-row">
+            <ui:Image class="mui-checkpoint-discovery-icon mui-icon-checkmark-green" picking-mode="Ignore"/>
+            <ui:Label text="Checkpoints setup successful" class="mui-checkpoint-discovery-title"/>
+            <ui:Button name="dismissButton" class="mui-action-button mui-checkpoint-discovery-close">
+                <ui:Image class="mui-action-button-image mui-icon-close" picking-mode="Ignore"/>
+            </ui:Button>
+        </ui:VisualElement>
+
+        <!-- Failed: compact row with dismiss -->
+        <ui:VisualElement name="failedRow" class="mui-checkpoint-discovery-row">
+            <ui:Image class="mui-checkpoint-discovery-icon mui-icon-close mui-checkpoint-discovery-fail-icon" picking-mode="Ignore"/>
+            <ui:Label text="Checkpoints setup failed" class="mui-checkpoint-discovery-title"/>
+            <ui:Button name="failedSettingsButton" text="Open Preferences" class="mui-checkpoint-discovery-button mui-action-button"/>
+            <ui:Button name="failedDismissButton" class="mui-action-button mui-checkpoint-discovery-close">
+                <ui:Image class="mui-action-button-image mui-icon-close" picking-mode="Ignore"/>
+            </ui:Button>
+        </ui:VisualElement>
+
+        <!-- Disabled: card with link to settings -->
+        <ui:VisualElement name="disabledRow" class="mui-checkpoint-discovery-expanded">
+            <ui:VisualElement class="mui-checkpoint-discovery-header-row">
+                <ui:Image class="mui-checkpoint-discovery-icon mui-icon-checkpoint" picking-mode="Ignore"/>
+                <ui:Label text="Checkpoints disabled" class="mui-checkpoint-discovery-header-title"/>
+                <ui:Button name="disabledDismissButton" class="mui-action-button mui-checkpoint-discovery-close">
+                    <ui:Image class="mui-action-button-image mui-icon-close" picking-mode="Ignore"/>
+                </ui:Button>
+            </ui:VisualElement>
+            <ui:Label text="Enable them again in Preferences." class="mui-checkpoint-discovery-body"/>
+            <ui:VisualElement class="mui-checkpoint-discovery-actions mui-checkpoint-discovery-actions-end">
+                <ui:Button name="openSettingsButton" text="Open Preferences" class="mui-checkpoint-discovery-button mui-action-button"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

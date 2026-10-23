@@ -1,0 +1,16 @@
+{
+  "SharedAssetDependencies": [],
+  "SharedPackageDependencies": [],
+  "SampleEntries": [
+    {
+      "Path": "GameplaySequenceDemo",
+      "AssetDependencies": [  ],
+      "PackageDependencies": ["com.unity.shadergraph"]
+    },
+    {
+      "Path": "Customization",
+      "AssetDependencies": [  ],
+      "PackageDependencies": ["com.unity.modules.video", "com.unity.inputsystem", "com.unity.ugui"]
+    }
+  ]
+}

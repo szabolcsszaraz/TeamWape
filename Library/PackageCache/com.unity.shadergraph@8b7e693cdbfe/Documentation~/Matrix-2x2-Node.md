@@ -1,0 +1,29 @@
+# Matrix 2x2 Node
+
+## Description
+
+Defines a constant **Matrix 2x2** value in the shader.
+
+## Ports
+
+| Name | Direction | Type | Binding | Description |
+|:--- |:---|:---|:---|:---|
+| Out | Output | Matrix 2 | None | Output value |
+
+## Controls
+
+| Control | Description |
+|:---|:---|
+| (Matrix 2x2) | Sets the matrix 2x2 output value. |
+
+## Generated Code Example
+
+The following example code represents one possible outcome of this node.
+
+```
+float2x2 _Matrix2x2 = float2x2(1, 0, 0, 1);
+```
+
+## Additional resources
+
+[!include[nodes-example-samples](./snippets/nodes-example-samples.md)]

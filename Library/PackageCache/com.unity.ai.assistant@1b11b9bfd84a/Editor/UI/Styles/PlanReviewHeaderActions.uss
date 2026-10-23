@@ -1,0 +1,49 @@
+.planreviewheaderactions__element {
+    flex-direction: row;
+    align-self: center;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.plan-review-header-actions {
+    flex-direction: row;
+    align-items: center;
+}
+
+.plan-review-header-deny-btn {
+    margin-right: 4px;
+    padding: 4px 8px;
+    background-color: transparent;
+    border-width: 0;
+    border-radius: 4px;
+}
+
+.plan-review-header-deny-btn:hover {
+    background-color: var(--muse-chat-foregrounds-320);
+}
+
+.plan-review-header-approve-btn {
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.plan-review-header-copy-btn {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    margin: 0;
+    border-width: 0;
+    border-radius: 4px;
+    background-color: transparent;
+    justify-content: center;
+    align-items: center;
+}
+
+.plan-review-header-copy-btn:hover {
+    background-color: var(--muse-chat-foregrounds-320);
+}
+
+.plan-review-header-copy-icon {
+    width: 16px;
+    height: 16px;
+}

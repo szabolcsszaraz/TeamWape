@@ -1,0 +1,217 @@
+:root {
+    --unity-icon-foldout: resource("Builtin Skins/DarkSkin/Images/IN foldout@2x.png");
+    --unity-icon-foldout-on: resource("Builtin Skins/DarkSkin/Images/IN foldout on@2x.png");
+    --unity-icon-foldout-act: resource("Builtin Skins/DarkSkin/Images/IN foldout act@2x.png");
+    --unity-icon-foldout-act-on: resource("Builtin Skins/DarkSkin/Images/IN foldout act on@2x.png");
+    --unity-icon-foldout-focus: resource("Builtin Skins/DarkSkin/Images/IN foldout focus@2x.png");
+    --unity-icon-foldout-focus-on: resource("Builtin Skins/DarkSkin/Images/IN foldout focus on@2x.png");
+
+    --overlay-background-color: #383838;
+
+    --override-bar: #C4C4C4;
+
+    /*ErrorMarker.uss*/
+    --graph-color-error: #FF534A;
+    --graph-color-warning: #FFC107;
+
+    /*Node colors*/
+    --graph-color-node-background: #383838;
+    --graph-color-node-background-dark: #303030;
+    --graph-color-node-border: #666666;
+    --graph-color-node-selection-highlight: #44C0FF;
+    --graph-color-node-hover-highlight: rgba(68, 192, 255, 0.5); /*#44C0FF with 50% alpha*/
+    --graph-color-dividers: #222222;
+    --graph-color-selection-fill: rgba(68, 192, 255, 0.11);
+
+    /*State.uss*/
+    --graph-color-state-state-machine-header-background: #4B88AC;
+    --graph-state-state-machine-icon: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/StateMachine/States/d_StateMachineAsset@256.png");
+    --graph-enter-state-state-machine-icon: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/StateMachine/States/StateMachineAsset@256.png");
+    --graph-color-enter-state-background: #C8C8C8;
+    --graph-color-enter-state-label-color: #090909;
+
+    /*Blackboard.uss*/
+    --graph-color-blackboard-background: rgba(0, 0, 0, 0.8);
+    --blackboard-background: var(--graph-color-blackboard-background);
+    --blackboard-header-background: #2A2A2A;
+    --blackboard-section-border-line: #313131;
+    --blackboard-section-title-background: black;
+    --blackboard-group-background: #1A1A23;
+    --blackboard-alt-group-background: #191A1F;
+    --blackboard-group-border: #5E73B5;
+
+    /*NodeToolbarIconButton.uss*/
+    --graph-color-node-icon-button-hover-background: var(--unity-colors-button-background-focus);
+
+    /*ConstantField.uss*/
+    --graph-color-plugged-value-tint: #243333;
+
+    /*Wire.uss*/
+    --graph-color-wire: #C4C4C4;
+    --graph-color-wire-ghost: #C4C4C4;
+    --graph-global-transition-icon: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/StateMachine/Transitions/AnyStateTransition@256.png");
+    --graph-global-transition-icon-selected: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/StateMachine/Transitions/AnyStateTransition@256.png");
+    --graph-self-transition-icon: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/StateMachine/Transitions/d_SelfTransition@256.png");
+    --graph-self-transition-icon-selected: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/StateMachine/Transitions/d_SelfTransition@256.png");
+    --graph-on-enter-transition-icon: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/StateMachine/Transitions/OnEnterTransition@256.png");
+    --graph-on-enter-transition-icon-selected: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/StateMachine/Transitions/OnEnterTransition@256.png");
+    --graph-color-global-transition-arrow-fill: #69E39F;
+    --graph-color-self-transition-arrow-fill: var(--graph-color-block-background);
+    --graph-color-on-enter-transition-arrow-fill: var(--graph-color-enter-state-background);
+
+    /*WireBubble.uss*/
+    --graph-color-wire-bubble-background: rgba(39, 39, 39, 0.9);
+
+    /*BlockNode.uss*/
+    --graph-color-block-background: #3F3F3F;
+    --graph-color-block-border: #242424;
+    --graph-color-empty-block-background: #2A2A2A;
+    --graph-color-block-option-background: #383838;
+
+    /*GraphView.uss*/
+    --graph-color-canvas-background: #191919;
+    --graph-color-canvas-grid-base: #282828;
+    --graph-color-canvas-grid: #3E3E3E;
+
+    /*ModelInspector.uss*/
+    --graph-color-inspector-background: rgba(0, 0, 0, 0.8);
+
+    /*Minimap.uss*/
+    --graph-color-minimap-viewport-border: rgba(230, 230, 230, 0.5);
+    --graph-color-minimap-node: rgba(230, 230, 230, 0.5);
+
+    /*Dropdown arrow*/
+    --dropdown-arrow: white;
+
+    /*Port.uss & Blackboard.uss*/
+    --port-type-execution: #C99700;
+    --port-type-string: #BC6B0B;
+    --port-type-gameobject: #C4C4C4;
+    --port-type-boolean: #A1A3FF;
+    --port-type-integer: #57AEFF;
+    --port-type-float: #80FFE6;
+    --port-type-float2: #14D368;
+    --port-type-float3: #FFEA07;
+    --port-type-float4: #E78DDC;
+    --port-type-textures: #FD8678;
+    --port-type-animation: #69E39F;
+    --port-type-matrix: #4B88AC;
+    --port-type-mesh: #80D8FF;
+    --port-type-component: #B2FF59;
+    --port-type-empty: #8D8D8D;
+    --port-type-misc: #C4C4C4;
+    --port-type-physics: #B2FF59;
+    --port-type-automatic: white;
+
+    --polymorphic-icon: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/Port/d_PolymorphicPort.png");
+    --color-type-icon: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/Port/d_Color@64x.png");
+
+    --transition-to-state-tint: #b8b8b8;
+    --transition-state-on-enter: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/StateMachine/Transitions/d_OnEnterTransition.png");
+    --transition-state-global: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/StateMachine/Transitions/d_AnyStateTransition.png");
+    --transition-state-self: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/StateMachine/Transitions/d_SelfTransition.png");
+
+    --transition-debug-true: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/StateMachine/Transitions/d_TrueDebugging.png");
+    --transition-debug-false: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/StateMachine/Transitions/d_FalseDebugging.png");
+    --transition-debug-not-evaluated: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/StateMachine/Transitions/d_PendingDebugging.png");
+
+    --warning-icon: resource("icons/d_console.warnicon.png");
+
+    --icon-add: resource("d_CreateAddNew");
+
+    /* The bracket in the condition editor*/
+    --bracket-color: #C4C4C4;
+
+    --chevron-down: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/d_NodeChevronDown@2x.png");
+    --chevron-up: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/d_NodeChevronUp@2x.png");
+    --chevron-right: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/d_NodeChevronRight@2x.png");
+    --chevron-left: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/d_NodeChevronLeft@2x.png");
+
+    --node-expandable-port-line-color: #737373;
+}
+
+
+.ge-icon--graph-asset {
+    --unity-image: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/d_GraphAsset.png");
+}
+
+/*Node Icons*/
+
+.ge-show-preview-button__icon {
+    background-image: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/d_Hidden@64.png");
+}
+
+.ge-show-preview-button--show-preview .ge-show-preview-button__icon {
+    background-image: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/d_Visible@64.png");
+}
+
+.ge-node-preview__close-button__icon {
+    background-image: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/d_SmallClose@64.png");
+}
+
+.ge-node-preview__status-container__failure-icon {
+    background-image: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/d_Loading_Failed@64.png");
+}
+
+.ge-spinning-loading-icon__icon {
+    background-image: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/d_Loading@64.png");
+}
+
+.ge-open-graph-button__icon {
+    background-image: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/d_Enter_Subgraph@64.png");
+}
+
+.ge-icon--subgraph,
+.ge-local-subgraph__icon,
+.item-library-custom-item-subgraph__icon {
+    --unity-image: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/d_SubgraphAsset.png");
+}
+
+.ge-icon--node,
+.item-library-custom-item-node__icon {
+    --unity-image: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/d_GenericNode.png");
+}
+
+.ge-icon--math-node,
+.item-library-custom-item-math-node__icon {
+    --unity-image: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/d_Math.png");
+}
+
+.ge-icon--get-node,
+.item-library-custom-item-get-node__icon {
+    --unity-image: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/d_Get.png");
+}
+
+.ge-icon--set-node,
+.item-library-custom-item-set-node__icon {
+    --unity-image: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/d_Set.png");
+}
+
+.ge-icon--split-node,
+.item-library-custom-item-split-node__icon {
+    --unity-image: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/d_Split.png");
+}
+
+.ge-icon--combine-node,
+.item-library-custom-item-combine-node__icon {
+    --unity-image: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/d_Combine.png");
+}
+
+.ge-icon--logic-node,
+.item-library-custom-item-logic-node__icon {
+    --unity-image: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/d_Logic.png");
+}
+
+.ge-icon--mixer-node,
+.item-library-custom-item-mixer-node__icon {
+    --unity-image: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/d_Mixer.png");
+}
+
+.ge-icon--source-node,
+.item-library-custom-item-source-node__icon {
+    --unity-image: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/d_Source.png");
+}
+
+.item-library-custom-item-group__icon {
+    --unity-image: resource("d_Folder icon");
+}

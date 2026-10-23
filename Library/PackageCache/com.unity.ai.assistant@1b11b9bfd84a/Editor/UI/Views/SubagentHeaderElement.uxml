@@ -1,0 +1,9 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="subagentHeaderRoot" class="subagent-header-root">
+        <ui:Image name="subagentChevron" class="subagent-chevron mui-icon-arrow-caret-down"/>
+        <ui:Label name="subagentBadge" class="mui-function-call-agent-badge"/>
+        <ui:VisualElement name="subagentStatusContainer" class="subagent-status-container"/>
+        <ui:Label name="subagentProgress" class="subagent-progress"/>
+    </ui:VisualElement>
+    <ui:VisualElement name="subagentContent" class="subagent-content"/>
+</UXML>

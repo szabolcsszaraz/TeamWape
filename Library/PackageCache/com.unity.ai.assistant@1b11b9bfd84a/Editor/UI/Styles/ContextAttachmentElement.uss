@@ -1,0 +1,147 @@
+.contextattachmentelement__element {
+    flex-shrink: 0;
+    margin-right: 4px;
+}
+
+.contextattachmentelement__element-root {
+    flex-shrink: 0;
+}
+
+/* Common root */
+.mui-ca-root {
+    flex-direction: row;
+    flex-shrink: 0;
+}
+
+/* ===== Thumbnail mode ===== */
+
+.mui-ca-thumbnail-container {
+    display: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+/* Show thumbnail, hide pill when image class is present */
+.mui-ca-image .mui-ca-thumbnail-container {
+    display: flex;
+}
+
+.mui-ca-image .mui-ca-pill-container {
+    display: none;
+}
+
+.mui-ca-thumbnail-image {
+    width: 40px;
+    height: 40px;
+}
+
+.mui-ca-remove-overlay {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 14px;
+    height: 14px;
+    min-width: 14px;
+    border-radius: 7px;
+    background-color: var(--muse-chat-image-overlay);
+    border-width: 0;
+    padding: 0;
+    margin: 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.mui-ca-remove-overlay .mui-action-button-image.mui-icon-close {
+    width: 8px;
+    height: 8px;
+    --unity-image-tint-color: white;
+}
+
+/* ===== Pill mode (default) ===== */
+
+.mui-ca-pill-container {
+    flex-direction: row;
+    align-items: flex-start;
+    background-color: var(--muse-chat-backgrounds-150);
+    border-radius: 4px;
+    padding: 4px;
+}
+
+.mui-ca-pill-icon-container {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    background-color: var(--muse-chat-backgrounds-100);
+    align-items: center;
+    justify-content: center;
+    margin-right: 6px;
+    flex-shrink: 0;
+}
+
+.mui-ca-pill-icon {
+    width: 16px;
+    height: 16px;
+    --unity-image-tint-color: white;
+}
+
+.mui-ca-pill-text-container {
+    justify-content: center;
+    overflow: hidden;
+}
+
+.mui-ca-pill-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    -unity-text-align: middle-left;
+    font-size: 11px;
+    margin-right: 2px;
+}
+
+.mui-ca-pill-type {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    -unity-text-align: middle-left;
+    font-size: 10px;
+    color: var(--muse-chat-text-secondary);
+    margin-right: 2px;
+}
+
+.mui-ca-remove-button {
+    width: 14px;
+    height: 14px;
+    min-width: 14px;
+    border-width: 0;
+    border-radius: 7px;
+    background-color: var(--muse-chat-image-overlay);
+    padding: 0;
+    margin: 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.mui-ca-remove-button .mui-action-button-image.mui-icon-close {
+    width: 8px;
+    height: 8px;
+}
+
+/* ===== Highlight state for screenshot editing ===== */
+
+.mui-ca-editing .mui-ca-thumbnail-container {
+    border-color: var(--muse-chat-button-active);
+    border-width: 2px;
+}
+
+.mui-ca-editing .mui-ca-pill-container {
+    background-color: var(--muse-chat-button-active);
+}
+
+/* ===== Missing target state ===== */
+
+.mui-ca-target-missing .mui-ca-pill-container {
+    opacity: 0.5;
+}
+

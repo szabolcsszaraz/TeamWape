@@ -1,0 +1,44 @@
+/*
+ * CSS variables specific to dark mode (pro skin)
+ */
+:root {
+    --learning-icon: url('Icons/Learning.png');
+    --learning-tint: #EAD953;
+    --package-icon: url('Icons/d_Package.png');
+    --questionnaire-icon: url('Icons/d_Questionnaire.png');
+    --package-installed-icon: url('Icons/d_PackageInstalled.png');
+    --info-icon: resource('d__Help');
+    --comment-color: dimgrey;
+    --highlight-background-color: #2a2a2a;
+    --colors-incompatible-background: #FFC107;
+    --recommendation-badge-color: #69E39F;
+    --card-poster-image-bg-color: #222222;
+    --theme-slider-background-color:#5E5E5E; /* From Default common dark uss */
+    --badge-color-grey:#C4C4C4; /* From Default common dark uss, feedback color */
+    --pre-release-badge-color: #FFC107;
+    --pre-release-badge-color-bg: #1D1E1F;
+    --link-color: var(--unity-theme-text-color-11);
+    --link-hover-color : var(--unity-theme-text-color-10);
+    --link-active-color : var(--icon-active-color);
+    --tab-button-highlight-color: #DEDEDE;
+    --onboarding-button-selected-text-color: #EEEEEE;
+    --three-dot-icon: resource("UIBuilderPackageResources/Icons/Dark/Inspector/Status/Settings.png");
+    --spinner-icon-big: url('Icons/d_Loading.png');
+    --checkmark-icon: url('Icons/d_Check.png');
+
+    --help-icon: resource("Icons/d__Help.png");
+    --package-manager-icon: resource("Icons/PackageManager/Dark/Package.png");
+    --back-button-icon: url('Icons/d_ArrowCaretLeft.png');
+    --building-block-icon: url('Icons/BuildingBlock.png');
+    --building-block-icon-tint:  #4CAC72;
+
+    --icon-active-color: black;
+
+    --icon-unity-cube : url('Icons/unitycube.png');
+
+    --genre-header-bg: rgb(33, 33, 33);
+}
+
+.hidden{
+    display: none;
+}

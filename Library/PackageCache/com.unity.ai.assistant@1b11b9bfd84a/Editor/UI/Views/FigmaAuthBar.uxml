@@ -1,0 +1,23 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="../Styles/FigmaAuthBar.uss" />
+    <ui:VisualElement name="figmaAuthRoot" class="figma-auth-root">
+        <ui:Label name="figmaAuthTitle" text="Connect to Figma" class="figma-auth-title"/>
+
+        <ui:Label name="figmaAuthDescription"
+                  text="To import designs from Figma, AI Assistant needs a Personal Access Token."
+                  class="figma-auth-description"/>
+
+        <ui:VisualElement name="figmaAuthSteps" class="figma-auth-steps">
+            <ui:VisualElement class="figma-auth-step figma-auth-step-row">
+                <ui:Label text="1. Open" class="figma-auth-step"/>
+                <ui:Label name="openFigmaSettingsLink" text="Figma Settings" class="figma-auth-step figma-auth-link"/>
+                <ui:Label text="→ Security tab;" class="figma-auth-step"/>
+            </ui:VisualElement>
+            <ui:Label text="2. Click &quot;Generate new token&quot;, and set the token name and expiration;" class="figma-auth-step"/>
+            <ui:Label text="3. Under Scopes, check &quot;file_content: read&quot;;" class="figma-auth-step"/>
+            <ui:Label text="4. Copy the generated token and save it in Project Settings -> AI -> UI -> Figma Access Token." class="figma-auth-step"/>
+        </ui:VisualElement>
+
+
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,28 @@
+:root{
+    background-color: var(--appui-backgrounds-100);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.appui-progress{
+    width: 100px;
+    height: 100px;
+}
+
+.loader-image{
+    position: absolute;
+    width: 55%;
+    height: 55%;
+    align-self: center;
+}
+
+.loader-text{
+    padding-top: var(--appui-spacing-500);
+}
+
+.error-state{
+    color: var(--appui-destructive-100);
+}

@@ -1,0 +1,16 @@
+:root {
+    --appui-icon-focus-mode-tracking-regular: url("project:/Packages/com.unity.dt.app-ui/PackageResources/Icons/Regular/FocusModeTracking.png");
+    --appui-icon-squares-four-regular: url("project:/Packages/com.unity.dt.app-ui/PackageResources/Icons/Regular/SquaresFour.png");
+}
+
+.appui-icon--focus-mode-tracking--regular {
+    --unity-image: var(--appui-icon-focus-mode-tracking-regular);
+}
+
+.appui-icon--squares-four--regular {
+    --unity-image: var(--appui-icon-squares-four-regular);
+}
+
+.appui-divider {
+    opacity: 0;
+}

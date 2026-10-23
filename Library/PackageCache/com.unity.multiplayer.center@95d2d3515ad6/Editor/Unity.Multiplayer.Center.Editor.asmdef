@@ -1,0 +1,24 @@
+{
+    "name": "Unity.Multiplayer.Center.Editor",
+    "rootNamespace": "Unity.Multiplayer.Center.Editor",
+    "references": [
+        "GUID:84abd2ab34a74600a33a3bb9d72859fe"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.multiplayer.center.quickstart",
+            "expression": "2",
+            "define": "UNITY_MULTIPLAYER_ONBOARDING_V2"
+        }
+    ],
+    "noEngineReferences": false
+}

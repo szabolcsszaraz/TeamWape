@@ -1,0 +1,15 @@
+.assistant-warning-container {
+    flex-direction: row;
+    align-items: center;
+    background-color: var(--muse-chat-foregrounds-300);
+    margin-top: 4px;
+}
+
+.assistant-warning-container > .unity-image {
+    width: 16px;
+    height: 16px;
+}
+
+.assistant-warning-container > .unity-label {
+    white-space: normal;
+}

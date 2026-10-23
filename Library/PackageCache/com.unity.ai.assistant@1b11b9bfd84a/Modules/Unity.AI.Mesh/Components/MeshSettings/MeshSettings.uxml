@@ -1,0 +1,14 @@
+<UXML xmlns="UnityEngine.UIElements">
+    <Style src="../../../Unity.AI.Generators.UI/StyleSheets/FlexUtilities.uss" />
+
+    <VisualElement class="mesh-settings-container flex-grow p-12 pb-0">
+        <VisualElement class="mesh-settings-row flex-row items-center pb-6">
+            <Label class="mesh-settings-label flex-no-shrink" text="Pivot Position" style="width: 50%;" />
+            <EnumField name="pivot-mode-field" class="mesh-settings-field" tooltip="Origin point of the generated mesh." style="width: 50%;" />
+        </VisualElement>
+        
+        <VisualElement>
+            <HelpBox text="Re-export your generation to update the pivot position." class="mesh-settings-help-box flex-grow width-100pct" message-type="Info" />
+        </VisualElement>
+    </VisualElement>
+</UXML>

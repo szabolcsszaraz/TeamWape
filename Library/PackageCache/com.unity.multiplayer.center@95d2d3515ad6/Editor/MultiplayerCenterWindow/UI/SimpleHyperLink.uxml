@@ -1,0 +1,11 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement class="recommendation__item" style="flex-grow: 1;">
+        <ui:VisualElement class="recommendation-box" style="flex-grow: 1;">
+            <Unity.Multiplayer.Center.Editor.HyperLink text="Expects a &lt; a href=&quot;&quot; /&gt; for links" image="project://database/Resources/unity_builtin_extra?fileID=10914&amp;guid=0000000000000000f000000000000000&amp;type=0#DropdownArrow" class="community-handle">
+                <Bindings>
+                    <ui:DataBinding property="text" binding-mode="ToTarget"/>
+                </Bindings>
+            </Unity.Multiplayer.Center.Editor.HyperLink>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

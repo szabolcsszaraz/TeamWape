@@ -1,0 +1,25 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="mui-ca-root">
+
+        <ui:VisualElement name="thumbnailContainer" class="mui-ca-thumbnail-container">
+            <ui:Image name="thumbnailImage" class="mui-ca-thumbnail-image"/>
+            <ui:Button name="thumbnailRemoveButton" class="mui-ca-remove-overlay">
+                <ui:Image class="mui-action-button-image mui-icon-close"/>
+            </ui:Button>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="pillContainer" class="mui-ca-pill-container">
+            <ui:VisualElement class="mui-ca-pill-icon-container">
+                <ui:Image name="pillIcon" class="mui-ca-pill-icon"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="mui-ca-pill-text-container">
+                <ui:Label name="pillName" class="mui-ca-pill-name"/>
+                <ui:Label name="pillType" class="mui-ca-pill-type"/>
+            </ui:VisualElement>
+            <ui:Button name="pillRemoveButton" class="mui-ca-remove-button">
+                <ui:Image class="mui-action-button-image mui-icon-close"/>
+            </ui:Button>
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</UXML>

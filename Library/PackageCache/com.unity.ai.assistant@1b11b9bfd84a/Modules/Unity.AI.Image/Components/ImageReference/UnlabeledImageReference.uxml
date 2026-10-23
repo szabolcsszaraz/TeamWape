@@ -1,0 +1,19 @@
+<UXML
+        xmlns="UnityEngine.UIElements"
+        xmlns:editorui="UnityEditor.UIElements"
+        xmlns:ui="Unity.AI.Image.Components">
+    <Style src="./ImageReference.uss" />
+    <Style src="./UnlabeledImageReference.uss" />
+    <VisualElement class="image-reference p-8-7-8-8">
+        <editorui:Template src="./ImageReferenceObjectField.uxml" name="ImageReferenceObjectField" />
+        <editorui:Template src="./ImageReferenceStrength.uxml" name="ImageReferenceStrength" />
+        <VisualElement class="unlabeled-image-reference-header flex-row items-center">
+            <Label name="header-title" class="font-bold p-4 flex-grow" text="Image Reference" />
+            <Button name="unlabeled-remove-button" tooltip="Remove image reference" class="unlabeled-remove-button size-18px p-0">
+                <Image class="unity-button__image"/>
+            </Button>
+        </VisualElement>
+        <Instance template="ImageReferenceObjectField" class="p-4-2"/>
+        <Instance template="ImageReferenceStrength" class="hide" />
+    </VisualElement>
+</UXML>

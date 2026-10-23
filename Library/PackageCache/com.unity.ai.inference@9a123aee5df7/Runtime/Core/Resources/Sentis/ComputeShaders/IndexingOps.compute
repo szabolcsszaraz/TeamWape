@@ -1,0 +1,137 @@
+#pragma kernel OneHot INT
+#pragma kernel GatherND FLOAT
+#pragma kernel SliceSet SLICESET
+
+#include "Tensor.cginc"
+
+int stridesIndices[8]; // Leave this declaration precisely here, this avoids triggered a bug on xbox series, see below.
+int shapeO[8];
+int stridesO[8];
+int shapeX[8];
+int stridesX[8];
+int shapeIndices[8];
+//int stridesIndices[8] moved up, leave this as is until we find descriptor/binding problem on xbox series.
+
+uint2 unrolledDispatchArgs;
+
+uint rankO;
+uint rankX;
+uint rankIndices;
+
+int onValue;
+int offValue;
+uint stridesToAxis;
+uint axisDim;
+int negativeIndexOffset;
+
+// GatherND
+uint iStart;
+uint iEndIndices;
+uint iEndX;
+uint iStartB;
+uint iEndB;
+
+
+#ifdef INT
+StructuredBuffer<int> Xptr;
+RWStructuredBuffer<int> Optr;
+#else
+StructuredBuffer<float> Xptr;
+RWStructuredBuffer<float> Optr;
+#endif
+
+StructuredBuffer<int> Bptr;
+
+
+[numthreads(64, 1, 1)]
+void OneHot(uint3 dispatchThreadID : SV_DispatchThreadID)
+{
+    uint threadIdx = dispatchThreadID.x;
+
+    uint i = threadIdx;
+    uint innerIdx = i % stridesToAxis;
+    i /= stridesToAxis;
+    uint axisIdx = i % axisDim;
+    i /= axisDim;
+    uint outerIdx = i;
+
+    int index = Xptr[outerIdx * stridesToAxis + innerIdx];
+    index = index < 0 ? negativeIndexOffset + index : index;
+
+    int v = ((int)axisIdx == index) ? onValue : offValue;
+
+    Optr[threadIdx] = v;
+}
+
+
+[numthreads(64, 1, 1)]
+void GatherND(uint3 dispatchThreadID : SV_DispatchThreadID)
+{
+    uint threadIdx = unrolledDispatchArgs.x * dispatchThreadID.y + dispatchThreadID.x;
+    if (threadIdx < unrolledDispatchArgs.y)
+    {
+        uint itIndices = 0;
+        uint itX = 0;
+        uint i;
+        uint itO;
+
+        int index;
+        uint strideX;
+
+        // iterate up to where i == iEndX
+        for (i = iStart; i < iEndX; i++)
+        {
+            itO = (threadIdx / stridesO[i]) % shapeO[i];
+            itIndices += itO * stridesIndices[(rankO - rankIndices) + i];
+            itX += itO * stridesX[(rankO - rankX) + i];
+        }
+
+        // finish indices
+        for (i = iEndX; i < iEndIndices; i++)
+        {
+            itIndices += ((threadIdx / stridesO[i]) % shapeO[i]) * stridesIndices[(rankO - rankIndices) + i];
+        }
+
+        itIndices -= iStartB;
+
+        for (i = iStartB; i < iEndB; i++)
+        {
+            strideX = stridesX[i];
+            index = Bptr[itIndices + i];
+            if (index < 0)
+                index = shapeX[i] + index;
+            itX += index * stridesX[i];
+        }
+
+        for (; i < 8; i++)
+        {
+            itX += ((threadIdx / stridesO[i]) % shapeO[i]) * stridesX[i];
+        }
+
+        Optr[threadIdx] = Xptr[itX];
+    }
+}
+
+int size[8];
+int stride[8];
+int offset;
+int rank;
+
+[numthreads(64, 1, 1)]
+void SliceSet(uint3 dispatchThreadID : SV_DispatchThreadID)
+{
+    uint threadIdx = unrolledDispatchArgs.x * dispatchThreadID.y + dispatchThreadID.x;
+    if (threadIdx >= unrolledDispatchArgs.y)
+        return;
+    int indexO = offset;
+    uint dimSize;
+    uint idx = threadIdx;
+    for (int axis = 0; axis < rank; axis++)
+    {
+        dimSize = size[axis];
+        indexO += (idx % dimSize) * stride[axis];
+        idx /= dimSize;
+    }
+
+    Optr[indexO] = Xptr[threadIdx];
+}

@@ -1,0 +1,13 @@
+.retry-controls-row {
+    flex-direction: row;
+    align-items: center;
+}
+
+#dismissButton {
+    background-color: transparent;
+    border-width: 0;
+}
+
+#dismissButton:hover {
+    background-color: var(--muse-chat-foregrounds-320);
+}

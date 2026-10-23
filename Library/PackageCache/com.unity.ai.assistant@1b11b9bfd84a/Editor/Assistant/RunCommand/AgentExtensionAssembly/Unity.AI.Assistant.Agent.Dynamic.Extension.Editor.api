@@ -1,0 +1,73 @@
+// This file is generated. Do not modify by hand.
+// XML documentation file not found. To check if public methods have XML comments,
+// make sure the XML doc file is present and located next to the scraped dll
+namespace Unity.AI.Assistant.Agent.Dynamic.Extension.Editor
+{
+    public static class AssemblyCSProject
+    {
+        public const string FileName = @"Unity.AI.Assistant.Agent.Dynamic.Extension.Editor.csproj";
+        public static System.Collections.Generic.IEnumerable<string> TemporaryFiles { get; }
+        public static void ClearTemporaryFiles();
+        public static string CreateTemporaryFile();
+    }
+
+    public static class CommandScriptPostBox
+    {
+        public static void Post(string key, object commandScript);
+        public static object Pull(string key);
+    }
+
+    public struct ExecutionLog
+    {
+        public string Log;
+        public long[] LoggedObjectInstanceIds;
+        public string[] LoggedObjectNames;
+        public UnityEngine.LogType LogType;
+        public UnityEngine.GameObject[] LoggedObjects { get; }
+        public ExecutionLog(string formattedLog, UnityEngine.LogType logType, object[] loggedObjects = default(object[])) {}
+    }
+
+    public class ExecutionResult : ReadonlyExecutionResult
+    {
+        public string ConsoleLogs;
+        public static readonly string LinkTextColor = @"#8facef";
+        public static readonly string WarningTextColor = @"#DFB33D";
+        public ExecutionResult(string commandName) {}
+        public void DestroyObject(UnityEngine.Object objectToDestroy);
+        public override void End();
+        protected override void HandleConsoleLog(string logString, string stackTrace, UnityEngine.LogType type);
+        public void RegisterObjectCreation(UnityEngine.Component component);
+        public void RegisterObjectCreation(UnityEngine.Object objectCreated);
+        public void RegisterObjectModification(UnityEngine.Object objectToRegister, string operationDescription = @"");
+        public override void Start();
+    }
+
+    public interface IReadonlyRunCommand
+    {
+        public void Execute(ReadonlyExecutionResult result);
+    }
+
+    public interface IRunCommand
+    {
+        public void Execute(ExecutionResult result);
+    }
+
+    public class ReadonlyExecutionResult
+    {
+        public readonly string CommandName;
+        public string FencedTag;
+        public int Id = 1;
+        public System.Collections.Generic.List<ExecutionLog> Logs = new();
+        public int MessageIndex = -1;
+        public static readonly System.Text.RegularExpressions.Regex PlaceholderRegex;
+        public bool SuccessfullyStarted;
+        public ReadonlyExecutionResult(string commandName) {}
+        public virtual void End();
+        public System.Collections.Generic.List<string> GetFormattedLogs();
+        protected virtual void HandleConsoleLog(string logString, string stackTrace, UnityEngine.LogType type);
+        public void Log(string log, params object[] references);
+        public void LogError(string log, params object[] references);
+        public void LogWarning(string log, params object[] references);
+        public virtual void Start();
+    }
+}

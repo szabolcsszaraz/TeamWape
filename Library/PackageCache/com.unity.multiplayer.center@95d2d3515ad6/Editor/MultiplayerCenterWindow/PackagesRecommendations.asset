@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 736c7fe7544841e3ad3c200f15593b25, type: 3}
+  m_Name: PackagesRecommendations
+  m_EditorClassIdentifier: Unity.Multiplayer.Center.Editor::Unity.Multiplayer.Center.Window.Recommendations
+  Descriptions:
+  - Genre: 0
+    CorePackages:
+    - com.unity.services.multiplayer
+    - com.unity.netcode.gameobjects
+    - com.unity.multiplayer.playmode
+    - com.unity.transport
+    RecommendedPackages:
+    - com.unity.multiplayer.tools
+    AdditionalPackages: []
+  - Genre: 1
+    CorePackages:
+    - com.unity.services.multiplayer
+    - com.unity.netcode.gameobjects
+    - com.unity.multiplayer.playmode
+    - com.unity.dedicated-server
+    - com.unity.transport
+    RecommendedPackages:
+    - com.unity.multiplayer.tools
+    AdditionalPackages: []
+  - Genre: 2
+    CorePackages:
+    - com.unity.services.multiplayer
+    - com.unity.multiplayer.playmode
+    - com.unity.services.cloudcode
+    RecommendedPackages: []
+    AdditionalPackages: []

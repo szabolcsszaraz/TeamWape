@@ -1,0 +1,81 @@
+.mui-completed-action-entry {
+    flex-direction: row;
+    align-items: center;
+    padding: 3px 0;
+    height: 24px;
+}
+
+#actionStatusIcon {
+    width: 12px;
+    height: 12px;
+    margin-right: 6px;
+}
+
+#actionDescription {
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--muse-chat-text-secondary);
+    font-size: 11px;
+}
+
+#objectRefButton {
+    padding: 1px 2px;
+    margin: 0 2px;
+    border-width: 1px;
+    background-color: var(--muse-chat-foregrounds-310);
+    border-radius: 4px;
+    font-size: 11px;
+    flex-shrink: 0;
+    cursor: link;
+    flex-direction: row;
+    align-items: center;
+}
+
+#objectRefButton:hover {
+    background-color: var(--muse-chat-backgrounds-350);
+}
+
+#objectRefIcon {
+    width: 12px;
+    height: 12px;
+    margin-right: 4px;
+    flex-shrink: 0;
+}
+
+#objectRefLabel {
+    font-size: 11px;
+    margin: 0;
+    padding: 0;
+    flex-shrink: 1;
+}
+
+#objectRefButton.completed-action-ref-missing {
+    -unity-font-style: italic;
+    background-color: var(--muse-chat-backgrounds-125);
+    cursor: arrow;
+    border-color: transparent;
+}
+
+#objectRefButton.completed-action-ref-missing > #objectRefLabel {
+    color: var(--muse-chat-text-secondary);
+}
+
+#lineCountContainer {
+    flex-direction: row;
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+
+#linesAdded {
+    color: var(--muse-chat-icon-success-color);
+    font-size: 11px;
+    margin-right: 4px;
+}
+
+#linesRemoved {
+    color: var(--muse-chat-icon-error-color);
+    font-size: 11px;
+}

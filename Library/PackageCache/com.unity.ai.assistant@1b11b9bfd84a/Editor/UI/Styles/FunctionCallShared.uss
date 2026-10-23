@@ -1,0 +1,39 @@
+/* Shared agent badge pill and universal tool card styles (chevron, status toggle). */
+
+/* Agent badge pill — used by both subagent headers and Core Agent tool cards */
+.mui-function-call-agent-badge {
+    border-width: 1px;
+    border-color: var(--muse-chat-foregrounds-310);
+    background-color: var(--muse-chat-backgrounds-100);
+    border-radius: 3px;
+    padding: 1px 7px;
+    font-size: 11px;
+    color: var(--muse-chat-text-answers);
+    margin-right: 8px;
+    flex-shrink: 0;
+    align-self: center;
+    -unity-text-align: middle-center;
+}
+
+/* Hover foldout chevron — applies to all tool call cards */
+.function-call-chevron {
+    width: 8px;
+    height: 8px;
+    margin-left: 4px;
+    margin-right: 8px;
+    flex-shrink: 0;
+    align-self: center;
+}
+
+.function-call-chevron--hidden {
+    display: none;
+}
+
+.function-call-status--hidden {
+    display: none;
+}
+
+.mui-subagent-task-label {
+    white-space: normal;
+    color: var(--muse-chat-text-secondary);
+}

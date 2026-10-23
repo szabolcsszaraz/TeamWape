@@ -1,0 +1,56 @@
+#pragma kernel ScatterND
+
+#pragma multi_compile_local _ ReduceAdd ReduceMul ReduceMax ReduceMin
+#pragma multi_compile_local _ INT
+#include "Tensor.cginc"
+
+uint trailing[8];
+uint shapeX[8];
+uint reduction;
+uint updatesLength;
+uint indicesLength;
+uint indexRemapDim;
+
+#ifdef INT
+#define DTYPE int
+StructuredBuffer<int> Uptr;
+RWStructuredBuffer<int> Optr;
+#else
+#define DTYPE float
+StructuredBuffer<float> Uptr;
+RWStructuredBuffer<float> Optr;
+#endif
+StructuredBuffer<int> Iptr;
+
+[numthreads(8, 16, 1)]
+void ScatterND(uint3 dispatchThreadID : SV_DispatchThreadID)
+{
+    uint k = dispatchThreadID.x;
+    uint i = dispatchThreadID.y;
+
+    if (k >= updatesLength)
+        return;
+    if (i >= indicesLength)
+        return;
+
+    uint indexO = 0;
+    for (uint j = 0; j < indexRemapDim; j++)
+    {
+        int index = Iptr[i * indexRemapDim + j];
+        index = index < 0 ? index + shapeX[j] : index;
+        indexO += trailing[j] * index;
+    }
+    DTYPE vw = Uptr[i * updatesLength + k];
+
+    #ifdef ReduceAdd
+    Optr[indexO * updatesLength + k] += vw;
+    #elif ReduceMul
+    Optr[indexO * updatesLength + k] *= vw;
+    #elif ReduceMax
+    Optr[indexO * updatesLength + k] = max(Optr[indexO * updatesLength + k], vw);
+    #elif ReduceMin
+    Optr[indexO * updatesLength + k] = min(Optr[indexO * updatesLength + k], vw);
+    #else
+    Optr[indexO * updatesLength + k] = vw;
+    #endif
+}

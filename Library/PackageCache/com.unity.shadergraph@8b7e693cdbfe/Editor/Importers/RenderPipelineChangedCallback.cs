@@ -1,0 +1,27 @@
+using UnityEngine;
+using UnityEngine.Rendering;
+
+namespace UnityEditor.ShaderGraph
+{
+    static class RenderPipelineChangedCallback
+    {
+        internal static readonly string k_CustomDependencyKey = "ShaderGraph/RenderPipelineChanged";
+
+        [InitializeOnLoadMethod]
+        private static void RegisterSRPChangeCallback()
+        {
+            if (AssetDatabase.IsAssetImportWorkerProcess())
+                return;
+
+            RenderPipelineManager.activeRenderPipelineTypeChanged -= SRPChanged;
+            RenderPipelineManager.activeRenderPipelineTypeChanged += SRPChanged;
+            SRPChanged();
+        }
+
+        static Hash128 ComputeCurrentRenderPipelineHash()
+            => Hash128.Compute(GraphicsSettings.currentRenderPipelineAssetType?.FullName ?? string.Empty);
+
+        static void SRPChanged()
+            => AssetDatabase.RegisterCustomDependency(k_CustomDependencyKey,ComputeCurrentRenderPipelineHash());
+    }
+}

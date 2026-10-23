@@ -1,0 +1,22 @@
+.plan-approval-footer-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+.plan-approval-footer-deny-btn {
+    padding: 4px 8px;
+    background-color: transparent;
+    border-width: 0;
+    border-radius: 4px;
+}
+
+.plan-approval-footer-deny-btn:hover {
+    background-color: var(--muse-chat-foregrounds-320);
+}
+
+.plan-approval-footer-approve-btn {
+    padding: 4px 8px;
+    border-radius: 4px;
+}

@@ -1,0 +1,29 @@
+{
+  "name": "com.unity.ai.assistant",
+  "displayName": "Assistant",
+  "version": "2.20.0-pre.2",
+  "unity": "6000.0",
+  "description": "Assistant is a generative AI tool integrated into the Unity Editor to explore ideas, answer questions, and perform actions directly in the project. Use natural-language prompts to interact with Assistant in a conversation-based interface. Depending on the mode you choose, Assistant can either provide guidance or take action in your scene and assets.\n\nAsk\nFocuses on explanation and guidance. Assistant answers questions, suggests workflows, and inspects your project using read-only tools without modifying your content.\n\nAgent\nFocuses on action. Assistant can create, modify, or remove objects and assets by calling the Unity Editor tools. All actions respect your permission settings and require approval when needed.\n\nAssistant is designed to be project-aware, helping you work more efficiently without leaving the Unity Editor. It also provides tools for adding generative AI to Unity asset workflows.",
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.2.1",
+    "com.unity.modules.unitywebrequest": "1.0.0",
+    "com.unity.modules.uielements": "1.0.0",
+    "com.unity.2d.sprite": "1.0.0",
+    "com.unity.mathematics": "1.3.2",
+    "com.unity.nuget.mono-cecil": "1.11.5"
+  },
+  "unityRelease": "60f1",
+  "_upm": {
+    "changelog": "### Fixed\n\n- Fatal `BadImageFormatException: Bad IL format` crash on CoreCLR Editor builds (e.g. 7000.0) when creating or opening a project with the AI Assistant package (UUM-155231, UUM-149687)."
+  },
+  "upmCi": {
+    "footprint": "ed93ed9c1351192df784c11f3837e6bef3c2cd36"
+  },
+  "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.20/manual/index.html",
+  "repository": {
+    "url": "https://github.cds.internal.unity3d.com/unity/muse-editor.git",
+    "type": "git",
+    "revision": "3c7c366cbd267c5e7d495baa83e4580a508d7989"
+  },
+  "_fingerprint": "1b11b9bfd84a25d7b0951fdaaa2b43a483f31ec0"
+}

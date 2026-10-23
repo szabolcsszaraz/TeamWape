@@ -1,0 +1,55 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    
+    <ui:ScrollView class="assistant-skills-settings-page">
+
+        <ui:Label text="Manage Skills" name="assistantSkillsSettingsHeader" />
+
+        <ui:Label text="Skills are modular capabilities that provide domain-specific instructions to guide AI Assistant. Assistant loads skills automatically when they are needed for a task, which helps keep responses focused and efficient." class="assistant-skills-description" />
+
+        <ui:Toggle name="notifyToggle" label="Notify me when new skills are discovered" />
+
+        <ui:VisualElement class="assistant-skills-info-row">
+            <ui:Label name="skillsTimestampLabel" text="" class="assistant-skills-timestamp" />
+        </ui:VisualElement>
+        
+        <ui:VisualElement name="skillsSearchContainer" />
+        
+        <ui:VisualElement name="skillsListOuter" class="assistant-skills-group-outer" style="display: none;">
+            <ui:VisualElement class="assistant-skills-header-row">
+                <ui:Label text="Skills with issues detected" class="assistant-skills-section-title" />
+            </ui:VisualElement>
+            <ui:VisualElement name="skillsIssuesContainer" class="assistant-skills-group-container" />
+        </ui:VisualElement>
+        
+        <ui:VisualElement name="skillsListContainer">
+            <ui:VisualElement class="assistant-skills-group-outer">
+                <ui:VisualElement class="assistant-skills-header-row">
+                    <ui:Label text="Project skills" class="assistant-skills-section-title" />
+                </ui:VisualElement>
+                <ui:VisualElement name="skillsContainerProject" class="assistant-skills-group-container" />
+            </ui:VisualElement>
+            
+            <ui:VisualElement class="assistant-skills-group-outer">
+                <ui:VisualElement class="assistant-skills-header-row">
+                    <ui:Label text="User skills" class="assistant-skills-section-title" />
+                </ui:VisualElement>
+                <ui:VisualElement name="skillsContainerUser" class="assistant-skills-group-container" />
+            </ui:VisualElement>
+
+            <ui:VisualElement name="skillsPackageSection" class="assistant-skills-group-outer" style="display: none;">
+                <ui:VisualElement class="assistant-skills-header-row">
+                    <ui:Label text="Package skills" class="assistant-skills-section-title" />
+                </ui:VisualElement>
+                <ui:VisualElement name="skillsContainerPackage" class="assistant-skills-group-container" />
+            </ui:VisualElement>
+
+            <ui:VisualElement name="skillsInternalSection" class="assistant-skills-group-outer">
+                <ui:VisualElement class="assistant-skills-header-row">
+                    <ui:Label text="Internal skills" class="assistant-skills-section-title" />
+                </ui:VisualElement>
+                <ui:VisualElement name="skillsContainerInternal" class="assistant-skills-group-container" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        
+    </ui:ScrollView>
+</ui:UXML>

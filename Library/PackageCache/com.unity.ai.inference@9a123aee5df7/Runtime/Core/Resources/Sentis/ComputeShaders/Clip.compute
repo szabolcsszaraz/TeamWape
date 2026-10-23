@@ -1,0 +1,47 @@
+#pragma kernel Clip
+
+#include "Tensor.cginc"
+
+#pragma multi_compile_local _ ClipInt
+#pragma multi_compile_local _ UseMin
+#pragma multi_compile_local _ UseMax
+
+#ifdef ClipInt
+#define DTYPE int
+#else
+#define DTYPE float
+#endif
+
+StructuredBuffer<DTYPE> Xptr;
+
+#ifdef UseMin
+StructuredBuffer<DTYPE> Sptr;
+#endif
+#ifdef UseMax
+StructuredBuffer<DTYPE> Bptr;
+#endif
+RWStructuredBuffer<DTYPE> Optr;
+
+uint2 unrolledDispatchArgs;
+
+#define TILE_DIM 256
+
+[numthreads(TILE_DIM, 1, 1)]
+void Clip(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    DTYPE v = Xptr[ti];
+    #ifdef UseMin
+    v = max(v, Sptr[0]);
+    #endif
+    #ifdef UseMax
+    v = min(v, Bptr[0]);
+    #endif
+    Optr[ti] = v;
+}

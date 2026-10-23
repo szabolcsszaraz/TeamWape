@@ -1,0 +1,13 @@
+.update-banner-actions-row {
+    flex-direction: row;
+    align-self: flex-end;
+    flex-shrink: 0;
+}
+
+.update-banner-accent-button {
+    background-color: #2c5d87;
+}
+
+.light .update-banner-accent-button {
+    background-color: #3a72b0;
+}

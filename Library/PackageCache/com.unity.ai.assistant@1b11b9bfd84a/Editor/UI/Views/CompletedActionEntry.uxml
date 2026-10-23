@@ -1,0 +1,14 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="mui-completed-action-entry">
+        <ui:VisualElement name="actionStatusIcon"/>
+        <ui:Label name="actionDescription"/>
+        <ui:VisualElement name="objectRefButton">
+            <ui:Image name="objectRefIcon"/>
+            <ui:Label name="objectRefLabel"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="lineCountContainer">
+            <ui:Label name="linesAdded"/>
+            <ui:Label name="linesRemoved"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</UXML>

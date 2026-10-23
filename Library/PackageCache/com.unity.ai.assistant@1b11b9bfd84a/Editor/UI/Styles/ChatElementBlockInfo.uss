@@ -1,0 +1,16 @@
+.mui-chat-response-info-title {
+    flex-direction: row;
+    width: 100%;
+    margin-top: 8px;
+    margin-bottom: 12px;
+}
+
+#infoText {
+    -unity-text-align: middle-left;
+    padding-left: 0;
+    padding-right: 0;
+    -unity-font-style: normal;
+    color: var(--muse-chat-text-answers);
+    white-space: normal;
+    flex-shrink: 1;
+}

@@ -1,0 +1,16 @@
+{
+    "name": "Unity.AI.Assistant.Agent.Dynamic.Extension.Editor",
+    "rootNamespace": "Unity.AI.Assistant.Agent.Dynamic.Extension.Editor",
+    "references": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

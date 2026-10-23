@@ -1,0 +1,90 @@
+#pragma kernel BlackmanWindow
+#pragma kernel HammingWindow
+#pragma kernel HannWindow
+#pragma kernel MelWeightMatrix
+
+RWStructuredBuffer<float> Optr;
+
+uint2 unrolledDispatchArgs;
+float N;
+
+#define TILE_DIM 256
+
+[numthreads(TILE_DIM, 1, 1)]
+void BlackmanWindow(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    Optr[ti] = 0.42f - 0.5f * cos(6.28318530718f * ti / N) + 0.08f * cos(12.5663706144f * ti / N);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void HammingWindow(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    Optr[ti] = 0.54347826087f - 0.45652173913f * cos(6.28318530718f * ti / N);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void HannWindow(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    Optr[ti] = 0.5f - 0.5f * cos(6.28318530718f * ti / N);
+}
+
+uint dftLength;
+uint numMelBins;
+uint numSpectrogramBins;
+float lowerEdgeMel;
+float melStep;
+uint sampleRate;
+
+[numthreads(TILE_DIM, 1, 1)]
+void MelWeightMatrix(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    uint idx = ti;
+    uint indexMelBin = idx % numMelBins;
+    idx /= numMelBins;
+    int indexFreqBin = idx;
+
+    float3 mel = lowerEdgeMel + (indexMelBin + int3(0, 1, 2)) * melStep;
+    int3 freqBins = floor((dftLength + 1) * (700 * (pow(10, mel / 2595.0) - 1)) / sampleRate);
+    int lowerFreqBin = freqBins.x;
+    int centreFreqBin = freqBins.y;
+    int higherFreqBin = freqBins.z;
+
+    float v = 0;
+
+    if (lowerFreqBin == centreFreqBin && indexFreqBin == centreFreqBin)
+        v = 1;
+    else if (indexFreqBin >= lowerFreqBin && indexFreqBin <= centreFreqBin)
+        v = (float)(indexFreqBin - lowerFreqBin) / (centreFreqBin - lowerFreqBin);
+    else if (indexFreqBin >= centreFreqBin && indexFreqBin < higherFreqBin)
+        v = (float)(higherFreqBin - indexFreqBin) / (higherFreqBin - centreFreqBin);
+
+    Optr[ti] = v;
+}

@@ -1,0 +1,101 @@
+.run-command-tabs {
+    flex-direction: column;
+}
+
+.run-command-tabs .tab-container {
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.run-command-header-actions {
+    flex-direction: row;
+    align-items: center;
+    margin-left: auto;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.run-command-header-actions .mui-action-buttons-container {
+    flex-direction: row;
+}
+
+.run-command-header-actions #functionCallExpandButton {
+    margin-left: 8px;
+}
+
+.run-command-tab-buttons {
+    flex-direction: row;
+    background-color: var(--muse-chat-backgrounds-150);
+    border-radius: 4px;
+    align-items: center;
+}
+
+.run-command-tab-buttons .tab-button {
+    min-height: 20px;
+    width: 20px;
+    border-width: 0;
+    background-color: transparent;
+    border-radius: 3px;
+    margin: 2px;
+    align-items: center;
+    justify-content: center;
+}
+
+.run-command-tab-buttons .tab-button.tab-active {
+    background-color: var(--muse-chat-button-pressed);
+    border-radius: 4px;
+}
+
+.run-command-tabs .tab-content {
+    flex-grow: 1;
+}
+
+.run-command-tabs .tab-pane {
+    flex-grow: 1;
+    max-height: 500px;
+}
+
+.run-command-output-scroll {
+    flex-grow: 1;
+}
+
+.mui-execution-log-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.mui-execution-log-label {
+    color: var(--muse-chat-text-secondary);
+}
+
+.mui-execution-log-inline-value {
+    color: var(--muse-chat-text-secondary);
+    -unity-font-style: bold;
+}
+
+.mui-execution-log-object-link {
+    padding: 0;
+    margin: 0 2px;
+    border-width: 0;
+    background-color: transparent;
+    color: var(--muse-chat-accent-50);
+}
+
+.mui-execution-log-object-link:hover {
+    color: var(--muse-chat-accent-100);
+}
+
+.mui-execution-result-container {
+}
+
+.mui-run-command-result-foldout {
+    margin-top: 6px;
+}
+
+#runCommandOutputTab {
+    margin-right: 1px;
+}
+
+#runCommandCodeTab {
+    margin-left: 0;
+}

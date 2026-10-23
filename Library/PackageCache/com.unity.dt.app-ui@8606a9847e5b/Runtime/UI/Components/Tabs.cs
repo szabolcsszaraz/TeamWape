@@ -1,0 +1,912 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using Unity.AppUI.Core;
+using UnityEngine;
+using UnityEngine.UIElements;
+#if ENABLE_RUNTIME_DATA_BINDINGS
+using Unity.Properties;
+#endif
+
+namespace Unity.AppUI.UI
+{
+    /// <summary>
+    /// Direction of a UI container.
+    /// </summary>
+    [GenerateLowerCaseStrings]
+    public enum Direction
+    {
+        /// <summary>
+        /// Container's items are stacked horizontally.
+        /// </summary>
+        Horizontal,
+
+        /// <summary>
+        /// Container's items are stacked vertically.
+        /// </summary>
+        Vertical
+    }
+
+    /// <summary>
+    /// Tabs UI element.
+    /// </summary>
+#if ENABLE_UXML_SERIALIZED_DATA
+    [UxmlElement]
+#endif
+    public partial class Tabs : BaseVisualElement, INotifyValueChanged<int>
+    {
+#if ENABLE_RUNTIME_DATA_BINDINGS
+
+        internal static readonly BindingId sizeProperty = nameof(size);
+
+        internal static readonly BindingId directionProperty = nameof(direction);
+
+        internal static readonly BindingId emphasizedProperty = nameof(emphasized);
+
+        internal static readonly BindingId justifiedProperty = nameof(justified);
+
+        internal static readonly BindingId valueProperty = nameof(value);
+
+        internal static readonly BindingId itemsProperty = nameof(items);
+
+        internal static readonly BindingId sourceItemsProperty = nameof(sourceItems);
+
+        internal static readonly BindingId bindItemProperty = nameof(bindItem);
+
+        internal static readonly BindingId unbindItemProperty = nameof(unbindItem);
+
+#endif
+
+        /// <summary>
+        /// The Tabs main styling class.
+        /// </summary>
+        public const string ussClassName = "appui-tabs";
+
+        /// <summary>
+        /// The Tabs size styling class.
+        /// </summary>
+        [EnumName("GetSizeUssClassName", typeof(Size))]
+        public const string sizeUssClassName = ussClassName + "--size-";
+
+        /// <summary>
+        /// The Tabs direction styling class.
+        /// </summary>
+        [EnumName("GetOrientationUssClassName", typeof(Direction))]
+        public const string orientationUssClassName = ussClassName + "--";
+
+        /// <summary>
+        /// The Tabs emphasized mode styling class.
+        /// </summary>
+        public const string emphasizedUssClassName = ussClassName + "--emphasized";
+
+        /// <summary>
+        /// The Tabs justified mode styling class.
+        /// </summary>
+        public const string justifiedUssClassName = ussClassName + "--justified";
+
+        /// <summary>
+        /// The Tabs container styling class.
+        /// </summary>
+        public const string containerUssClassName = ussClassName + "__container";
+
+        /// <summary>
+        /// The Tabs ScrollView styling class.
+        /// </summary>
+        public const string scrollViewUssClassName = ussClassName + "__scroll-view";
+
+        /// <summary>
+        /// The Tabs indicator styling class.
+        /// </summary>
+        public const string indicatorUssClassName = ussClassName + "__indicator";
+
+        /// <summary>
+        /// The Tabs animated indicator styling class.
+        /// </summary>
+        public const string animatedIndicatorUssClassName = indicatorUssClassName + "--animated";
+
+        readonly VisualElement m_Indicator;
+
+        readonly List<TabItem> m_Items = new List<TabItem>();
+
+        bool m_UnbindingItems;
+
+        readonly ScrollView m_ScrollView;
+
+        readonly VisualElement m_LambdaContainer;
+
+        readonly VisualElement m_Container;
+
+        Action<TabItem, int> m_BindItem;
+
+        Action<TabItem, int> m_UnbindItem;
+
+        int m_DefaultValue;
+
+        Direction m_Direction;
+
+        Size m_Size;
+
+        IList m_SourceItems;
+
+        int m_Value;
+
+        IVisualElementScheduledItem m_ScheduledRefreshIndicator;
+
+        IVisualElementScheduledItem m_PollHierarchyItem;
+
+        List<TabItem> m_StaticItems;
+
+        readonly EventCallback<ITransitionEvent> m_TransitionEndAction;
+
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public Tabs()
+        {
+            AddToClassList(ussClassName);
+
+            pickingMode = PickingMode.Ignore;
+
+            m_ScrollView = new ScrollView
+            {
+                name = scrollViewUssClassName,
+#if UITK_NESTED_INTERACTION_KIND
+                nestedInteractionKind = ScrollView.NestedInteractionKind.StopScrolling,
+#endif
+                mode = ScrollViewMode.Horizontal,
+                horizontalScrollerVisibility = ScrollerVisibility.Hidden,
+                verticalScrollerVisibility = ScrollerVisibility.Hidden,
+            };
+            m_ScrollView.AddToClassList(scrollViewUssClassName);
+
+            m_Container = new VisualElement
+            {
+                name = containerUssClassName,
+                pickingMode = PickingMode.Ignore,
+            };
+            m_Container.AddToClassList(containerUssClassName);
+            m_ScrollView.Add(m_Container);
+
+            m_Indicator = new VisualElement
+            {
+                name = indicatorUssClassName,
+                pickingMode = PickingMode.Ignore,
+            };
+            m_Indicator.AddToClassList(indicatorUssClassName);
+
+            m_LambdaContainer = new VisualElement
+            {
+                name = "lambda-container",
+                pickingMode = PickingMode.Ignore,
+            };
+            hierarchy.Add(m_LambdaContainer);
+
+            hierarchy.Add(m_ScrollView);
+            hierarchy.Add(m_Indicator);
+
+            size = Size.M;
+            emphasized = false;
+            justified = false;
+            direction = Direction.Horizontal;
+            value = -1;
+
+            RegisterCallback<KeyDownEvent>(OnKeyDown);
+            RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+            this.RegisterContextChangedCallback<DirContext>(OnDirectionChanged);
+            m_PollHierarchyItem = schedule.Execute(PollHierarchy).Every(50L);
+            m_ScrollView.verticalScroller.valueChanged += OnVerticalScrollerChanged;
+            m_ScrollView.horizontalScroller.valueChanged += OnHorizontalScrollerChanged;
+            RegisterCallback<ActionTriggeredEvent>(OnItemClicked);
+            m_TransitionEndAction = OnIndicatorTransitionEnd;
+        }
+
+        void OnIndicatorTransitionEnd(ITransitionEvent evt)
+        {
+            m_Indicator.UnregisterCallback<TransitionEndEvent>(m_TransitionEndAction);
+            m_Indicator.UnregisterCallback<TransitionCancelEvent>(m_TransitionEndAction);
+            m_Indicator.RemoveFromClassList(animatedIndicatorUssClassName);
+
+            // make sure the indicator is in the right position,
+            // that would happen if the geometry has changed just after clicking on a tab
+            RefreshIndicator();
+        }
+
+        void OnDirectionChanged(ContextChangedEvent<DirContext> evt)
+        {
+            SyncItemsWithContainer();
+            RefreshVisuals();
+        }
+
+        /// <summary>
+        /// The size of the Tabs.
+        /// </summary>
+#if ENABLE_RUNTIME_DATA_BINDINGS
+        [CreateProperty]
+#endif
+#if ENABLE_UXML_SERIALIZED_DATA
+        [UxmlAttribute]
+#endif
+        public Size size
+        {
+            get => m_Size;
+            set
+            {
+                var changed = m_Size != value;
+                RemoveFromClassList(GetSizeUssClassName(m_Size));
+                m_Size = value;
+                AddToClassList(GetSizeUssClassName(m_Size));
+
+#if ENABLE_RUNTIME_DATA_BINDINGS
+                if (changed)
+                    NotifyPropertyChanged(in sizeProperty);
+#endif
+            }
+        }
+
+        /// <summary>
+        /// The direction of the Tabs. Horizontal or Vertical.
+        /// </summary>
+#if ENABLE_RUNTIME_DATA_BINDINGS
+        [CreateProperty]
+#endif
+#if ENABLE_UXML_SERIALIZED_DATA
+        [UxmlAttribute]
+#endif
+        public Direction direction
+        {
+            get => m_Direction;
+            set
+            {
+                var changed = m_Direction != value;
+                RemoveFromClassList(GetOrientationUssClassName(m_Direction));
+                m_Direction = value;
+                AddToClassList(GetOrientationUssClassName(m_Direction));
+                m_ScrollView.mode = m_Direction switch
+                {
+                    Direction.Vertical => ScrollViewMode.Vertical,
+                    _ => ScrollViewMode.Horizontal
+                };
+                RefreshSelection();
+
+#if ENABLE_RUNTIME_DATA_BINDINGS
+                if (changed)
+                    NotifyPropertyChanged(in directionProperty);
+#endif
+            }
+        }
+
+        /// <summary>
+        /// The current list of items used to populate the Tabs.
+        /// </summary>
+#if ENABLE_RUNTIME_DATA_BINDINGS
+        [CreateProperty(ReadOnly = true)]
+#endif
+        public IList items
+        {
+            get
+            {
+                SyncItemsWithContainer();
+                return m_SourceItems ?? m_StaticItems;
+            }
+        }
+
+        /// <summary>
+        /// The emphasized mode of the Tabs.
+        /// </summary>
+#if ENABLE_RUNTIME_DATA_BINDINGS
+        [CreateProperty]
+#endif
+#if ENABLE_UXML_SERIALIZED_DATA
+        [UxmlAttribute]
+#endif
+        public bool emphasized
+        {
+            get => ClassListContains(emphasizedUssClassName);
+            set
+            {
+                var changed = emphasized != value;
+                EnableInClassList(emphasizedUssClassName, value);
+
+#if ENABLE_RUNTIME_DATA_BINDINGS
+                if (changed)
+                    NotifyPropertyChanged(in emphasizedProperty);
+#endif
+            }
+        }
+
+        /// <summary>
+        /// The justified mode of the Tabs.
+        /// </summary>
+#if ENABLE_RUNTIME_DATA_BINDINGS
+        [CreateProperty]
+#endif
+#if ENABLE_UXML_SERIALIZED_DATA
+        [UxmlAttribute]
+#endif
+        public bool justified
+        {
+            get => ClassListContains(justifiedUssClassName);
+            set
+            {
+                var changed = justified != value;
+                EnableInClassList(justifiedUssClassName, value);
+
+#if ENABLE_RUNTIME_DATA_BINDINGS
+                if (changed)
+                    NotifyPropertyChanged(in justifiedProperty);
+#endif
+            }
+        }
+
+        /// <summary>
+        /// Method to bind the TabItem.
+        /// </summary>
+#if ENABLE_RUNTIME_DATA_BINDINGS
+        [CreateProperty]
+#endif
+        public Action<TabItem, int> bindItem
+        {
+            get => m_BindItem;
+
+            set
+            {
+                SyncItemsWithContainer();
+                var changed = m_BindItem != value;
+                m_BindItem = value;
+                RefreshItems();
+
+#if ENABLE_RUNTIME_DATA_BINDINGS
+                if (changed)
+                    NotifyPropertyChanged(in bindItemProperty);
+#endif
+            }
+        }
+
+        /// <summary>
+        /// Method to unbind the TabItem.
+        /// </summary>
+#if ENABLE_RUNTIME_DATA_BINDINGS
+        [CreateProperty]
+#endif
+        public Action<TabItem, int> unbindItem
+        {
+            get => m_UnbindItem;
+            set
+            {
+                SyncItemsWithContainer();
+                var changed = m_UnbindItem != value;
+                m_UnbindItem = value;
+                RefreshItems();
+
+#if ENABLE_RUNTIME_DATA_BINDINGS
+                if (changed)
+                    NotifyPropertyChanged(in unbindItemProperty);
+#endif
+            }
+        }
+
+        /// <summary>
+        /// Collection of items used to populate the Tabs.
+        /// </summary>
+#if ENABLE_RUNTIME_DATA_BINDINGS
+        [CreateProperty]
+#endif
+        public IList sourceItems
+        {
+            get => m_SourceItems;
+            set
+            {
+                if (m_SourceItems == value)
+                    return;
+
+                SyncItemsWithContainer();
+                m_SourceItems = value;
+
+                m_PollHierarchyItem?.Pause();
+                m_PollHierarchyItem = null;
+                RefreshItems();
+
+#if ENABLE_RUNTIME_DATA_BINDINGS
+                NotifyPropertyChanged(in sourceItemsProperty);
+                NotifyPropertyChanged(in itemsProperty);
+#endif
+            }
+        }
+
+        /// <summary>
+        /// The virtual content container of the Tabs.
+        /// </summary>
+        public override VisualElement contentContainer => m_LambdaContainer;
+
+        /// <summary>
+        /// The item container of the Tabs.
+        /// </summary>
+        public VisualElement itemContainer => m_Container;
+
+        /// <summary>
+        /// Set the value of the Tabs without notifying the change.
+        /// </summary>
+        /// <param name="newValue"> The new value.</param>
+        /// <exception cref="ValueOutOfRangeException"> Throws if the value is out of range.</exception>
+        public void SetValueWithoutNotify(int newValue)
+        {
+            SyncItemsWithContainer();
+            SetValueWithoutNotifyInternal(newValue);
+        }
+
+        void RefreshSelection(bool scroll = true)
+        {
+            SyncItemsWithContainer();
+            SetValueWithoutNotifyInternal(m_Value, scroll);
+        }
+
+        void SetValueWithoutNotifyInternal(int newValue, bool scroll = true, bool animateIndicator = false)
+        {
+            var previousValue = m_Value;
+            m_Value = IsValid(newValue) ? newValue : previousValue;
+
+            // refresh selection visually
+            if (previousValue >= 0 && previousValue < m_Items.Count && previousValue != m_Value)
+                m_Items[previousValue].selected = false;
+
+            RefreshVisuals(scroll, animateIndicator);
+        }
+
+        void RefreshVisuals(bool scroll = true, bool animateIndicator = false)
+        {
+            if (panel == null || !paddingRect.IsValid())
+                return;
+
+            if (m_Value >= 0 && m_Value < m_Items.Count)
+            {
+                m_Items[m_Value].selected = true;
+                if (scroll)
+                    m_ScrollView.ScrollTo(m_Items[m_Value]);
+                m_ScheduledRefreshIndicator?.Pause();
+                m_Indicator.EnableInClassList(animatedIndicatorUssClassName, animateIndicator);
+                m_Indicator.RegisterCallback<TransitionEndEvent>(m_TransitionEndAction);
+                m_Indicator.RegisterCallback<TransitionCancelEvent>(m_TransitionEndAction);
+                m_ScheduledRefreshIndicator = schedule.Execute(RefreshIndicator);
+            }
+            else
+            {
+                m_ScheduledRefreshIndicator?.Pause();
+                m_Indicator.RemoveFromClassList(animatedIndicatorUssClassName);
+                if (direction == Direction.Horizontal)
+                {
+                    m_Indicator.style.left = 0;
+                    m_Indicator.style.width = 0;
+                    m_Indicator.style.top = StyleKeyword.Null;
+                    m_Indicator.style.height = StyleKeyword.Null;
+                }
+                else
+                {
+                    m_Indicator.style.top = 0;
+                    m_Indicator.style.height = 0;
+                    m_Indicator.style.left = StyleKeyword.Null;
+                    m_Indicator.style.width = StyleKeyword.Null;
+                }
+            }
+        }
+
+        void RefreshIndicator()
+        {
+            var item = m_Items.Count > m_Value && m_Value >= 0 ? m_Items[m_Value] : null;
+            if (item == null)
+            {
+                m_Indicator.style.left = 0;
+                m_Indicator.style.width = 0;
+                m_Indicator.style.top = 0;
+                m_Indicator.style.height = 0;
+                return;
+            }
+            switch (direction)
+            {
+                case Direction.Horizontal:
+                    var x = item.layout.x - m_ScrollView.scrollOffset.x;
+                    if (!Mathf.Approximately(x, m_Indicator.resolvedStyle.left))
+                        m_Indicator.style.left = x;
+                    if (!Mathf.Approximately(item.layout.width, m_Indicator.resolvedStyle.width))
+                        m_Indicator.style.width = item.layout.width;
+                    m_Indicator.style.height = StyleKeyword.Null;
+                    m_Indicator.style.top = StyleKeyword.Null;
+                    break;
+                case Direction.Vertical:
+                    var y = item.layout.y - m_ScrollView.scrollOffset.y;
+                    if (!Mathf.Approximately(y, m_Indicator.resolvedStyle.top))
+                        m_Indicator.style.top = y;
+                    if (!Mathf.Approximately(item.layout.height, m_Indicator.resolvedStyle.scale.value.y))
+                        m_Indicator.style.height = item.layout.height;
+                    m_Indicator.style.left = StyleKeyword.Null;
+                    m_Indicator.style.width = StyleKeyword.Null;
+                    break;
+                default:
+                    throw new ValueOutOfRangeException(nameof(direction), direction);
+            }
+        }
+
+        /// <summary>
+        /// The value of the Tabs. This is the index of the selected TabItem.
+        /// </summary>
+#if ENABLE_RUNTIME_DATA_BINDINGS
+        [CreateProperty]
+#endif
+#if ENABLE_UXML_SERIALIZED_DATA
+        [UxmlAttribute]
+#endif
+        public int value
+        {
+            get
+            {
+                SyncItemsWithContainer();
+                return m_Value;
+            }
+            set
+            {
+                SyncItemsWithContainer();
+                if (value == m_Value || !IsValid(value))
+                    return;
+
+                var previousValue = m_Value;
+                SetValueWithoutNotifyInternal(value, true, true);
+
+                using var evt = ChangeEvent<int>.GetPooled(previousValue, value);
+                evt.target = this;
+                SendEvent(evt);
+
+#if ENABLE_RUNTIME_DATA_BINDINGS
+                NotifyPropertyChanged(in valueProperty);
+#endif
+            }
+        }
+
+        bool IsValid(int v)
+        {
+            if (v == -1)
+                return true;
+            return v >= 0 && v < m_Items.Count && m_Items[v].enabledSelf;
+        }
+
+        void OnKeyDown(KeyDownEvent evt)
+        {
+            var handled = false;
+
+            if (direction == Direction.Horizontal)
+            {
+                if (evt.keyCode == KeyCode.LeftArrow)
+                    handled = GoToPrevious();
+                else if (evt.keyCode == KeyCode.RightArrow) handled = GoToNext();
+            }
+            else
+            {
+                if (evt.keyCode == KeyCode.UpArrow)
+                    handled = GoToPrevious();
+                else if (evt.keyCode == KeyCode.DownArrow) handled = GoToNext();
+            }
+
+            if (handled)
+            {
+
+                evt.StopPropagation();
+            }
+        }
+
+        /// <summary>
+        /// Go to the next TabItem.
+        /// </summary>
+        /// <returns> True if the next TabItem is selected, false otherwise.</returns>
+        public bool GoToNext()
+        {
+            SyncItemsWithContainer();
+            var nextIndex = m_Value + 1;
+            while (nextIndex < m_Items.Count && !m_Items[nextIndex].enabledSelf)
+                nextIndex++;
+            if (nextIndex >= m_Items.Count || nextIndex == m_Value)
+                return false;
+            value = nextIndex;
+            return true;
+        }
+
+        /// <summary>
+        /// Go to the previous TabItem.
+        /// </summary>
+        /// <returns> True if the previous TabItem is selected, false otherwise.</returns>
+        public bool GoToPrevious()
+        {
+            SyncItemsWithContainer();
+            // From the deselected state (value == -1) scan back from the last item, mirroring
+            // GoToNext which scans forward from the first, so Left/Up can reselect a tab too.
+            var nextIndex = (m_Value == -1 ? m_Items.Count : m_Value) - 1;
+            while (nextIndex >= 0 && !m_Items[nextIndex].enabledSelf)
+                nextIndex--;
+            if (nextIndex < 0 || nextIndex == m_Value)
+                return false;
+            value = nextIndex;
+            return true;
+        }
+
+        void OnHorizontalScrollerChanged(float offset)
+        {
+            if (direction == Direction.Horizontal)
+                RefreshSelection(false);
+        }
+
+        void OnVerticalScrollerChanged(float offset)
+        {
+            if (direction == Direction.Vertical)
+                RefreshSelection(false);
+        }
+
+        void PollHierarchy()
+        {
+            if (m_StaticItems == null && childCount > 0 && m_SourceItems == null)
+            {
+                m_PollHierarchyItem?.Pause();
+                m_PollHierarchyItem = null;
+                m_StaticItems = new List<TabItem>();
+                foreach (var c in Children())
+                {
+                    if (c is TabItem item)
+                        m_StaticItems.Add(item);
+                }
+
+#if ENABLE_RUNTIME_DATA_BINDINGS
+                NotifyPropertyChanged(in itemsProperty);
+#endif
+
+                RefreshItems();
+            }
+        }
+
+        void RefreshItems()
+        {
+            // Unbind while the views are still attached, without letting a handler that reads value resync mid-rebuild.
+            var previousItems = m_Items.ToArray();
+            m_UnbindingItems = true;
+            try
+            {
+                for (var i = 0; i < previousItems.Length; i++)
+                {
+                    unbindItem?.Invoke(previousItems[i], i);
+                    previousItems[i].UnregisterCallback<GeometryChangedEvent>(OnItemGeometryChanged);
+                }
+            }
+            finally
+            {
+                m_UnbindingItems = false;
+            }
+
+            itemContainer.Clear();
+            m_Items.Clear();
+
+            if (m_SourceItems != null)
+            {
+                for (var i = 0; i < m_SourceItems.Count; i++)
+                {
+                    var item = new TabItem();
+                    bindItem?.Invoke(item, i);
+                    item.RegisterCallback<GeometryChangedEvent>(OnItemGeometryChanged);
+                    itemContainer.Add(item);
+                    m_Items.Add(item);
+                }
+            }
+            else if (m_StaticItems != null)
+            {
+                foreach (var item in m_StaticItems)
+                {
+                    item.RegisterCallback<GeometryChangedEvent>(OnItemGeometryChanged);
+                    itemContainer.Add(item);
+                    m_Items.Add(item);
+                }
+            }
+
+            SetValueWithoutNotifyInternal(FirstEnabledIndex());
+        }
+
+        int FirstEnabledIndex()
+        {
+            for (var i = 0; i < m_Items.Count; i++)
+            {
+                if (m_Items[i].enabledSelf)
+                    return i;
+            }
+            return -1;
+        }
+
+        bool ItemsMatchContainer()
+        {
+            var i = 0;
+            for (var c = 0; c < itemContainer.childCount; c++)
+            {
+                var child = itemContainer[c];
+                if (!(child is TabItem))
+                    continue;
+                if (i >= m_Items.Count || m_Items[i] != child)
+                    return false;
+                i++;
+            }
+            return i == m_Items.Count;
+        }
+
+        // UI Builder adds and removes TabItems directly in the item container, bypassing items and sourceItems.
+        // Indices are only meaningful against the current container, so this runs before any of them is read.
+        void SyncItemsWithContainer()
+        {
+            if (m_UnbindingItems)
+                return;
+
+            // The value-change notification can run a handler that edits the container again.
+            while (!ItemsMatchContainer())
+                ResyncItemsWithContainer();
+        }
+
+        void ResyncItemsWithContainer()
+        {
+            var previousValue = m_Value;
+
+            // The source is authoritative for bound tabs, so value keeps indexing it and the views are rebuilt.
+            if (m_SourceItems != null)
+            {
+                RefreshItems();
+                SetValueWithoutNotifyInternal(previousValue);
+                NotifyValueChangedIfNeeded(previousValue);
+                return;
+            }
+
+            var selectedItem = m_Value >= 0 && m_Value < m_Items.Count ? m_Items[m_Value] : null;
+            var wasEmpty = m_Items.Count == 0;
+
+            foreach (var item in m_Items)
+                item.UnregisterCallback<GeometryChangedEvent>(OnItemGeometryChanged);
+            m_Items.Clear();
+
+            foreach (var child in itemContainer.Children())
+            {
+                if (child is TabItem item)
+                {
+                    item.RegisterCallback<GeometryChangedEvent>(OnItemGeometryChanged);
+                    m_Items.Add(item);
+                }
+            }
+
+            m_StaticItems ??= new List<TabItem>();
+            m_StaticItems.Clear();
+            m_StaticItems.AddRange(m_Items);
+            m_PollHierarchyItem?.Pause();
+            m_PollHierarchyItem = null;
+#if ENABLE_RUNTIME_DATA_BINDINGS
+            NotifyPropertyChanged(in itemsProperty);
+#endif
+
+            m_Value = selectedItem != null ? m_Items.IndexOf(selectedItem) : -1;
+            if (selectedItem != null && m_Value == -1)
+            {
+                selectedItem.selected = false;
+                m_Value = FirstEnabledIndex();
+            }
+            else if (wasEmpty)
+            {
+                m_Value = FirstEnabledIndex();
+            }
+
+            for (var i = 0; i < m_Items.Count; i++)
+                m_Items[i].selected = i == m_Value;
+
+            RefreshVisuals();
+            NotifyValueChangedIfNeeded(previousValue);
+        }
+
+        void NotifyValueChangedIfNeeded(int previousValue)
+        {
+            if (m_Value == previousValue)
+                return;
+
+            using var evt = ChangeEvent<int>.GetPooled(previousValue, m_Value);
+            evt.target = this;
+            SendEvent(evt);
+#if ENABLE_RUNTIME_DATA_BINDINGS
+            NotifyPropertyChanged(in valueProperty);
+#endif
+        }
+
+        void OnItemGeometryChanged(GeometryChangedEvent evt)
+        {
+            if (m_Indicator.ClassListContains(animatedIndicatorUssClassName))
+                return;
+
+            if (evt.target is TabItem { selected: true })
+                RefreshSelection();
+        }
+
+        void OnGeometryChanged(GeometryChangedEvent evt)
+        {
+            RefreshSelection();
+        }
+
+        void OnItemClicked(ActionTriggeredEvent evt)
+        {
+            if (evt.target is TabItem item)
+            {
+                SyncItemsWithContainer();
+                var newValue = m_Items.IndexOf(item);
+                if (value != newValue)
+                    value = newValue;
+                else
+                    RefreshVisuals(true, true);
+                evt.StopPropagation();
+            }
+        }
+
+#if ENABLE_UXML_TRAITS
+
+        /// <summary>
+        /// Factory class to instantiate a <see cref="Tabs"/> using the data read from a UXML file.
+        /// </summary>
+        public new class UxmlFactory : UxmlFactory<Tabs, UxmlTraits>
+        {
+            /// <summary>
+            /// Describes the types of element that can appear as children of this element in a UXML file.
+            /// </summary>
+            public override IEnumerable<UxmlChildElementDescription> uxmlChildElementsDescription => new[]
+            {
+                new UxmlChildElementDescription(typeof(TabItem))
+            };
+        }
+
+        /// <summary>
+        /// Class containing the <see cref="UxmlTraits"/> for the <see cref="Tabs"/>.
+        /// </summary>
+        public new class UxmlTraits : BaseVisualElement.UxmlTraits
+        {
+            readonly UxmlIntAttributeDescription m_DefaultValue = new UxmlIntAttributeDescription
+            {
+                name = "value",
+                defaultValue = 0
+            };
+
+            readonly UxmlBoolAttributeDescription m_Emphasized = new UxmlBoolAttributeDescription
+            {
+                name = "emphasized",
+                defaultValue = false
+            };
+
+            readonly UxmlBoolAttributeDescription m_Justified = new UxmlBoolAttributeDescription
+            {
+                name = "justified",
+                defaultValue = false
+            };
+
+            readonly UxmlEnumAttributeDescription<Direction> m_Orientation = new UxmlEnumAttributeDescription<Direction>
+            {
+                name = "direction",
+                defaultValue = Direction.Horizontal,
+            };
+
+            readonly UxmlEnumAttributeDescription<Size> m_Size = new UxmlEnumAttributeDescription<Size>
+            {
+                name = "size",
+                defaultValue = Size.M,
+            };
+
+            /// <summary>
+            /// Initializes the VisualElement from the UXML attributes.
+            /// </summary>
+            /// <param name="ve"> The <see cref="VisualElement"/> to initialize.</param>
+            /// <param name="bag"> The <see cref="IUxmlAttributes"/> bag to use to initialize the <see cref="VisualElement"/>.</param>
+            /// <param name="cc"> The <see cref="CreationContext"/> to use to initialize the <see cref="VisualElement"/>.</param>
+            public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
+            {
+                m_PickingMode.defaultValue = PickingMode.Ignore;
+                base.Init(ve, bag, cc);
+                var el = (Tabs)ve;
+                el.size = m_Size.GetValueFromBag(bag, cc);
+                el.direction = m_Orientation.GetValueFromBag(bag, cc);
+                el.emphasized = m_Emphasized.GetValueFromBag(bag, cc);
+                el.justified = m_Justified.GetValueFromBag(bag, cc);
+                el.value = m_DefaultValue.GetValueFromBag(bag, cc);
+            }
+        }
+
+#endif
+    }
+}

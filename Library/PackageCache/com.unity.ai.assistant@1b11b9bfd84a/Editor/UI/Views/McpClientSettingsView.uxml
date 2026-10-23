@@ -1,0 +1,29 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <Style src="../Styles/AssistantDisclaimer.uss" />
+    <ui:ScrollView class="mcp-settings-view">
+        <ui:VisualElement class="mcp-settings-section">
+            <ui:VisualElement class="mcp-settings-section-block">
+                <ui:Label text="Assistant MCP Extensions" class="mcp-settings-heading" />
+                <ui:Label text="Expand Assistant's capabilities by adding third-party MCP tools to its functionality." class="mcp-settings-sub-heading" />
+            </ui:VisualElement>
+            <ui:VisualElement name="mcp-extensions-disclaimer-section" class="disclaimer-section">
+                <ui:VisualElement class="disclaimer-box">
+                    <ui:ScrollView class="disclaimer-scroll">
+                        <ui:VisualElement class="disclaimer-heading-row">
+                            <ui:Image name="disclaimer-info-icon" class="disclaimer-info-icon" />
+                            <ui:Label text="Important: Using MCP Extensions" class="disclaimer-heading" />
+                        </ui:VisualElement>
+                        <ui:Label text="By enabling MCP Extensions feature, you acknowledge and agree to the following:" class="disclaimer-intro" />
+                        <ui:VisualElement name="disclaimer-bullets-container" />
+                        <ui:Label text="By proceeding, you authorize Unity to facilitate connections to your chosen third-party tools via MCP Extensions." class="disclaimer-footer" />
+                    </ui:ScrollView>
+                    <ui:VisualElement class="disclaimer-button-row">
+                        <ui:Button name="disclaimer-accept-button" text="Accept" class="disclaimer-accept-button" />
+                    </ui:VisualElement>
+                    <ui:Label name="disclaimer-signin-label" text="Please sign in to a user account to use MCP Extensions" class="disclaimer-signin-label" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="mcpSettingsContentContainer" class="mcp-settings-content" />
+        </ui:VisualElement>
+    </ui:ScrollView>
+</ui:UXML>

@@ -1,0 +1,52 @@
+/*
+ * CSS variables specific to light mode
+ */
+:root {
+    --learning-icon: url('Icons/Learning.png');
+    --learning-tint: #C99700;
+    --package-icon: url('Icons/Package.png');
+    --questionnaire-icon: url('Icons/Questionnaire.png');
+    --package-installed-icon: url('Icons/PackageInstalled.png');
+    --info-icon: resource('_Help');
+    --colors-incompatible-background: #C99700;
+    --comment-color: darkgray;
+    --highlight-background-color: #f2f2f2;
+    --card-poster-image-bg-color: #555555;
+    --recommendation-badge-color: #00876A;
+    --theme-slider-background-color: #8F8F8F; /* From Default common light uss */
+    --badge-color-grey:#555555; /* From Default common light uss, feedback color */
+    --pre-release-badge-color: #C99700;
+    --pre-release-badge-color-bg: #F0F0F0;
+    --link-color: var(--unity-theme-text-color-11);
+    --link-hover-color : var(--unity-theme-text-color-10);
+    --link-active-color : var(--icon-active-color);
+    --tab-button-highlight-color: black;
+    --onboarding-button-selected-text-color: white;
+    --three-dot-icon: resource("UIBuilderPackageResources/Icons/Light/Inspector/Status/Settings.png");
+    --spinner-icon-big: url('Icons/Loading.png');
+    --checkmark-icon: url('Icons/Check.png');
+
+    --help-icon: resource("Icons/_Help.png");
+    --package-manager-icon: resource("Icons/PackageManager/Light/Package.png");
+    --back-button-icon: url('Icons/d_ArrowCaretLeft.png');
+    --icon-active-color: black;
+
+    --building-block-icon: url('Icons/BuildingBlock.png');
+    --building-block-icon-tint:  #4CAC72;
+
+    --icon-unity-cube : url('Icons/unitycube.png');
+
+    --genre-header-bg: var(--unity-colors-toolbar-background);
+}
+
+.color-recommendation-badge {
+   background-color: #eeeeee;
+}
+
+.hidden{
+    display: none;
+}
+
+.place-holder__icon {
+    -unity-background-image-tint-color: black;
+}

@@ -1,0 +1,53 @@
+.mui-chat-surface-root {
+    flex-direction: row;
+    flex-grow: 1;
+}
+
+.mui-chat-surface-viewport {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.mui-chat-surface-content {
+    max-width: 768px;
+    width: 100%;
+    align-self: center;
+    flex-grow: 1;
+}
+
+.mui-chat-surface-slot {
+    position: absolute;
+    left: 0;
+    right: 0;
+}
+
+/* Must stay after .mui-chat-surface-slot: same specificity, so the cascade order decides left and right. */
+.mui-chat-surface-slot-inset {
+    left: 20px;
+    right: 20px;
+}
+
+/* Legacy scoped this to the conversation root, which reached every scroller a message drew; the surface's
+   content layer is no scroll view, so the slot chain is what hands the width down now. */
+.mui-chat-surface-slot #unity-content-container {
+    width: 100%;
+}
+
+.mui-chat-surface-footer-message {
+    height: 18px;
+}
+
+.mui-chat-surface-footer-reasoning-group {
+    height: 10px;
+}
+
+.mui-chat-surface-footer-reasoning-sequence {
+    height: 10px;
+}
+
+.mui-chat-surface-footer-reasoning-separator {
+    height: 9px;
+    padding-bottom: 8px;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--muse-chat-separator-line);
+}

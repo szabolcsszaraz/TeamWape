@@ -1,0 +1,16 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="functionCallEntryRoot" class="mui-function-call-entry-root">
+        <!--<ui:VisualElement class="mui-function-call-separator-line"/>-->
+        <ui:VisualElement name="functionCallHeader" class="mui-function-call-entry-header-container">
+            <ui:Image name="functionCallStatus" class="status-indicator"/>
+            <ui:Label name="functionCallTitle"/>
+            <ui:Label name="functionCallParameters"/>
+            <ui:Button name="functionCallExpandButton" tooltip="Expand" class="mui-code-block-element-button tab-button mui-expand-button mui-expand-button--hidden">
+                <ui:Image class="mui-action-button-image-large mui-icon-enlarge" picking-mode="Ignore"/>
+            </ui:Button>
+        </ui:VisualElement>
+        <ui:ScrollView name='functionCallScrollView' class="function-call-content-scroll" mode="VerticalAndHorizontal">
+            <ui:VisualElement name="functionCallContent"/>
+        </ui:ScrollView >
+    </ui:VisualElement>
+</UXML>

@@ -1,0 +1,69 @@
+#pragma kernel DepthToSpaceDepthColumnRow DEPTHTOSPACE DEPTHCOLUMNROW MODE_D=DepthColumnRow
+#pragma kernel DepthToSpaceColumnRowDepth DEPTHTOSPACE COLUMNDEPTHROW MODE_D=ColumnRowDepth
+#pragma kernel SpaceToDepth
+#include "Tensor.cginc"
+
+uint2 unrolledDispatchArgs;
+uint inputChannels;
+uint inputWidth;
+uint inputSpatialSize;
+uint inputBatchOffset;
+uint outputHeight;
+uint outputWidth;
+uint outputSpatialSize;
+uint outputChannels;
+uint outputBatch;
+uint blocksize;
+
+StructuredBuffer<float> Xptr;
+RWStructuredBuffer<float> Optr;
+
+#define FUNC_NAME_D(MODE_D) DepthToSpace##MODE_D
+
+[numthreads(8, 8, 1)]
+void FUNC_NAME_D(MODE_D)(uint3 dispatchThreadID : SV_DispatchThreadID)
+{
+    uint c = dispatchThreadID.x % outputChannels;
+    uint n = dispatchThreadID.x / outputChannels;
+    if (n >= outputBatch)
+        return;
+
+    uint x = dispatchThreadID.y % outputWidth;
+    uint y = dispatchThreadID.y / outputWidth;
+    if (y >= outputHeight)
+        return;
+
+    uint iy = y / blocksize;
+    uint by = y % blocksize;
+    uint ix = x / blocksize;
+    uint bx = x % blocksize;
+
+    #ifdef COLUMNDEPTHROW
+        Optr[dispatchThreadID.x * outputSpatialSize + dispatchThreadID.y] = Xptr[n * inputBatchOffset + (c * blocksize * blocksize + by * blocksize + bx) * inputSpatialSize + iy * inputWidth + ix];
+    #endif
+    #ifdef DEPTHCOLUMNROW
+        Optr[dispatchThreadID.x * outputSpatialSize + dispatchThreadID.y] = Xptr[n * inputBatchOffset + (by * blocksize * outputChannels + bx * outputChannels + c) * inputSpatialSize + iy * inputWidth + ix];
+    #endif
+}
+
+[numthreads(8, 8, 1)]
+void SpaceToDepth(uint3 dispatchThreadID : SV_DispatchThreadID)
+{
+    uint c = dispatchThreadID.x % outputChannels;
+    uint n = dispatchThreadID.x / outputChannels;
+    if (n >= outputBatch)
+        return;
+
+    uint x = dispatchThreadID.y % outputWidth;
+    uint y = dispatchThreadID.y / outputWidth;
+    if (y >= outputHeight)
+        return;
+
+    uint ic = ((uint)c % inputChannels);
+    uint bx = ((uint)c / inputChannels) % blocksize;
+    uint by = ((uint)c / inputChannels) / blocksize;
+    uint ix = x * blocksize + bx;
+    uint iy = y * blocksize + by;
+
+    Optr[dispatchThreadID.x * outputSpatialSize + dispatchThreadID.y] = Xptr[n *inputBatchOffset + ic * inputSpatialSize + iy * inputWidth + ix];
+}

@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="optionRow" class="ask-user-option-row">
+        <ui:VisualElement class="ask-user-option-text-column">
+            <ui:Label name="optionLabel"/>
+            <ui:Label name="optionDescription" class="ask-user-option-description"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

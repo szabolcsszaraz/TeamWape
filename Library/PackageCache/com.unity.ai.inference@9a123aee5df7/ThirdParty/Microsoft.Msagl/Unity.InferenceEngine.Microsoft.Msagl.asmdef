@@ -1,0 +1,16 @@
+{
+    "name": "Unity.InferenceEngine.Microsoft.Msagl",
+    "rootNamespace": "Microsoft.Msagl",
+    "references": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

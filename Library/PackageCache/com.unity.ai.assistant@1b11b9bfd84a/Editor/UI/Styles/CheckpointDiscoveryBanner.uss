@@ -1,0 +1,134 @@
+.mui-checkpoint-discovery-root {
+    flex-shrink: 0;
+    background-color: var(--muse-chat-backgrounds-175);
+    border-width: 1px;
+    border-color: var(--muse-chat-foregrounds-310);
+    border-radius: var(--muse-chat-border-radius);
+    overflow: hidden;
+}
+
+.mui-checkpoint-discovery-row {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 12px;
+}
+
+.mui-checkpoint-discovery-collapsed {
+    flex-direction: column;
+    padding: 8px 12px;
+    cursor: link;
+}
+
+.mui-checkpoint-discovery-collapsed-header {
+    flex-direction: row;
+    align-items: center;
+    cursor: link;
+}
+
+.mui-checkpoint-discovery-collapsed .mui-checkpoint-discovery-title,
+.mui-checkpoint-discovery-collapsed .mui-checkpoint-discovery-time-estimate {
+    cursor: link;
+}
+
+.mui-checkpoint-discovery-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    margin-right: 8px;
+    --unity-image-size: scale-to-fit;
+}
+
+.mui-checkpoint-discovery-fail-icon {
+    --unity-image-tint-color: var(--muse-chat-icon-error-color);
+}
+
+.mui-checkpoint-discovery-title {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.mui-checkpoint-discovery-expanded {
+    padding: 12px;
+}
+
+.mui-checkpoint-discovery-header-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.mui-checkpoint-discovery-header-title {
+    flex-grow: 1;
+    -unity-font-style: bold;
+}
+
+.mui-checkpoint-discovery-time-estimate {
+    flex-shrink: 0;
+    margin-left: 8px;
+    color: var(--muse-chat-text-secondary);
+}
+
+.mui-checkpoint-discovery-progress-zone {
+    flex-shrink: 0;
+    padding: 9px 12px;
+    margin-bottom: -9px;
+    cursor: link;
+}
+
+.mui-checkpoint-discovery-progress-bar {
+    height: 4px;
+    background-color: var(--muse-chat-backgrounds-200);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.mui-checkpoint-discovery-progress-fill {
+    height: 100%;
+    width: 0;
+    background-color: var(--muse-chat-accent-100);
+}
+
+.mui-checkpoint-discovery-body {
+    color: var(--muse-chat-text-answers);
+    margin-bottom: 6px;
+    white-space: normal;
+}
+
+.mui-checkpoint-discovery-secondary {
+    color: var(--muse-chat-text-secondary);
+    margin-bottom: 12px;
+    white-space: normal;
+}
+
+.mui-checkpoint-discovery-actions {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mui-checkpoint-discovery-actions-end {
+    justify-content: flex-end;
+}
+
+.mui-checkpoint-discovery-button {
+    border-width: 0;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.mui-checkpoint-discovery-close {
+    width: 16px;
+    height: 16px;
+    align-items: center;
+    justify-content: center;
+    margin-left: 4px;
+    margin-right: -2px;
+    flex-shrink: 0;
+    background-color: transparent;
+    border-width: 0;
+}
+
+.mui-checkpoint-discovery-close .mui-action-button-image {
+    width: 16px;
+    height: 16px;
+}

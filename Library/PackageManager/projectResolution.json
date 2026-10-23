@@ -1,0 +1,572 @@
+{
+  "context": {
+    "projectPath": "C:/Unity Projects/TeamWape/Packages",
+    "unityVersion": "6000.6.7f1"
+  },
+  "inputs": [
+    "C:\\Unity Projects\\TeamWape\\Packages\\manifest.json",
+    "C:\\Unity Projects\\TeamWape\\Packages\\packages-lock.json",
+    "C:\\Program Files\\Unity\\Hub\\Editor\\6000.6.7f1\\Editor\\Data\\Resources\\PackageManager\\BuiltInPackages\\BuiltInPackagesCombined.sha1"
+  ],
+  "outputs": {
+    "com.unity.ai.assistant@2.20.0-pre.2": {
+      "name": "com.unity.ai.assistant",
+      "displayName": "Assistant",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.ai.assistant@1b11b9bfd84a",
+      "fingerprint": "1b11b9bfd84a25d7b0951fdaaa2b43a483f31ec0",
+      "editorCompatibility": "6000.0.60f1",
+      "version": "2.20.0-pre.2",
+      "source": "registry",
+      "testable": false
+    },
+    "com.unity.ai.inference@2.6.1": {
+      "name": "com.unity.ai.inference",
+      "displayName": "Sentis",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.ai.inference@9a123aee5df7",
+      "fingerprint": "9a123aee5df7bf5c7b84e4fb3d46470e013f6a36",
+      "editorCompatibility": "6000.0.0a1",
+      "version": "2.6.1",
+      "source": "registry",
+      "testable": false
+    },
+    "com.unity.ai.navigation@2.0.16": {
+      "name": "com.unity.ai.navigation",
+      "displayName": "AI Navigation",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.ai.navigation@d0cf77b009bb",
+      "fingerprint": "d0cf77b009bbdba7a0bf95e0de8b25be0659b9a4",
+      "editorCompatibility": "6000.0.0a1",
+      "version": "2.0.16",
+      "source": "registry",
+      "testable": false
+    },
+    "com.unity.ide.rider@3.1.0": {
+      "name": "com.unity.ide.rider",
+      "displayName": "JetBrains Rider Editor",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.ide.rider@570989d4a882",
+      "fingerprint": "570989d4a88246414b032dbbd9c0395f928933f2",
+      "editorCompatibility": "6000.0.0a1",
+      "version": "3.1.0",
+      "source": "registry",
+      "testable": false
+    },
+    "com.unity.ide.visualstudio@2.0.26": {
+      "name": "com.unity.ide.visualstudio",
+      "displayName": "Visual Studio Editor",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.ide.visualstudio@a99d56dec63f",
+      "fingerprint": "a99d56dec63ffb3a911a5a9bce9b77ba862a601c",
+      "editorCompatibility": "2021.3.0a1",
+      "version": "2.0.26",
+      "source": "registry",
+      "testable": false
+    },
+    "com.unity.inputsystem@1.20.1": {
+      "name": "com.unity.inputsystem",
+      "displayName": "Input System",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.inputsystem@2436e68c60c4",
+      "fingerprint": "2436e68c60c469edbccef8f6b3c319b9441f4675",
+      "editorCompatibility": "6000.0.0a1",
+      "version": "1.20.1",
+      "source": "registry",
+      "testable": false
+    },
+    "com.unity.multiplayer.center@2.1.0": {
+      "name": "com.unity.multiplayer.center",
+      "displayName": "Multiplayer Center",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.multiplayer.center@95d2d3515ad6",
+      "fingerprint": "95d2d3515ad624e7e619c876ebe6a64e80cae4b4",
+      "version": "2.1.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.render-pipelines.universal@17.6.0": {
+      "name": "com.unity.render-pipelines.universal",
+      "displayName": "Universal Render Pipeline",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.render-pipelines.universal@ffe395a3a1d1",
+      "fingerprint": "ffe395a3a1d1c50601dbf9b128033a3212705771",
+      "version": "17.6.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.test-framework@1.8.0": {
+      "name": "com.unity.test-framework",
+      "displayName": "Test Framework",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.test-framework@ee3fe9477490",
+      "fingerprint": "ee3fe94774902b8f5a2ad832477ea1dac3dd34d3",
+      "version": "1.8.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.timeline@6.6.0": {
+      "name": "com.unity.timeline",
+      "displayName": "Timeline",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.timeline@5aa4cbea9cc5",
+      "fingerprint": "5aa4cbea9cc5a1e5e3d679717fe8ef21bb5f291c",
+      "version": "6.6.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.ugui@2.6.0": {
+      "name": "com.unity.ugui",
+      "displayName": "uGUI",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.ugui@eb824e41fbc7",
+      "fingerprint": "eb824e41fbc73edc4935ad9c9dee64df303ebe2c",
+      "version": "2.6.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.visualscripting@1.9.12": {
+      "name": "com.unity.visualscripting",
+      "displayName": "Visual Scripting",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.visualscripting@4edfcc09512f",
+      "fingerprint": "4edfcc09512f786fe1a7f50476d320b36dab9676",
+      "editorCompatibility": "6000.0.0a1",
+      "version": "1.9.12",
+      "source": "registry",
+      "testable": false
+    },
+    "com.unity.modules.accessibility@1.0.0": {
+      "name": "com.unity.modules.accessibility",
+      "displayName": "Accessibility",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.accessibility",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.adaptiveperformance@1.0.0": {
+      "name": "com.unity.modules.adaptiveperformance",
+      "displayName": "Adaptive Performance",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.adaptiveperformance",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.ai@1.0.0": {
+      "name": "com.unity.modules.ai",
+      "displayName": "AI",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.ai",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.androidjni@1.0.0": {
+      "name": "com.unity.modules.androidjni",
+      "displayName": "Android JNI",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.androidjni",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.animation@1.0.0": {
+      "name": "com.unity.modules.animation",
+      "displayName": "Animation",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.animation",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.assetbundle@1.0.0": {
+      "name": "com.unity.modules.assetbundle",
+      "displayName": "Asset Bundle",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.assetbundle",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.audio@1.0.0": {
+      "name": "com.unity.modules.audio",
+      "displayName": "Audio",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.audio",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.cloth@1.0.0": {
+      "name": "com.unity.modules.cloth",
+      "displayName": "Cloth",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.cloth",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.director@1.0.0": {
+      "name": "com.unity.modules.director",
+      "displayName": "Director",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.director",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.imageconversion@1.0.0": {
+      "name": "com.unity.modules.imageconversion",
+      "displayName": "Image Conversion",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.imageconversion",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.imgui@1.0.0": {
+      "name": "com.unity.modules.imgui",
+      "displayName": "IMGUI",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.imgui",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.jsonserialize@1.0.0": {
+      "name": "com.unity.modules.jsonserialize",
+      "displayName": "JSONSerialize",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.jsonserialize",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.particlesystem@1.0.0": {
+      "name": "com.unity.modules.particlesystem",
+      "displayName": "Particle System",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.particlesystem",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.physics@1.0.0": {
+      "name": "com.unity.modules.physics",
+      "displayName": "Physics",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.physics",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.physics2d@1.0.0": {
+      "name": "com.unity.modules.physics2d",
+      "displayName": "Physics 2D",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.physics2d",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.physicscore2d@1.0.0": {
+      "name": "com.unity.modules.physicscore2d",
+      "displayName": "Physics Core 2D",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.physicscore2d",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.screencapture@1.0.0": {
+      "name": "com.unity.modules.screencapture",
+      "displayName": "Screen Capture",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.screencapture",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.terrain@1.0.0": {
+      "name": "com.unity.modules.terrain",
+      "displayName": "Terrain",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.terrain",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.terrainphysics@1.0.0": {
+      "name": "com.unity.modules.terrainphysics",
+      "displayName": "Terrain Physics",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.terrainphysics",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.tetgen@1.0.0": {
+      "name": "com.unity.modules.tetgen",
+      "displayName": "Tetgen",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.tetgen",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.tilemap@1.0.0": {
+      "name": "com.unity.modules.tilemap",
+      "displayName": "Tilemap",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.tilemap",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.timelinefoundation@1.0.0": {
+      "name": "com.unity.modules.timelinefoundation",
+      "displayName": "Timeline Foundation",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.timelinefoundation",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.ui@1.0.0": {
+      "name": "com.unity.modules.ui",
+      "displayName": "UI",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.ui",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.uielements@1.0.0": {
+      "name": "com.unity.modules.uielements",
+      "displayName": "UIElements",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.uielements",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.umbra@1.0.0": {
+      "name": "com.unity.modules.umbra",
+      "displayName": "Umbra",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.umbra",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.unityanalytics@1.0.0": {
+      "name": "com.unity.modules.unityanalytics",
+      "displayName": "Unity Analytics",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.unityanalytics",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.unitywebrequest@1.0.0": {
+      "name": "com.unity.modules.unitywebrequest",
+      "displayName": "Unity Web Request",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.unitywebrequest",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.unitywebrequestassetbundle@1.0.0": {
+      "name": "com.unity.modules.unitywebrequestassetbundle",
+      "displayName": "Unity Web Request Asset Bundle",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.unitywebrequestassetbundle",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.unitywebrequestaudio@1.0.0": {
+      "name": "com.unity.modules.unitywebrequestaudio",
+      "displayName": "Unity Web Request Audio",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.unitywebrequestaudio",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.unitywebrequesttexture@1.0.0": {
+      "name": "com.unity.modules.unitywebrequesttexture",
+      "displayName": "Unity Web Request Texture",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.unitywebrequesttexture",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.unitywebrequestwww@1.0.0": {
+      "name": "com.unity.modules.unitywebrequestwww",
+      "displayName": "Unity Web Request WWW",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.unitywebrequestwww",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.vectorgraphics@1.0.0": {
+      "name": "com.unity.modules.vectorgraphics",
+      "displayName": "Vector Graphics",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.vectorgraphics",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.vehicles@1.0.0": {
+      "name": "com.unity.modules.vehicles",
+      "displayName": "Vehicles",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.vehicles",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.video@1.0.0": {
+      "name": "com.unity.modules.video",
+      "displayName": "Video",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.video",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.wind@1.0.0": {
+      "name": "com.unity.modules.wind",
+      "displayName": "Wind",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.wind",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.xr@1.0.0": {
+      "name": "com.unity.modules.xr",
+      "displayName": "XR",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.xr",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.subsystems@1.0.0": {
+      "name": "com.unity.modules.subsystems",
+      "displayName": "Subsystems",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.subsystems",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.modules.hierarchycore@1.0.0": {
+      "name": "com.unity.modules.hierarchycore",
+      "displayName": "Hierarchy Core",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.modules.hierarchycore",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.ext.nunit@2.1.0": {
+      "name": "com.unity.ext.nunit",
+      "displayName": "Custom NUnit",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.ext.nunit@0198eae3b53e",
+      "fingerprint": "0198eae3b53e4b243332e89e4af7bd396715ad55",
+      "version": "2.1.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.render-pipelines.core@17.6.0": {
+      "name": "com.unity.render-pipelines.core",
+      "displayName": "Scriptable Render Pipeline Core",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.render-pipelines.core@13460d8ea9e5",
+      "fingerprint": "13460d8ea9e5d3262f82798825327ae66d8a5169",
+      "version": "17.6.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.shadergraph@17.6.0": {
+      "name": "com.unity.shadergraph",
+      "displayName": "Shader Graph",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.shadergraph@8b7e693cdbfe",
+      "fingerprint": "8b7e693cdbfe1e8b245fe5176836b7c6da466acb",
+      "version": "17.6.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.render-pipelines.universal-config@17.6.0": {
+      "name": "com.unity.render-pipelines.universal-config",
+      "displayName": "Universal Render Pipeline Config",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.render-pipelines.universal-config@561422b74439",
+      "fingerprint": "561422b74439f8598f45a82c4935ca6f1d86f212",
+      "version": "17.6.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.burst@2.0.0": {
+      "name": "com.unity.burst",
+      "displayName": "Burst",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.burst@626e66ab421b",
+      "fingerprint": "626e66ab421bf31cfa602bb20675290e2a514b01",
+      "version": "2.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.dt.app-ui@2.2.4": {
+      "name": "com.unity.dt.app-ui",
+      "displayName": "App UI",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.dt.app-ui@8606a9847e5b",
+      "fingerprint": "8606a9847e5b65c09b4c0f993f313a51d24de053",
+      "editorCompatibility": "2021.3.0a1",
+      "version": "2.2.4",
+      "source": "registry",
+      "testable": false
+    },
+    "com.unity.collections@6.6.0": {
+      "name": "com.unity.collections",
+      "displayName": "Collections",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.collections@4920e8897b5a",
+      "fingerprint": "4920e8897b5a55763572e4f92b7ad937dc85e648",
+      "version": "6.6.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.nuget.newtonsoft-json@3.2.2": {
+      "name": "com.unity.nuget.newtonsoft-json",
+      "displayName": "Newtonsoft Json",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.nuget.newtonsoft-json@4dfd81071c64",
+      "fingerprint": "4dfd81071c6475bb9c114f920bfb4e3fc5e28c6a",
+      "editorCompatibility": "2018.4.0a1",
+      "version": "3.2.2",
+      "source": "registry",
+      "testable": false
+    },
+    "com.unity.2d.sprite@1.0.0": {
+      "name": "com.unity.2d.sprite",
+      "displayName": "2D Sprite",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.2d.sprite@752945c75a6f",
+      "fingerprint": "752945c75a6f582fe9c61947f5abc1d0e29a7348",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.mathematics@1.4.0": {
+      "name": "com.unity.mathematics",
+      "displayName": "Mathematics",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.mathematics@8306a64d0cd6",
+      "fingerprint": "8306a64d0cd683e2e50ce0d909c1f82e70f75669",
+      "version": "1.4.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.nuget.mono-cecil@1.11.6": {
+      "name": "com.unity.nuget.mono-cecil",
+      "displayName": "Mono Cecil",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.nuget.mono-cecil@ecb9724e46ff",
+      "fingerprint": "ecb9724e46fff855c46a4f37f0a3377a3cfffc06",
+      "editorCompatibility": "2019.4.0a1",
+      "version": "1.11.6",
+      "source": "registry",
+      "testable": false
+    },
+    "com.unity.searcher@4.9.5": {
+      "name": "com.unity.searcher",
+      "displayName": "Searcher",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.searcher@a463122f2c00",
+      "fingerprint": "a463122f2c00f83398f41790942a0793431e70ea",
+      "editorCompatibility": "6000.0.0a1",
+      "version": "4.9.5",
+      "source": "registry",
+      "testable": false
+    },
+    "com.unity.graph-authoring@1.0.0": {
+      "name": "com.unity.graph-authoring",
+      "displayName": "Graph Authoring",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.graph-authoring@cfd2588851ee",
+      "fingerprint": "cfd2588851ee248c7989396b0917e843c54c1c6d",
+      "version": "1.0.0",
+      "source": "builtin",
+      "testable": false
+    },
+    "com.unity.profiling.core@1.0.3": {
+      "name": "com.unity.profiling.core",
+      "displayName": "Unity Profiling Core API",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.profiling.core@8a49f7027d06",
+      "fingerprint": "8a49f7027d0618e2cb86aa9e4ed5fb4392e8121a",
+      "editorCompatibility": "2020.1.0a1",
+      "version": "1.0.3",
+      "source": "registry",
+      "testable": false
+    },
+    "com.unity.test-framework.performance@6.6.0": {
+      "name": "com.unity.test-framework.performance",
+      "displayName": "Performance testing API",
+      "resolvedPath": "C:\\Unity Projects\\TeamWape\\Library\\PackageCache\\com.unity.test-framework.performance@e8b39e3ef3d9",
+      "fingerprint": "e8b39e3ef3d9d8b7124a6a7ffab29a9e99626c13",
+      "version": "6.6.0",
+      "source": "builtin",
+      "testable": false
+    }
+  }
+}

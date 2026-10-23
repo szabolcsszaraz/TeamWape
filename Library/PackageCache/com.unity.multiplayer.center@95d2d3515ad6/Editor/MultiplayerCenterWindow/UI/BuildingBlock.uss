@@ -1,0 +1,80 @@
+.building-block_image {
+    aspect-ratio: 1.7;
+    margin-bottom: 32px;
+    min-width: 340px;
+    background-color: var(--card-poster-image-bg-color);
+    padding: 24px;
+    padding-bottom: 0;
+}
+
+.building-block_title {
+    -unity-font-style: bold;
+    font-size: 14px;
+}
+
+.building-block_import-button {
+    align-self: flex-start;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 6px;
+    padding-right: 6px;
+    margin-left: 0;
+}
+
+.building-block_details {
+    flex-grow: 1;
+    margin-bottom: 32px;
+    text-overflow: ellipsis;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    white-space: normal;
+    background-color: var(--unity-colors-window-secondary-background);
+    min-width: 450px;
+}
+
+.building-block_resources {
+    font-size: 14px;
+}
+
+.building-block_links {
+    flex-direction: row;
+}
+
+.building-block_content-container {
+    flex-grow: 1;
+    margin-bottom: 14px;
+    margin-top: 14px;
+}
+
+.building-block-icon {
+    width: 11px;
+    height: 7px;
+    margin-right: 5px;
+    background-image: var(--building-block-icon);
+    -unity-background-image-tint-color: var(--building-block-icon-tint);
+}
+
+.horizontal-container--space-between {
+    flex-grow: 1;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.building-block_asset-store-link {
+    background-image: resource("GoToDashboard");
+    width: 16px;
+    height: 16px;
+    -unity-background-image-tint-color: var(--link-color);
+}
+
+HyperLink:hover .building-block_asset-store-link {
+    -unity-background-image-tint-color: var(--link-hover-color);
+    border-bottom-width: 1px;
+}
+
+HyperLink:active .building-block_asset-store-link {
+    -unity-background-image-tint-color: var(--link-active-color);
+    border-bottom-width: 1px;
+}

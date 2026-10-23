@@ -1,0 +1,5 @@
+<UXML xmlns="UnityEngine.UIElements">
+    <Style src="./ImageReference.uss" />
+    <Style src="./MultiviewImageReference.uss" />
+    <VisualElement name="multiview-slots-container" />
+</UXML>

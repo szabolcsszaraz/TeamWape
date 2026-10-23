@@ -1,0 +1,51 @@
+<UXML xmlns="UnityEngine.UIElements">
+    <Style src="./Debugger.uss" />
+
+    <Foldout name="states" text="States">
+        <Style src="./Debugger.uss" />
+        <Style src="../AIDropdownRoot/AIDropdownRoot.uss" />
+        <Toggle name="network" label="Network"/>
+        <EnumField name="cloud-connected" label="Cloud Connected"/>
+        <EnumField name="signin" label="Sign in"/>
+        <Toggle name="broken" label="Break UnityConnect"/>
+
+        <Foldout name="settings" value="true" text="Settings">
+            <VisualElement name="settings-group">
+                <TextField name="settings-orgid" label="OrgId" enabled="false"/>
+                <Toggle name="ai-assistant-enabled" label="AI Assistant Enabled"/>
+                <Toggle name="ai-generators-enabled" label="AI Generators Enabled"/>
+                <Toggle name="legal-agreement" label="Legal Agreement"/>
+                <Toggle name="data-sharing" label="Data Sharing"/>
+                <Toggle name="region-available" label="Region Available"/>
+                <Toggle name="packages-supported" label="Packages Supported"/>
+                <Toggle name="has-ai-subscription" label="Has AI Subscription"/>
+                <Toggle name="mcp-pro-enabled" label="MCP Pro Enabled"/>
+                <Toggle name="can-spend-points" label="Can Spend Points"/>
+            </VisualElement>
+            <VisualElement class="row">
+                <Button name="fetch-settings" class="simple" text="Fetch"/>
+                <Button name="clear-settings" class="simple" text="Clear"/>
+                <Toggle name="fail-fetch-settings" label="Fail Fetch"/>
+            </VisualElement>
+        </Foldout>
+        <Foldout name="points" value="true" text="Credits">
+            <VisualElement name="points-group">
+                <TextField name="points-orgid" label="OrgId" enabled="false"/>
+                <Slider name="points-available" label="Credits Available" show-input-field="true" high-value="2000000" low-value="0"/>
+                <Slider name="points-allocated" label="Credits Allocated" show-input-field="true" high-value="2000000" low-value="0"/>
+            </VisualElement>
+            <VisualElement class="row">
+                <Button name="fetch-points" class="simple" text="Fetch"/>
+                <Button name="clear-points" class="simple" text="Clear"/>
+                <Toggle name="fail-fetch-points" label="Fail Fetch"/>
+            </VisualElement>
+        </Foldout>
+        <Toggle name="reset-dropdown" label="AI Toolkit Dropdown Content" tooltip="Toggle the ai dropdown content to the editor default and AI Toolkit's"/>
+    </Foldout>
+
+    <Foldout name="read-only" text="Read-only">
+        <Toggle name="session" label="Session Status" enabled="false" tooltip="Indicates whether the session is usable. This depends on network availability, sign-in status, cloud connection, available credits, and whether the AI organization is enabled."/>
+        <Toggle name="is-used-by-ai-dropdown" label="Is ai toolkit dropdown visible" enabled="false" tooltip="Is the ai dropdown currently showing ai toolkit's dropdown content?"/>
+    </Foldout>
+
+</UXML>

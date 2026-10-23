@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="plan-review-header-actions">
+        <ui:Button name="denyButton" text="Discard" class="plan-review-header-deny-btn"/>
+        <ui:Button name="approveButton" text="Run plan" class="plan-review-header-approve-btn"/>
+        <ui:Button name="planCopyButton" class="plan-review-header-copy-btn">
+            <ui:Image name="planCopyIcon" class="plan-review-header-copy-icon mui-icon-copy" picking-mode="Ignore"/>
+        </ui:Button>
+    </ui:VisualElement>
+</ui:UXML>

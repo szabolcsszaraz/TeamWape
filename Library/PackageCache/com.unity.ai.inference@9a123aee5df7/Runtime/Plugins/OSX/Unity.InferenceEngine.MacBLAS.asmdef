@@ -1,0 +1,13 @@
+{
+  "name": "Unity.InferenceEngine.MacBLAS",
+  "references": [
+    "Unity.InferenceEngine"
+  ],
+  "optionalUnityReferences": [],
+  "includePlatforms": [
+    "Editor",
+    "macOSStandalone"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": true
+}

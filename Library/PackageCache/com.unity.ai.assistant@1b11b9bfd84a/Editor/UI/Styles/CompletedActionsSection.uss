@@ -1,0 +1,23 @@
+.mui-completed-actions-container {
+    margin: 4px 0;
+}
+
+.mui-completed-actions-header {
+    margin: 8px 0 4px 0;
+    padding: 0;
+    -unity-font-style: bold;
+}
+
+#completedActionsContent {
+    padding-left: 12px;
+    border-left-width: 1px;
+    border-left-color: var(--muse-chat-separator-line);
+}
+
+.mui-completed-actions-toggle-label {
+    color: var(--muse-chat-text-secondary);
+    font-size: 11px;
+    -unity-font-style: italic;
+    cursor: link;
+    padding: 3px 0;
+}

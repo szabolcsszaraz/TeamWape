@@ -1,0 +1,37 @@
+.figma-auth-root {
+    flex-direction: column;
+    padding: 10px 12px;
+}
+
+.figma-auth-title {
+    -unity-font-style: bold;
+    color: var(--muse-chat-text-primary);
+    margin-bottom: 6px;
+}
+
+.figma-auth-description {
+    color: var(--muse-chat-text-secondary);
+    white-space: normal;
+}
+
+.figma-auth-steps {
+    padding: 8px 10px;
+}
+
+.figma-auth-step {
+    color: var(--muse-chat-text-secondary);
+    padding: 1px 0;
+    white-space: normal;
+}
+
+.figma-auth-step-row {
+    flex-direction: row;
+    padding: 0;
+}
+
+.figma-auth-link {
+    color: var(--muse-chat-feedback-status-link-color);
+    cursor: link;
+    margin-left: 3px;
+    margin-right: 3px;
+}

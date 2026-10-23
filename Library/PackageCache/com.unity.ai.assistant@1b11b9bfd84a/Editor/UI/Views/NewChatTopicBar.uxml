@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="../Styles/PromptSuggestionsBar.uss" />
+    <ui:VisualElement name="barRoot" class="mui-new-chat-topic-bar-root">
+        <!-- Topic row: always visible -->
+        <ui:VisualElement name="topicRow" class="mui-new-chat-topic-row">
+            <ui:Label name="exploreLabel" text="Get started with some example prompts" class="mui-new-chat-explore-label"/>
+            <ui:VisualElement name="chipContainer" class="mui-new-chat-chip-container"/>
+        </ui:VisualElement>
+        <!-- Suggestion list: only visible when a topic chip is selected -->
+        <ui:VisualElement name="suggestionCard" class="mui-new-chat-suggestion-card">
+            <ui:VisualElement name="suggestionList" class="mui-new-chat-suggestion-list"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

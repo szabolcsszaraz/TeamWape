@@ -1,0 +1,1339 @@
+
+#pragma kernel LeakyRelu
+#pragma kernel Swish
+#pragma kernel Relu
+#pragma kernel Relu6
+#pragma kernel Mish
+#pragma kernel Tanh
+#pragma kernel Sigmoid
+#pragma kernel GeluFast
+#pragma kernel HardSigmoid
+#pragma kernel Gelu
+#pragma kernel Erf
+#pragma kernel Celu
+#pragma kernel Shrink
+#pragma kernel ThresholdedRelu
+#pragma kernel Elu
+#pragma kernel Selu
+#pragma kernel Softplus
+#pragma kernel Ceil
+#pragma kernel Floor
+#pragma kernel Trunc
+#pragma kernel Round
+#pragma kernel Reciprocal
+#pragma kernel Exp
+#pragma kernel Expm1
+#pragma kernel Log
+#pragma kernel Log10
+#pragma kernel Log1p
+#pragma kernel Log2
+#pragma kernel Sqrt
+#pragma kernel Rsqrt
+#pragma kernel Acos
+#pragma kernel Acosh
+#pragma kernel Asin
+#pragma kernel Asinh
+#pragma kernel Atan
+#pragma kernel Atanh
+#pragma kernel Cos
+#pragma kernel Cosh
+#pragma kernel Sin
+#pragma kernel Sinh
+#pragma kernel Tan
+#pragma kernel Softsign
+#pragma kernel HardSwish
+#pragma kernel AbsInt
+#pragma kernel AbsFloat
+#pragma kernel NegInt
+#pragma kernel NegFloat
+#pragma kernel SquareInt
+#pragma kernel SquareFloat
+#pragma kernel IsNaN
+#pragma kernel CastIntToFloat
+#pragma kernel CastFloatToInt
+#pragma kernel SignFloat
+#pragma kernel SignInt
+#pragma kernel Not
+#pragma kernel BitwiseNot
+#pragma kernel HardTanh
+#pragma kernel ScalarMadFloat
+#pragma kernel ScalarMadInt
+#pragma kernel RangeFloat
+#pragma kernel RangeInt
+
+#include "Tensor.cginc"
+
+StructuredBuffer<float> X_float_ptr;
+StructuredBuffer<int> X_int_ptr;
+
+RWStructuredBuffer<float> O_float_ptr;
+RWStructuredBuffer<int> O_int_ptr;
+
+uint2 unrolledDispatchArgs;
+float alpha, beta, gamma;
+int alphai, betai, gammai;
+
+#define TILE_DIM 256
+
+
+
+inline float OperationLeakyRelu(float v)
+{
+    return alpha * v + beta * abs(v);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void LeakyRelu(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationLeakyRelu(v);
+}
+
+
+inline float OperationSwish(float v)
+{
+    return v / (1.0f + exp(-(alpha * v)));
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Swish(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationSwish(v);
+}
+
+
+inline float OperationRelu(float v)
+{
+    return 0.5f * (v + abs(v));
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Relu(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationRelu(v);
+}
+
+
+inline float OperationRelu6(float v)
+{
+    return 0.5f * (-abs(v - 6.0f) + abs(v) + 6.0f);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Relu6(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationRelu6(v);
+}
+
+
+inline float OperationMish(float v)
+{
+    return v * tanh(log(1 + exp(v)));
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Mish(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationMish(v);
+}
+
+
+inline float OperationTanh(float v)
+{
+    return tanh(clamp(v, -16.0f, 16.0f));
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Tanh(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationTanh(v);
+}
+
+
+inline float OperationSigmoid(float v)
+{
+    return 1.0f / (1.0f + exp(-v));
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Sigmoid(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationSigmoid(v);
+}
+
+
+inline float OperationGeluFast(float v)
+{
+    return (v * 0.5f) * (tanh(clamp((v + (pow(v, 3.0f) * 0.044714998453855515f)) * 0.7978845834732056f, -16.0f, 16.0f)) + 1);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void GeluFast(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationGeluFast(v);
+}
+
+
+inline float OperationHardSigmoid(float v)
+{
+    return max(0.0f, min(1.0f, alpha * v + beta));
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void HardSigmoid(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationHardSigmoid(v);
+}
+
+
+inline float OperationGelu(float v)
+{
+    float vv = v / sqrt(2);
+    // Abramowitz/Stegun approximations
+    // erf(x) = -erf(-x)
+    float x = abs(vv);
+
+    float p = 0.3275911f;
+    float a1 = 0.254829592f; float a2 = -0.284496736f; float a3 = 1.421413741f;
+    float a4 = -1.453152027f; float a5 = 1.061405429f;
+
+    float t = 1.0f / (1.0f + p * x);
+    float t2 = t * t;
+    float t3 = t2 * t;
+    float t4 = t3 * t;
+    float t5 = t4 * t;
+
+    float erf = sign(v) * (1 - (a1 * t + a2 * t2 + a3 * t3 + a4 * t4 + a5 * t5) * exp(-x * x));
+
+    return (erf + 1) * v * 0.5f;
+
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Gelu(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationGelu(v);
+}
+
+
+inline float OperationErf(float v)
+{
+    // Abramowitz/Stegun approximations
+    // erf(x) = -erf(-x)
+    float x = abs(v);
+
+    float p = 0.3275911f;
+    float a1 = 0.254829592f; float a2 = -0.284496736f; float a3 = 1.421413741f;
+    float a4 = -1.453152027f; float a5 = 1.061405429f;
+
+    float t = 1.0f / (1.0f + p * x);
+    float t2 = t * t;
+    float t3 = t2 * t;
+    float t4 = t3 * t;
+    float t5 = t4 * t;
+
+    return sign(v) * (1 - (a1 * t + a2 * t2 + a3 * t3 + a4 * t4 + a5 * t5) * exp(-x * x));
+
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Erf(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationErf(v);
+}
+
+
+inline float OperationCelu(float v)
+{
+    return max(0.0f, v) + min(0.0f, alpha * (exp(v / alpha) - 1.0f));
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Celu(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationCelu(v);
+}
+
+
+inline float OperationShrink(float v)
+{
+    float y = 0.0f;
+    if (v < -beta)
+        y = v + alpha;
+    else if (v > beta)
+        y = v - alpha;
+    return y;
+
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Shrink(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationShrink(v);
+}
+
+
+inline float OperationThresholdedRelu(float v)
+{
+    float y = 0.0f;
+    if (v > alpha)
+        y = v;
+    return y;
+
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void ThresholdedRelu(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationThresholdedRelu(v);
+}
+
+
+inline float OperationElu(float v)
+{
+    return v <= 0.0f ? alpha * (exp(v) - 1.0f) : v;
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Elu(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationElu(v);
+}
+
+
+inline float OperationSelu(float v)
+{
+    return v <= 0.0f ? gamma * (alpha * exp(v) - alpha) : gamma * v;
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Selu(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationSelu(v);
+}
+
+
+inline float OperationSoftplus(float v)
+{
+    return log(1 + exp(-abs(v))) + max(v, 0);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Softplus(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationSoftplus(v);
+}
+
+
+inline float OperationCeil(float v)
+{
+    return ceil(v);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Ceil(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationCeil(v);
+}
+
+
+inline float OperationFloor(float v)
+{
+    return floor(v);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Floor(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationFloor(v);
+}
+
+
+inline float OperationTrunc(float v)
+{
+    return trunc(v);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Trunc(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationTrunc(v);
+}
+
+
+inline float OperationRound(float v)
+{
+    return round(v);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Round(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationRound(v);
+}
+
+
+inline float OperationReciprocal(float v)
+{
+    return 1.0f / v;
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Reciprocal(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationReciprocal(v);
+}
+
+
+inline float OperationExp(float v)
+{
+    return exp(v);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Exp(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationExp(v);
+}
+
+
+inline float OperationExpm1(float v)
+{
+    return expm1(v);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Expm1(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationExpm1(v);
+}
+
+
+inline float OperationLog(float v)
+{
+    return log(v);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Log(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationLog(v);
+}
+
+
+inline float OperationLog10(float v)
+{
+    return log10(v);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Log10(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationLog10(v);
+}
+
+
+inline float OperationLog1p(float v)
+{
+    return log1p(v);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Log1p(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationLog1p(v);
+}
+
+
+inline float OperationLog2(float v)
+{
+    return log2(v);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Log2(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationLog2(v);
+}
+
+
+inline float OperationSqrt(float v)
+{
+    return sqrt(v);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Sqrt(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationSqrt(v);
+}
+
+
+inline float OperationRsqrt(float v)
+{
+    return rsqrt(v);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Rsqrt(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationRsqrt(v);
+}
+
+
+inline float OperationAcos(float v)
+{
+    return acos(v);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Acos(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationAcos(v);
+}
+
+
+inline float OperationAcosh(float v)
+{
+    return log(v + sqrt(v*v - 1.0f));
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Acosh(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationAcosh(v);
+}
+
+
+inline float OperationAsin(float v)
+{
+    return asin(v);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Asin(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationAsin(v);
+}
+
+
+inline float OperationAsinh(float v)
+{
+    return log(v + sqrt(v*v + 1.0f));
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Asinh(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationAsinh(v);
+}
+
+
+inline float OperationAtan(float v)
+{
+    return atan(v);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Atan(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationAtan(v);
+}
+
+
+inline float OperationAtanh(float v)
+{
+    return 0.5f * log((1.0f + v)/(1.0f - v));
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Atanh(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationAtanh(v);
+}
+
+
+inline float OperationCos(float v)
+{
+    return cos(v);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Cos(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationCos(v);
+}
+
+
+inline float OperationCosh(float v)
+{
+    return 0.5f * (exp(v) + exp(-v));
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Cosh(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationCosh(v);
+}
+
+
+inline float OperationSin(float v)
+{
+    return sin(v);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Sin(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationSin(v);
+}
+
+
+inline float OperationSinh(float v)
+{
+    return 0.5f * (exp(v) - exp(-v));
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Sinh(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationSinh(v);
+}
+
+
+inline float OperationTan(float v)
+{
+    return tan(v);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Tan(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationTan(v);
+}
+
+
+inline float OperationSoftsign(float v)
+{
+    return v / (1.0f + abs(v));
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Softsign(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationSoftsign(v);
+}
+
+
+inline float OperationHardSwish(float v)
+{
+    return v * max(0, min(1, 0.16666667f * v + 0.5f));
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void HardSwish(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationHardSwish(v);
+}
+
+
+inline int OperationAbsInt(int v)
+{
+    return abs(v);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void AbsInt(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    int v = X_int_ptr[ti];
+    O_int_ptr[ti] = OperationAbsInt(v);
+}
+
+
+inline float OperationAbsFloat(float v)
+{
+    return abs(v);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void AbsFloat(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationAbsFloat(v);
+}
+
+
+inline int OperationNegInt(int v)
+{
+    return -v;
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void NegInt(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    int v = X_int_ptr[ti];
+    O_int_ptr[ti] = OperationNegInt(v);
+}
+
+
+inline float OperationNegFloat(float v)
+{
+    return -v;
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void NegFloat(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationNegFloat(v);
+}
+
+
+inline int OperationSquareInt(int v)
+{
+    return v * v;
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void SquareInt(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    int v = X_int_ptr[ti];
+    O_int_ptr[ti] = OperationSquareInt(v);
+}
+
+
+inline float OperationSquareFloat(float v)
+{
+    return v * v;
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void SquareFloat(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationSquareFloat(v);
+}
+
+
+inline int OperationIsNaN(float v)
+{
+    return (asuint(v) & 0x7FFFFFFF) > 0x7F800000;
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void IsNaN(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_int_ptr[ti] = OperationIsNaN(v);
+}
+
+
+inline float OperationCastIntToFloat(int v)
+{
+    return (float)v;
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void CastIntToFloat(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    int v = X_int_ptr[ti];
+    O_float_ptr[ti] = OperationCastIntToFloat(v);
+}
+
+
+inline int OperationCastFloatToInt(float v)
+{
+    return (int)v;
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void CastFloatToInt(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_int_ptr[ti] = OperationCastFloatToInt(v);
+}
+
+
+inline float OperationSignFloat(float v)
+{
+    return sign(v);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void SignFloat(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationSignFloat(v);
+}
+
+
+inline int OperationSignInt(int v)
+{
+    return v == 0 ? 0 : (v > 0 ? 1 : -1);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void SignInt(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    int v = X_int_ptr[ti];
+    O_int_ptr[ti] = OperationSignInt(v);
+}
+
+
+inline int OperationNot(int v)
+{
+    return (v == 0) ? 1 : 0;
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void Not(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    int v = X_int_ptr[ti];
+    O_int_ptr[ti] = OperationNot(v);
+}
+
+
+inline int OperationBitwiseNot(int v)
+{
+    return ~v;
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void BitwiseNot(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    int v = X_int_ptr[ti];
+    O_int_ptr[ti] = OperationBitwiseNot(v);
+}
+
+
+inline float OperationHardTanh(float v)
+{
+    return min(beta, max(v, alpha));
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void HardTanh(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationHardTanh(v);
+}
+
+
+inline float OperationScalarMadFloat(float v)
+{
+    return alpha * v + beta;
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void ScalarMadFloat(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    float v = X_float_ptr[ti];
+    O_float_ptr[ti] = OperationScalarMadFloat(v);
+}
+
+
+inline int OperationScalarMadInt(int v)
+{
+    return alphai * v + betai;
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void ScalarMadInt(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    int v = X_int_ptr[ti];
+    O_int_ptr[ti] = OperationScalarMadInt(v);
+}
+
+
+
+inline float OperationRangeFloat(int i)
+{
+    return alpha + (i * beta);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void RangeFloat(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    O_float_ptr[ti] = OperationRangeFloat(ti);
+}
+
+
+inline int OperationRangeInt(int i)
+{
+    return alphai + (i * betai);
+}
+
+[numthreads(TILE_DIM, 1, 1)]
+void RangeInt(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint threadIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint groupLengthX = unrolledDispatchArgs.x;
+    uint totalLength  = unrolledDispatchArgs.y;
+
+    uint ti = threadIndex + TILE_DIM * (groupID.x + groupID.y * groupLengthX);
+    if (ti >= totalLength)
+        return;
+
+    O_int_ptr[ti] = OperationRangeInt(ti);
+}

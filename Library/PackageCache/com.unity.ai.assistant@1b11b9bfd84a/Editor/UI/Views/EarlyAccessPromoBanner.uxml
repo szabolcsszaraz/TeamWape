@@ -1,0 +1,47 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="promoRoot" class="mui-early-access-promo-root">
+        <ui:Button name="closeButton" class="mui-early-access-promo-close">
+            <ui:Image class="mui-early-access-promo-close-icon mui-icon-close" picking-mode="Ignore"/>
+        </ui:Button>
+
+        <ui:ScrollView name="promoScroll" class="mui-early-access-promo-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Auto">
+            <ui:VisualElement name="contentBlock" class="mui-early-access-promo-content-block">
+                <ui:VisualElement name="hero" class="mui-early-access-promo-hero mui-icon-early-access-hero" picking-mode="Ignore"/>
+
+                <ui:Label name="headline" class="mui-early-access-promo-headline" text="Try the desktop AI agent"/>
+                <ui:Label name="body" class="mui-early-access-promo-body" text="A dedicated AI workspace for game development runs alongside the Editor."/>
+
+                <ui:VisualElement name="bulletList" class="mui-early-access-promo-bullets">
+                    <ui:VisualElement class="mui-early-access-promo-bullet-row">
+                        <ui:Label class="mui-early-access-promo-bullet-glyph" text="•"/>
+                        <ui:Label class="mui-early-access-promo-bullet-text" text="Multiple agents work in parallel"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="mui-early-access-promo-bullet-row">
+                        <ui:Label class="mui-early-access-promo-bullet-glyph" text="•"/>
+                        <ui:Label class="mui-early-access-promo-bullet-text" text="Long tasks keep running through interruptions"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="mui-early-access-promo-bullet-row">
+                        <ui:Label class="mui-early-access-promo-bullet-glyph" text="•"/>
+                        <ui:Label class="mui-early-access-promo-bullet-text" text="Agents share your team's project knowledge"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <ui:VisualElement name="formContent" class="mui-early-access-promo-form">
+                    <ui:VisualElement name="emailFieldWrapper" class="mui-early-access-promo-email-wrapper">
+                        <ui:TextField name="emailField" class="mui-early-access-promo-email-field"/>
+                        <ui:Label name="emailPlaceholder" class="mui-early-access-promo-email-placeholder" text="Your Unity org email address" picking-mode="Ignore"/>
+                    </ui:VisualElement>
+                    <ui:Label name="emailError" class="mui-early-access-promo-error" text="Please enter a valid email address."/>
+                    <ui:Button name="submitButton" class="mui-early-access-promo-submit" text="Join early access"/>
+                </ui:VisualElement>
+
+                <ui:VisualElement name="successContent" class="mui-early-access-promo-success">
+                    <ui:Label name="successHeading" class="mui-early-access-promo-success-heading" text="Thanks, you're on the list."/>
+                    <ui:Label name="successSub" class="mui-early-access-promo-success-sub" text="You will receive an email with installation instructions shortly."/>
+                </ui:VisualElement>
+
+                <ui:Label name="disclaimer" class="mui-early-access-promo-disclaimer" enable-rich-text="true"/>
+            </ui:VisualElement>
+        </ui:ScrollView>
+    </ui:VisualElement>
+</ui:UXML>

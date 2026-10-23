@@ -1,0 +1,24 @@
+{
+  "name": "Unity.InferenceEngine.Editor.Visualizer",
+  "rootNamespace": "Unity.InferenceEngine.Editor.Visualizer",
+  "references": [
+    "GUID:f7f0a4632d0b84de8be655e00d1f0bcb",
+    "GUID:d8b63aba1907145bea998dd612889d6b",
+    "GUID:2665a8d13d1b3f18800f46e256720795",
+    "GUID:e0cd26848372d4e5c891c569017e11f1",
+    "GUID:63a57c8b658089e49a173b0f0c4870a7",
+    "GUID:2f101f87087d58f4ba92ca00188e763d",
+    "GUID:710bb277e6ff49ed91ba164465e106ef"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

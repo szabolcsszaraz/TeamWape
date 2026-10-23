@@ -1,0 +1,1 @@
+{"status":"Valid","reason":"Signature is ok","isLegacy":false,"attestation":{"version":1,"format":"archive","integrity":"sha256-SGpjkM7njQl22f6Mxe7R+m13Y2ZmwUIGrxPjf6rRUdE=","packageName":"com.unity.inputsystem","packageVersion":"1.20.1","publishingChannel":"unity","entitlementKeys":[],"artifactType":"upmPackage"}}

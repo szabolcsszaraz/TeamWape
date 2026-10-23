@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8199b5bcbbd7439aafe256dc900e2086, type: 3}
+  m_Name: GettingStartedSamples
+  m_EditorClassIdentifier: Unity.Multiplayer.Center.Editor::Unity.Multiplayer.Center.Window.GettingStartedSamplesList
+  Descriptions:
+  - Genre: 0
+    Name: Multiplayer for casual co-op games
+    Icon: {fileID: 2800000, guid: 59b8d0702d484633b96569196ac69439, type: 3}
+    LightIcon: {fileID: 2800000, guid: ac7f13e3d1c241a2991bdbd0c8babbfa, type: 3}
+    Description: '- Move players and objects
+
+      - Create and join game session
+
+      - <a href="https://docs.unity.com/en-us/relay/_index">Relay</a> integration for stable connection'
+    SampleId: com.unity.multiplayer.getting-started.casual
+  - Genre: 1
+    Name: Multiplayer for competitive games
+    Icon: {fileID: 0}
+    LightIcon: {fileID: 0}
+    Description: '- Move players and objects
+
+      - Create and join game session
+
+      - Create and connect to a local dedicated game server'
+    SampleId:
+  - Genre: 2
+    Name: Multiplayer for turn-based games
+    Icon: {fileID: 0}
+    LightIcon: {fileID: 0}
+    Description: '- Create and join game session
+
+      - Use CloudCode to manage game state
+
+      - Send event between players'
+    SampleId:

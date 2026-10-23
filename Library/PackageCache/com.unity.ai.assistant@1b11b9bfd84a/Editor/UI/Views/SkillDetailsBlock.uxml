@@ -1,0 +1,24 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="pathContainer" />
+    <ui:VisualElement name="descriptionSection">
+        <ui:Label class="assistant-skills-value-header" text="Description:" />
+        <ui:Label name="descriptionValue" class="assistant-skills-wrap" />
+    </ui:VisualElement>
+    <ui:VisualElement name="packagesSection">
+        <ui:Label class="assistant-skills-value-header" text="Required Packages:" />
+        <ui:VisualElement name="packagesContainer" />
+    </ui:VisualElement>
+    <ui:VisualElement name="editorVersionSection">
+        <ui:Label class="assistant-skills-value-header" text="Required Editor Version:" />
+        <ui:Label name="editorVersionValue" />
+    </ui:VisualElement>
+    <ui:VisualElement name="toolsSection">
+        <ui:Label class="assistant-skills-value-header" text="Referenced Tools:" />
+        <ui:VisualElement name="toolsContainer" />
+    </ui:VisualElement>
+    <ui:VisualElement name="resourcesSection">
+        <ui:Label class="assistant-skills-value-header" text="Available Resources:" />
+        <ui:VisualElement name="resourcesContainer" />
+    </ui:VisualElement>
+    <ui:VisualElement name="warningsContainer" />
+</ui:UXML>

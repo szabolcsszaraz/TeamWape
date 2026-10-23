@@ -1,0 +1,6 @@
+.planreviewexpandedcontent__element {
+    max-width: 768px;
+    width: 100%;
+    align-self: center;
+    padding: 0 8px 8px 8px;
+}

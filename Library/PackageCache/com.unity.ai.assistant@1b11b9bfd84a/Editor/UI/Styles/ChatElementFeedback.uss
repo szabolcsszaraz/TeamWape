@@ -1,0 +1,219 @@
+.chatelementfeedback__element-root:disabled {
+    display: none;
+}
+
+#optionsSection {
+    flex-direction: column;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.mui-control-section-buttons {
+    flex-direction: row;
+}
+
+.mui-chat-response-button {
+    margin: 0;
+    height: 20px;
+    border-width: 0;
+    border-radius: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+}
+
+#copyButton {
+    margin-left: 0;
+    margin-right: 0px;
+    height: 32px;
+    border-radius: 4px;
+}
+
+#copyButton:hover {
+    background-color: var(--muse-chat-backgrounds-100);
+}
+
+#upVoteButton {
+    margin-left: 0;
+    height: 32px;
+    border-radius: 4px;
+}
+
+#upVoteButton:hover {
+    background-color: var(--muse-chat-backgrounds-100);
+}
+
+#downVoteButton {
+    margin-left: 0px;
+    height: 32px;
+    border-radius: 4px;
+}
+
+#downVoteButton:hover {
+    background-color: var(--muse-chat-backgrounds-100);
+}
+
+.mui-feedback-parameters {
+    margin-top: 12px;
+    margin-left: 0;
+    margin-right: 0;
+    background-color: var(--muse-chat-backgrounds-175);
+    border-radius: 4px;
+    padding: 8px;
+}
+
+.mui-feedback-panel-title {
+    font-size: var(--muse-chat-default-font-size);
+    -unity-font-style: normal;
+    margin-bottom: 8px;
+    color: var(--muse-chat-text-answers);
+}
+
+/* Shared checkbox row layout for Flag and Consent toggles */
+.mui-feedback-checkbox-row {
+    flex-direction: row;
+    align-items: flex-start;
+    margin-top: 8px;
+}
+
+.mui-feedback-checkbox-toggle {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.mui-feedback-checkbox-toggle .unity-label {
+    display: none;
+}
+
+.mui-feedback-checkbox-label {
+    white-space: normal;
+    -unity-text-align: upper-left;
+    flex-shrink: 1;
+    flex-grow: 1;
+    margin-left: 6px;
+}
+
+#contactFoldout .unity-foldout__text {
+    -unity-font-style: normal;
+    color: var(--muse-chat-text-answers);
+}
+
+.mui-feedback-email-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.mui-feedback-email-label {
+    margin-right: 4px;
+    font-size: var(--muse-chat-default-font-size);
+}
+
+.mui-feedback-email-field {
+    flex-grow: 1;
+}
+
+.mui-feedback-send-button {
+    margin-top: 8px;
+    align-self: flex-start;
+    justify-content: center;
+    padding-left: 8px;
+    padding-right: 8px;
+    border-width: 1px;
+    border-color: var(--muse-chat-backgrounds-75);
+    border-radius: 3px;
+}
+
+.mui-feedback-button-active {
+    background-color: var(--muse-chat-button-active);
+}
+
+.mui-feedback-button-active:hover:enabled {
+    background-color: var(--muse-chat-button-active);
+}
+
+.mui-action-button-active:hover:enabled {
+    background-color: var(--muse-chat-button-active);
+}
+
+#feedbackValueText {
+    white-space: normal;
+    min-height: 44px;
+    margin: 0;
+}
+
+#feedbackValueText .unity-base-text-field__input {
+    background-color: var(--muse-chat-backgrounds-100);
+    height: 100%;
+    padding: 4px;
+}
+
+.mui-feedback-text-scrollroot {
+    max-height: 160px;
+}
+
+#feedbackValueText .mui-mtf-placeholder-root {
+    margin: 4px;
+}
+
+.mui-feedback-status-row {
+    display: none;
+    align-items: flex-start;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.mui-feedback-status-message-row {
+    flex-direction: row;
+    align-items: center;
+}
+
+.mui-feedback-status-icon {
+    width: 12px;
+    height: 12px;
+    margin-right: 4px;
+}
+
+.mui-feedback-status-text {
+    font-size: var(--muse-chat-default-font-size);
+    color: var(--muse-chat-feedback-status-text-color);
+}
+
+.mui-feedback-add-comment-button {
+    margin-top: 4px;
+    padding: 2px 8px;
+    border-width: 1px;
+    border-radius: 3px;
+    border-color: var(--muse-chat-backgrounds-75);
+    background-color: var(--muse-chat-backgrounds-350);
+    color: var(--muse-chat-text-answers);
+}
+
+.mui-feedback-add-comment-button:hover:enabled {
+    background-color: var(--muse-chat-foregrounds-300);
+}
+
+.mui-feedback-status-success .mui-feedback-status-icon {
+    -unity-background-image-tint-color: var(--muse-chat-icon-success-color);
+}
+
+.mui-feedback-status-error .mui-feedback-status-icon {
+    -unity-background-image-tint-color: var(--muse-chat-icon-error-color);
+}
+
+.mui-feedback-status-error .mui-feedback-status-text {
+    color: var(--muse-chat-text-answers);
+}
+
+.mui-feedback-report-link {
+    flex-grow: 1;
+    font-size: var(--muse-chat-default-font-size);
+    -unity-text-align: middle-left;
+    padding-top: 6px;
+    padding-left: 2px;
+}
+
+.mui-feedback-report-link.rich-text-link,
+#feedbackConsentLabel.rich-text-link {
+    cursor: link;
+}

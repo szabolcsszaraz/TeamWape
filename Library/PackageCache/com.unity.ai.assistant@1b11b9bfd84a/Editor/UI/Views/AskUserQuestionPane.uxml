@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="ask-user-question-container">
+        <ui:Label name="skippedLabel" text="Skipped" class="ask-user-header-chip ask-user-skipped-chip" />
+        <ui:Label name="questionLabel" class="ask-user-question-label"/>
+        <ui:VisualElement name="questionContent"/>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,71 @@
+.recommendation-headline {
+    margin-bottom: 10px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.recommendation-section {
+    margin-right: -10px;
+}
+
+.recommendation-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+.recommendation__item {
+    width: 50%;
+    min-width: 300px;
+    padding: 0 10px 10px 0;
+}
+
+.recommendation-grid--collapsed {
+    width: 100%;
+}
+
+.recommendation-box {
+    padding: 10px 10px 10px 10px;
+    background-color: var(--unity-colors-window-secondary-background);
+    flex-grow: 1;
+}
+
+.icon {
+    width: 16px;
+    height: 16px;
+    -unity-background-scale-mode: scale-to-fit;
+    margin-right: 4px;
+    background-size: 16px 16px;
+    border-radius: var(--unity-metrics-default-border_radius);
+}
+
+.icon:hover {
+    background-color: var(--unity-colors-button-background-hover);
+}
+
+.icon:active {
+    background-color: var(--unity-colors-button-background-pressed);
+}
+
+.icon--help {
+    background-image: var(--help-icon);
+}
+
+.icon--package-manager {
+    background-image: var(--package-manager-icon);
+}
+
+.checkmark-icon {
+    background-image: var(--package-installed-icon);
+    -unity-background-scale-mode: scale-to-fit;
+    background-size: 16px 16px;
+    min-width: 16px;
+    max-width: 16px;
+    min-height: 16px;
+    max-height: 16px;
+    margin-left: 4px;
+}
+
+

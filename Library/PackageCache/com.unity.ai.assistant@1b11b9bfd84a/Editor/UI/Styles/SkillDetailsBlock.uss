@@ -1,0 +1,8 @@
+.assistant-skills-value-header {
+    -unity-font-style: bold;
+    margin-top: 8px;
+}
+
+.assistant-skills-wrap {
+    white-space: normal;
+}

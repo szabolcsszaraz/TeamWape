@@ -1,0 +1,122 @@
+:root {
+    --graph-color-selection-counterpart: #FF8000;
+    --graph-color-hover-highlight: rgb(68, 192, 255);
+    --graph-color-disabled-tint: rgba(18, 18, 18, 0.45);
+
+    /* selection color is faded until graph is focused */
+    --graph-color-selection: #505050;
+
+    /* ErrorMarker.uss */
+    --graph-color-log: #F0F0F0;
+
+    /*Blackboard.uss*/
+    --blackboard-title-text: var(--unity-colors-label-text);
+    --blackboard-subtitle-text: var(--unity-colors-label-text);
+    --blackboard-section-header-text: var(--unity-colors-label-text);
+    --blackboard-group-text: var(--unity-colors-helpbox-text);
+
+    --blackboard-capsule-selection-counterpart-border: var(--graph-color-selection-counterpart);
+    --blackboard-drag-indicator: var(--graph-color-selection);
+    --blackboard-capsule-background: var(--graph-color-node-background);
+
+    /*BlockNode.uss (Context Blocks)*/
+    --graph-color-block-body-cache: var(--graph-color-block-background);
+    --graph-color-block-header-tint: transparent;
+
+    /*ContextNode.uss*/
+    --graph-color-context-header-background: transparent;
+    --graph-color-context-drag-accepted: var(--graph-color-selection);
+    --graph-color-context-drag-refused: var(--unity-colors-error-text);
+    --graph-color-context-addblock-text: var(--unity-colors-helpbox-text);
+
+    /*Wire.uss*/
+    --graph-color-wire-selected: var(--graph-color-selection);
+
+    /*WireBubble.uss*/
+    --graph-color-wire-bubble-text: var(--unity-colors-helpbox-text);
+    --graph-color-wire-bubble-border: var(--graph-color-node-border);
+
+    /*ErrorMarker.uss -- need to revisit later when it's available in samples*/
+
+    /*GraphView.uss*/
+    --graph-color-selection-delete: #FF0000;
+
+    /*ModelInspector.uss*/
+    --graph-color-inspector-border: var(--unity-colors-default-border);
+    --graph-color-inspector-inside-border: var(--unity-colors-window-border);
+
+    /*Minimap.uss*/
+    --graph-color-minimap-selection-border: var(--graph-color-node-selection-highlight);
+    --graph-color-minimap-highlight-border: var(--graph-color-selection-counterpart);
+    --graph-color-minimap-placemat-border: var(--graph-color-node-border);
+
+    /*Node.uss*/
+    --graph-color-node-title-text: var(--unity-colors-label-text);
+
+    /*NodePreview.uss*/
+    --graph-color-close-button-label: #C4C4C4;
+    --graph-color-button-label-hover-background: #FFFFFF;
+    --graph-color-button-background: rgba(3, 3, 3, 0.3);
+
+    /*Placemat.uss*/
+    --graph-color-placemat-text: var(--unity-colors-label-text);
+
+    /*Port.uss*/
+    --graph-color-port-default: var(--port-type-misc);
+    --graph-color-port-background: var(--graph-color-node-background);
+    --graph-color-port-text: var(--unity-colors-label-text);
+    --graph-color-dragndrop-highlight: rgb(37, 107, 145);
+    --graph-color-dragndrop-highlight-background: rgba(38, 108, 145, 0.33);
+    --graph-color-dragndrop-denied: rgb(145, 29, 19);
+    --graph-color-dragndrop-denied-background: rgba(145, 29, 19, 0.33);
+    --port-type-missing: var(--graph-color-error);
+
+    /*PortContainer.uss*/
+    --graph-color-node-output-background: var(--graph-color-node-background-dark);
+
+    /*PortContainerPart.uss*/
+    --graph-color-vertical-node-port-background: var(--graph-color-node-background-dark);
+
+    /*GraphElement.uss*/
+    --selection-hover: var(--graph-color-node-hover-highlight);
+    --selection-checked: var(--graph-color-selection);
+    --selection-checked-hover: var(--graph-color-selection);
+    --minimap-nodes: var(--graph-color-minimap-node);
+
+    /*TokenNode.uss*/
+    --node-capsule-background: var(--graph-color-node-background);
+
+    --input-icon: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/Port/ExecutionInput@4x.png");
+    --output-icon: resource("Packages/com.unity.graphtoolkit/GraphToolkitEditor/Icons/Port/ExecutionOutput@4x.png");
+}
+
+.hidden {
+    display: none;
+}
+
+.ge-view--focused {
+    --graph-color-selection: var(--graph-color-node-selection-highlight);
+}
+
+/*Icons*/
+
+.ge-node-title-part__missing-graph-icon {
+    --unity-image: var(--unity-icons-console_entry_error);
+}
+
+.ge-error-marker--error .ge-error-marker__icon {
+    --unity-image: var(--unity-icons-console_entry_error);
+}
+
+.ge-error-marker--warning .ge-error-marker__icon {
+    --unity-image: var(--unity-icons-console_entry_warn)
+}
+
+.ge-error-marker--log .ge-error-marker__icon {
+    --unity-image: var(--unity-icons-console_entry_info);
+}
+
+.ge-icon--state,
+.item-library-custom-item-state__icon {
+    --unity-image: var(--graph-state-state-machine-icon);
+}

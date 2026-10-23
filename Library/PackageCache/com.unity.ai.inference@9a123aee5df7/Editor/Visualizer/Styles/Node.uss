@@ -1,0 +1,47 @@
+:root {
+    border-radius: var(--appui-alias-control-border-radius);
+    border-width: 1px;
+    border-color: var(--graph-color-node-border);
+    overflow: hidden;
+    max-width: 135px;
+    flex-grow: 1;
+    align-self: center;
+}
+
+.unity-label {
+    margin-left: 4px;
+    margin-right: 4px;
+    padding-left: 4px;
+    padding-right: 4px;
+    color: white;
+    -unity-text-align: middle-center;
+    text-overflow: ellipsis;
+}
+
+.input-node {
+    background-color: var(--appui-positive-100);
+}
+
+.output-node {
+    background-color: var(--appui-destructive-100);
+}
+
+.layer-node-0 {
+    background-color: var(--appui-color-pink-900);
+}
+
+.layer-node-1 {
+    background-color: var(--appui-color-purple-1000);
+}
+
+.layer-node-2 {
+    background-color: var(--port-type-matrix);
+}
+
+.selected {
+    border-color: var(--graph-color-node-selection-highlight);
+}
+
+.hovered {
+    border-color: var(--graph-color-node-hover-highlight);
+}

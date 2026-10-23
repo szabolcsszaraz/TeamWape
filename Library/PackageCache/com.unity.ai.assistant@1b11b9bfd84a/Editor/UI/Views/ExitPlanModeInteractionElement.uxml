@@ -1,0 +1,20 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="plan-review-root">
+        <ui:Label name="titleLabel" text="Review Implementation Plan" class="plan-review-heading"/>
+        <ui:Label name="pathLabel" class="plan-review-path-label"/>
+        <ui:VisualElement class="plan-review-container">
+            <ui:VisualElement class="plan-review-topbar">
+                <ui:Image class="plan-review-plan-icon mui-icon-list-checks" picking-mode="Ignore"/>
+                <ui:Label name="planTitleLabel" text="Implementation Plan" class="plan-review-title" enable-rich-text="false"/>
+                <ui:Button name="expandButton" class="plan-review-expand-btn mui-expand-button">
+                    <ui:Image class="plan-review-expand-icon mui-icon-enlarge" picking-mode="Ignore"/>
+                </ui:Button>
+                <ui:Button name="planCopyButton" class="plan-review-copy-btn">
+                    <ui:Image name="planCopyIcon" class="plan-review-copy-icon mui-icon-copy" picking-mode="Ignore"/>
+                </ui:Button>
+            </ui:VisualElement>
+            <ui:ScrollView name="planContentScroll" class="plan-review-content" mode="Vertical"/>
+        </ui:VisualElement>
+        <ui:Label name="statusLabel"/>
+    </ui:VisualElement>
+</ui:UXML>

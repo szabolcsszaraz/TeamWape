@@ -1,0 +1,21 @@
+/*!* ColorSlider *!*/
+.appui-color-slider.appui-slider--horizontal > .appui-slider__slider-control > .appui-slider__track {
+    height: var(--appui-sizing-125);
+    border-radius: var(--appui-sizing-125);
+}
+
+.appui-color-slider.appui-slider--vertical > .appui-slider__slider-control > .appui-slider__track {
+    width: var(--appui-sizing-125);
+    border-radius: var(--appui-sizing-125);
+}
+
+.appui-color-slider > .appui-slider__slider-control > .appui-slider__track > .appui-colorswatch {
+    width: 100%;
+    height: 100%;
+    border-width: 0;
+}
+
+.appui-color-slider > .appui-slider__slider-control > .appui-slider__thumbs-container > .appui-thumb > .appui-thumb__content {
+    border-color: var(--appui-color-gray-1500);
+    border-width: var(--appui-sizing-50);
+}

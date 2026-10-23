@@ -1,0 +1,46 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:Template name="QuestionDescription" src="project://database/Packages/com.unity.multiplayer.center/Editor/MultiplayerCenterWindow/UI/QuestionDescription.uxml?fileID=9197481963319205126&amp;guid=944af6732f6e40a48ef18c1011847230&amp;type=3#QuestionDescription"/>
+    <Style src="project://database/Packages/com.unity.multiplayer.center/Editor/MultiplayerCenterWindow/UI/MultiplayerCenterWindow.uss?fileID=7433441132597879392&amp;guid=588de2e11d0f4913bbf8d538c38d020f&amp;type=3#MultiplayerCenterWindow"/>
+    <Unity.Multiplayer.Center.Editor.QuestionModeSwitcher name="root" data-source-type="Unity.Multiplayer.Center.Editor.MultiplayerCenterWindow, Unity.Multiplayer.Center.Editor" style="flex-grow: 1;">
+        <ui:VisualElement class="header">
+            <ui:Button text="" tooltip="Back to the game genre selection page." name="back-button" class="category"/>
+            <ui:Label name="title" text="Multiplayer Center" class="header__title">
+                <Bindings>
+                    <ui:DataBinding property="text" data-source-path="TitleLabel" binding-mode="ToTarget"/>
+                </Bindings>
+            </ui:Label>
+        </ui:VisualElement>
+        <ui:TwoPaneSplitView fixed-pane-initial-dimension="250">
+            <ui:VisualElement class="left-panel">
+                <ui:ListView name="question-list" fixed-item-height="26" item-template="./ListViewElement.uxml?fileID=9197481963319205126&amp;guid=608d7cd3b6dc19c2e9adf5bb6143cde6&amp;type=3#ListViewElement" binding-source-selection-mode="AutoAssign" class="question">
+                    <Bindings>
+                        <ui:DataBinding property="itemsSource" data-source-path="m_GameGenres.Descriptions" binding-mode="ToTarget"/>
+                        <ui:DataBinding property="selectedIndex" data-source-path="m_ListViewSelectedGameGenre" binding-mode="TwoWay"/>
+                    </Bindings>
+                </ui:ListView>
+                <ui:ListView name="categories" fixed-item-height="26" item-template="./ListViewElement.uxml?fileID=9197481963319205126&amp;guid=608d7cd3b6dc19c2e9adf5bb6143cde6&amp;type=3#ListViewElement" binding-source-selection-mode="AutoAssign" class="category">
+                    <Bindings>
+                        <ui:DataBinding property="itemsSource" data-source-path="m_CategoriesDescription.FilteredCategories" binding-mode="ToTarget"/>
+                        <ui:DataBinding property="selectedIndex" data-source-path="SelectedCategory" binding-mode="TwoWay"/>
+                    </Bindings>
+                </ui:ListView>
+            </ui:VisualElement>
+            <ui:VisualElement name="right-panel">
+                <ui:VisualElement name="question-description" data-source-path="SelectedGameGenre" class="question" style="justify-content: space-between; flex-grow: 1;">
+                    <ui:ScrollView horizontal-scroller-visibility="Hidden">
+                        <ui:Instance template="QuestionDescription"/>
+                    </ui:ScrollView>
+                    <ui:Button text="Select" name="answer-button" class="answer-button"/>
+                </ui:VisualElement>
+                <Unity.Multiplayer.Center.Editor.CategoriesContainer name="category-content" class="category" horizontal-scroller-visibility="Hidden">
+                    <Bindings>
+                        <ui:DataBinding property="DisplayedCategory" data-source-path="SelectedCategoryType" binding-mode="ToTarget"/>
+                    </Bindings>
+                </Unity.Multiplayer.Center.Editor.CategoriesContainer>
+            </ui:VisualElement>
+        </ui:TwoPaneSplitView>
+        <Bindings>
+            <ui:DataBinding property="QuestionMode" data-source-path="m_DisplayQuestion" binding-mode="ToTarget"/>
+        </Bindings>
+    </Unity.Multiplayer.Center.Editor.QuestionModeSwitcher>
+</ui:UXML>

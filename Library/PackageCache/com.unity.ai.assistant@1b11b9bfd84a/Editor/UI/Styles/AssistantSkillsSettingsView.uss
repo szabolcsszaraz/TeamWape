@@ -1,0 +1,126 @@
+.assistant-skills-settings-page {
+    margin-top: 1px;
+    margin-left: 9px;
+    margin-right: 8px;
+}
+
+#assistantSkillsSettingsHeader {
+    -unity-font-style: bold;
+    font-size: 19px;
+}
+
+.assistant-skills-description {
+    white-space: normal;
+    margin: 8px 8px 8px 2px;
+}
+
+.assistant-skills-section-title {
+    -unity-font-style: bold;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.assistant-skills-info-row {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 8px;
+    margin-bottom: 4px;
+}
+
+.assistant-skills-rescan-button {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 6px;
+}
+
+.assistant-skills-foldout > .unity-foldout__content {
+    margin-bottom: 0;
+}
+
+.assistant-skills-timestamp {
+    margin-left: 8px;
+    color: var(--muse-chat-text-secondary);
+}
+
+.assistant-skills-search {
+    margin-top: 8px;
+    margin-bottom: 10px;
+}
+
+.assistant-skills-header-row {
+    flex-direction: row;
+    align-items: center;
+}
+
+.assistant-skills-header-icon {
+    width: 12px;
+    height: 12px;
+    margin-right: 8px;
+    align-self: center;
+}
+
+.assistant-skills-group-outer {
+    border-radius: 4px;
+    border-color: var(--muse-chat-backgrounds-50);
+    border-width: 1px;
+    margin-bottom: 12px;
+}
+
+.assistant-skills-group-outer > .assistant-skills-header-row {
+    padding: 6px;
+}
+
+.assistant-skills-group-outer .assistant-skills-section-title {
+    margin: 0;
+}
+
+.assistant-skills-folder-separator {
+    padding: 6px 8px 6px 10px;
+    border-top-width: 1px;
+    border-top-color: var(--muse-chat-backgrounds-50);
+}
+
+.assistant-skills-group-container > .assistant-skills-foldout {
+    border-top-width: 1px;
+    border-top-color: var(--muse-chat-backgrounds-50);
+}
+
+.assistant-skills-group-container > .assistant-skills-foldout .unity-toggle {
+    margin: 4px 0 4px 6px;
+}
+
+.assistant-skills-group-container > .assistant-skills-foldout > .unity-foldout__content {
+    background-color: var(--muse-chat-foregrounds-300);
+    padding: 8px 10px 8px 10px;
+    margin: 0;
+    border-top-width: 1px;
+    border-top-color: var(--muse-chat-backgrounds-50);
+}
+
+.assistant-skills-disabled-label {
+    margin-left: auto;
+    margin-right: 8px;
+    -unity-font-style: bold;
+}
+
+.assistant-skills-no-skills-label {
+    padding: 6px 10px;
+    border-top-width: 1px;
+    border-top-color: var(--muse-chat-backgrounds-50);
+}
+
+.assistant-skills-enable-button {
+    margin: 6px 10px;
+    align-self: flex-start;
+    border-top-width: 1px;
+    border-top-color: var(--muse-chat-backgrounds-50);
+}
+
+.assistant-skills-opt-in-dropdown {
+    margin-right: 11px;
+}
+
+.assistant-skills-opt-in-dropdown > .unity-base-popup-field__input {
+    padding-left: 6px;
+    padding-right: 6px;
+}

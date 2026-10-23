@@ -1,0 +1,9 @@
+<UXML xmlns="UnityEngine.UIElements">
+    <Style src="./GenerationOptions.uss" />
+    <Label class="hide font-bold p-4" text="Options"/>
+    <Toggle class="generation-options-use-custom-seed" label="Custom Seed" tooltip="Use the same seed value to reproduce identical results. Leave empty for random generation."/>
+    <IntegerField class="generation-options-custom-seed hide"/>
+    <Toggle class="generation-options-use-face-limit hide" label="Face Limit" tooltip="Enable to set a maximum number of faces in the generated mesh. Lower values produce simpler meshes."/>
+    <SliderInt class="generation-options-face-limit hide" show-input-field="true"/>
+    <DropdownField class="generation-options-target-format hide mt-2" label="Output Format" tooltip="Output file format for the generated 3D model."/>
+</UXML>

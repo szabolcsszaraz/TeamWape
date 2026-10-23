@@ -1,0 +1,194 @@
+// This file is generated. Do not modify by hand.
+// XML documentation file not found. To check if public methods have XML comments,
+// make sure the XML doc file is present and located next to the scraped dll
+namespace Unity.AI.Assistant
+{
+    public interface ILinkHandler
+    {
+        public void Handle(ILinkHandler.Context context, string prefix, string url);
+        public struct Context
+        {
+            public FunctionCalling.PersistentStorage PersistentStorage { get; }
+        }
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = true, Inherited = false)] public sealed class LinkHandlerAttribute : System.Attribute
+    {
+        public string Prefix { get; }
+        public LinkHandlerAttribute(string prefix) {}
+    }
+
+    public class VirtualAttachment
+    {
+        public string DisplayName;
+        public object Metadata;
+        public readonly string Payload;
+        public string Type;
+        public VirtualAttachment(string payload, string type, string displayName, object metadata) {}
+        public override bool Equals(object obj);
+        public override int GetHashCode();
+    }
+}
+
+namespace Unity.AI.Assistant.Agents
+{
+    public abstract class BaseAgent<TAgent> : IAgent where TAgent : Unity.AI.Assistant.Agents.BaseAgent<TAgent>
+    {
+        public string Description { get; set; }
+        public string Name { get; set; }
+        public string UniqueId { get; set; }
+        protected BaseAgent(string uniqueId = @"", string name = @"", string description = @"") {}
+        public TAgent WithDescription(string description);
+        public TAgent WithId(string uniqueId);
+        public TAgent WithName(string name);
+    }
+
+    public interface IAgent
+    {
+        public string Description { get; }
+        public string Name { get; }
+        public string UniqueId { get; }
+    }
+
+    public sealed class LlmAgent : Unity.AI.Assistant.Agents.BaseAgent<LlmAgent>
+    {
+        public string SystemPrompt { get; set; }
+        public LlmAgent(string uniqueId = @"", string name = @"", string description = @"", string systemPrompt = @"") {}
+        public LlmAgent WithSystemPrompt(string systemPrompt);
+        public LlmAgent WithTool(System.Reflection.MethodInfo methodInfo);
+        public LlmAgent WithToolsFrom<T>();
+    }
+}
+
+namespace Unity.AI.Assistant.FunctionCalling
+{
+    [System.AttributeUsage(System.AttributeTargets.Method, AllowMultiple = false, Inherited = false)] public class AgentToolAttribute : System.Attribute
+    {
+        public readonly string Description;
+        public readonly string Id;
+        public AgentToolAttribute(string description, string id) {}
+    }
+
+    public abstract class BaseInteraction<TOutput> : UnityEngine.UIElements.VisualElement, Unity.AI.Assistant.FunctionCalling.IInteractionSource<TOutput>
+    {
+        public event System.Action<TOutput> OnCompleted;
+        public System.Threading.Tasks.TaskCompletionSource<TOutput> TaskCompletionSource { get; }
+        protected BaseInteraction() {}
+        public void CancelInteraction();
+        protected void CompleteInteraction(TOutput output);
+        protected virtual void OnCanceled();
+    }
+
+    public class ConversationContext
+    {
+        public PersistentStorage PersistentStorage { get; }
+    }
+
+    public interface IApprovalInteraction
+    {
+        public string Action { get; }
+        public string AllowLabel { get; }
+        public string DenyLabel { get; }
+        public string Detail { get; }
+        public bool ShowScope { get; }
+        public void Respond(PermissionUserAnswer answer);
+    }
+
+    public interface IInteractionSource<TOutput>
+    {
+        public event System.Action<TOutput> OnCompleted;
+        public System.Threading.Tasks.TaskCompletionSource<TOutput> TaskCompletionSource { get; }
+        public void CancelInteraction();
+    }
+
+    public interface IToolInteractions
+    {
+        public System.Threading.Tasks.Task<TOutput> WaitForUser<TOutput>(ToolExecutionContext.CallInfo callInfo, Unity.AI.Assistant.FunctionCalling.IInteractionSource<TOutput> userInteraction, int timeoutSeconds = 30, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+    }
+
+    public interface IToolPermissions
+    {
+        public System.Threading.Tasks.Task CheckAssetGeneration(ToolExecutionContext.CallInfo callInfo, string path, System.Type type, long cost, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public System.Threading.Tasks.Task CheckCodeExecution(ToolExecutionContext.CallInfo callInfo, string code, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public System.Threading.Tasks.Task CheckFileSystemAccess(ToolExecutionContext.CallInfo callInfo, PermissionItemOperation operation, string path, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public System.Threading.Tasks.Task CheckPlayMode(ToolExecutionContext.CallInfo callInfo, PermissionPlayModeOperation operation, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public System.Threading.Tasks.Task CheckScreenCapture(ToolExecutionContext.CallInfo callInfo, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public System.Threading.Tasks.Task CheckToolExecution(ToolExecutionContext.CallInfo callInfo, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public System.Threading.Tasks.Task CheckUnityObjectAccess(ToolExecutionContext.CallInfo callInfo, PermissionItemOperation operation, System.Type type, UnityEngine.Object target, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public void GetTemporaryPermissions(System.Collections.Generic.IList<IToolPermissions.TemporaryPermission> permissions);
+        public void IgnoreUnityObject(ToolExecutionContext.CallInfo callInfo, UnityEngine.Object target);
+        public void ResetIgnoredObjects();
+        public void ResetTemporaryPermissions();
+        public struct TemporaryPermission
+        {
+            public string Name;
+            public System.Action ResetFunction;
+            public TemporaryPermission(string name, System.Action resetFunction) {}
+        }
+    }
+
+    public enum PermissionItemOperation
+    {
+        Read = 0,
+        Create = 1,
+        Delete = 2,
+        Modify = 3,
+    }
+
+    public enum PermissionPlayModeOperation
+    {
+        Enter = 0,
+        Exit = 1,
+    }
+
+    public enum PermissionUserAnswer
+    {
+        AllowOnce = 0,
+        AllowAlways = 1,
+        DenyOnce = 2,
+        DenyAlways = 3,
+    }
+
+    public sealed class PersistentStorage
+    {
+        public void ClearState<T>(string key);
+        public void SetState<T>(string key, T state);
+        public bool TryGetState<T>(string key, out T state);
+    }
+
+    public readonly struct ToolCallInteractions
+    {
+        public ToolCallInteractions(ToolExecutionContext.CallInfo callInfo, IToolInteractions toolInteractions, System.Threading.CancellationToken cancellationToken) {}
+        public async System.Threading.Tasks.Task<TOutput> WaitForUser<TOutput>(Unity.AI.Assistant.FunctionCalling.IInteractionSource<TOutput> userInteraction, int timeoutSeconds = 600);
+    }
+
+    public readonly struct ToolCallPermissions
+    {
+        public ToolCallPermissions(ToolExecutionContext.CallInfo callInfo, IToolPermissions permissions, System.Threading.CancellationToken cancellationToken) {}
+        public System.Threading.Tasks.Task CheckFileSystemAccess(PermissionItemOperation operation, string path);
+        public System.Threading.Tasks.Task CheckPlayMode(PermissionPlayModeOperation operation);
+        public System.Threading.Tasks.Task CheckUnityObjectAccess(PermissionItemOperation operation, System.Type type, UnityEngine.Object target);
+        public void IgnoreUnityObject(UnityEngine.Object target);
+    }
+
+    public readonly struct ToolExecutionContext
+    {
+        public ToolExecutionContext.CallInfo Call { get; }
+        public ConversationContext Conversation { get; }
+        public ToolCallInteractions Interactions { get; }
+        public ToolCallPermissions Permissions { get; }
+        public ToolExecutionContext(ConversationContext conversationContext, ToolExecutionContext.CallInfo callInfo, ToolCallPermissions toolPermissions, ToolCallInteractions toolInteractions) {}
+        public struct CallInfo
+        {
+            public System.Guid CallId { get; }
+            public string FunctionId { get; }
+            public CallInfo(string functionId, System.Guid callId, string parameters) {}
+        }
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Parameter)] public class ToolParameterAttribute : System.Attribute
+    {
+        public readonly string Description;
+        public ToolParameterAttribute(string description) {}
+    }
+}

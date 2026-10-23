@@ -1,0 +1,766 @@
+-target:library
+-out:"Library/Bee/artifacts/1900b0aE.dag/Unity.AI.Assistant.Editor.dll"
+-refout:"Library/Bee/artifacts/1900b0aE.dag/Unity.AI.Assistant.Editor.ref.dll"
+-define:UNITY_6000_6_7
+-define:UNITY_6000_6
+-define:UNITY_6000
+-define:UNITY_5_3_OR_NEWER
+-define:UNITY_5_4_OR_NEWER
+-define:UNITY_5_5_OR_NEWER
+-define:UNITY_5_6_OR_NEWER
+-define:UNITY_2017_1_OR_NEWER
+-define:UNITY_2017_2_OR_NEWER
+-define:UNITY_2017_3_OR_NEWER
+-define:UNITY_2017_4_OR_NEWER
+-define:UNITY_2018_1_OR_NEWER
+-define:UNITY_2018_2_OR_NEWER
+-define:UNITY_2018_3_OR_NEWER
+-define:UNITY_2018_4_OR_NEWER
+-define:UNITY_2019_1_OR_NEWER
+-define:UNITY_2019_2_OR_NEWER
+-define:UNITY_2019_3_OR_NEWER
+-define:UNITY_2019_4_OR_NEWER
+-define:UNITY_2020_1_OR_NEWER
+-define:UNITY_2020_2_OR_NEWER
+-define:UNITY_2020_3_OR_NEWER
+-define:UNITY_2021_1_OR_NEWER
+-define:UNITY_2021_2_OR_NEWER
+-define:UNITY_2021_3_OR_NEWER
+-define:UNITY_2022_1_OR_NEWER
+-define:UNITY_2022_2_OR_NEWER
+-define:UNITY_2022_3_OR_NEWER
+-define:UNITY_2023_1_OR_NEWER
+-define:UNITY_2023_2_OR_NEWER
+-define:UNITY_2023_3_OR_NEWER
+-define:UNITY_6000_0_OR_NEWER
+-define:UNITY_6000_1_OR_NEWER
+-define:UNITY_6000_2_OR_NEWER
+-define:UNITY_6000_3_OR_NEWER
+-define:UNITY_6000_4_OR_NEWER
+-define:UNITY_6000_5_OR_NEWER
+-define:UNITY_6000_6_OR_NEWER
+-define:PLATFORM_ARCH_64
+-define:UNITY_64
+-define:UNITY_INCLUDE_TESTS
+-define:UNITY_ENABLE_CLOUD_SERVICES_ENGINE_DIAGNOSTICS_MANAGED
+-define:ENABLE_AR
+-define:ENABLE_AUDIO
+-define:ENABLE_AUDIO_SCRIPTABLE_PIPELINE
+-define:ENABLE_BURST
+-define:ENABLE_CACHING
+-define:ENABLE_CLOTH
+-define:ENABLE_EVENT_QUEUE
+-define:ENABLE_MICROPHONE
+-define:ENABLE_MULTIPLE_DISPLAYS
+-define:ENABLE_PHYSICS
+-define:ENABLE_TEXTURE_STREAMING
+-define:ENABLE_VIRTUALTEXTURING
+-define:ENABLE_LZMA
+-define:ENABLE_UNITYEVENTS
+-define:ENABLE_VR
+-define:ENABLE_WEBCAM
+-define:ENABLE_UNITYWEBREQUEST
+-define:ENABLE_WWW
+-define:ENABLE_CLOUD_SERVICES
+-define:ENABLE_CLOUD_SERVICES_ADS
+-define:ENABLE_CLOUD_SERVICES_USE_WEBREQUEST
+-define:ENABLE_UNITY_CONSENT
+-define:ENABLE_UNITY_CLOUD_IDENTIFIERS
+-define:ENABLE_CLOUD_SERVICES_CRASH_REPORTING
+-define:ENABLE_CLOUD_SERVICES_NATIVE_CRASH_REPORTING
+-define:ENABLE_CLOUD_SERVICES_PURCHASING
+-define:ENABLE_CLOUD_SERVICES_ANALYTICS
+-define:ENABLE_CLOUD_SERVICES_BUILD
+-define:ENABLE_EDITOR_GAME_SERVICES
+-define:ENABLE_UNITY_GAME_SERVICES_ANALYTICS_SUPPORT
+-define:ENABLE_CLOUD_LICENSE
+-define:ENABLE_EDITOR_HUB_LICENSE
+-define:ENABLE_WEBSOCKET_CLIENT
+-define:ENABLE_GENERATE_NATIVE_PLUGINS_FOR_ASSEMBLIES_API
+-define:ENABLE_DIRECTOR_AUDIO
+-define:ENABLE_DIRECTOR_TEXTURE
+-define:ENABLE_MANAGED_JOBS
+-define:ENABLE_MANAGED_TRANSFORM_JOBS
+-define:ENABLE_MANAGED_ANIMATION_JOBS
+-define:ENABLE_MANAGED_AUDIO_JOBS
+-define:ENABLE_MANAGED_UNITYTLS
+-define:INCLUDE_DYNAMIC_GI
+-define:ENABLE_SCRIPTING_GC_WBARRIERS
+-define:PLATFORM_SUPPORTS_MONO
+-define:RENDER_SOFTWARE_CURSOR
+-define:ENABLE_MARSHALLING_TESTS
+-define:ENABLE_VIDEO
+-define:ENABLE_NAVIGATION_OFFMESHLINK_TO_NAVMESHLINK
+-define:ENABLE_ACCELERATOR_CLIENT_DEBUGGING
+-define:ENABLE_ACCESSIBILITY_SCREEN_READER
+-define:TEXTCORE_1_0_OR_NEWER
+-define:EDITOR_ONLY_NAVMESH_BUILDER_DEPRECATED
+-define:INCLUDE_UNIFIED_RAYTRACING_COMPUTE_BACKEND
+-define:INCLUDE_UNIFIED_RAYTRACING_HARDWARE_BACKEND
+-define:PLATFORM_STANDALONE_WIN
+-define:PLATFORM_STANDALONE
+-define:UNITY_STANDALONE_WIN
+-define:UNITY_STANDALONE
+-define:ENABLE_RUNTIME_GI
+-define:ENABLE_MOVIES
+-define:ENABLE_NETWORK
+-define:ENABLE_NVIDIA
+-define:ENABLE_AMD
+-define:ENABLE_CRUNCH_TEXTURE_COMPRESSION
+-define:ENABLE_CLOUD_SERVICES_ENGINE_DIAGNOSTICS
+-define:ENABLE_OUT_OF_PROCESS_CRASH_HANDLER
+-define:ENABLE_CLUSTER_SYNC
+-define:ENABLE_CLUSTERINPUT
+-define:PLATFORM_UPDATES_TIME_OUTSIDE_OF_PLAYER_LOOP
+-define:GFXDEVICE_WAITFOREVENT_MESSAGEPUMP
+-define:PLATFORM_USES_EXPLICIT_MEMORY_MANAGER_INITIALIZER
+-define:PLATFORM_SUPPORTS_WAIT_FOR_PRESENTATION
+-define:PLATFORM_SUPPORTS_SPLIT_GRAPHICS_JOBS
+-define:UNITY_SUPPORTS_GRAPHICS_API_VALIDATION
+-define:PLATFORM_USES_VULKAN_OLD_SWAPCHAIN
+-define:USE_READ_ASYNC_MANAGED_API
+-define:ENABLE_MONO
+-define:NET_4_6
+-define:NET_UNITY_4_8
+-define:ENABLE_PROFILER
+-define:UNITY_INCLUDE_INSTRUMENTATION
+-define:DEBUG
+-define:TRACE
+-define:UNITY_ASSERTIONS
+-define:UNITY_ENABLE_CHECKS
+-define:UNITY_EDITOR
+-define:UNITY_EDITOR_64
+-define:UNITY_EDITOR_WIN
+-define:ENABLE_UNITY_COLLECTIONS_CHECKS
+-define:ENABLE_BURST_AOT
+-define:UNITY_TEAM_LICENSE
+-define:ENABLE_CUSTOM_RENDER_TEXTURE
+-define:ENABLE_DIRECTOR
+-define:ENABLE_LOCALIZATION
+-define:ENABLE_SPRITES
+-define:ENABLE_TERRAIN
+-define:ENABLE_TILEMAP
+-define:ENABLE_TIMELINE
+-define:ENABLE_INPUT_SYSTEM
+-define:TEXTCORE_FONT_ENGINE_1_5_OR_NEWER
+-define:TEXTCORE_TEXT_ENGINE_1_5_OR_NEWER
+-define:TEXTCORE_FONT_ENGINE_1_6_OR_NEWER
+-define:SENTIS_ANALYTICS_ENABLED
+-define:APP_UI_EDITOR_ONLY
+-define:CSHARP_7_OR_LATER
+-define:CSHARP_7_3_OR_NEWER
+-define:UNITY_EDITOR_ONLY_COMPILATION
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/ref/Microsoft.Bcl.AsyncInterfaces.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/ref/Microsoft.Extensions.DependencyInjection.Abstractions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/ref/Microsoft.Extensions.Logging.Abstractions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/ref/System.Collections.Immutable.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/ref/System.Diagnostics.DiagnosticSource.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/ref/System.IO.Hashing.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/ref/System.Reflection.Metadata.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/ref/System.Runtime.CompilerServices.Unsafe.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/ref/System.Text.Encodings.Web.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/ref/System.Text.Json.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/Bootstrap/Unity.Scripting.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEditor.Graphs.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.AIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.AccessibilityModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.AdaptivePerformanceModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.AnimationWindowModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.AssetComplianceModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.BuildAnalysisModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.BuildProfileModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.BurstModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.ClothModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.ContentLoadModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.CoreBusinessMetricsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.CoreModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.DeviceSimulatorModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.DiagnosticsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.EditorToolbarModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.EmbreeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.GIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.GenericRemoteModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.GraphToolkitModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.GraphViewModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.GraphicsStateCollectionSerializerModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.GridAndSnapModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.GridModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.HierarchyModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.LightingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.MathematicsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.MediaModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.MultiplayerModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.Physics2DModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.PhysicsCore2DModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.PhysicsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.PlayModeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.PresetsUIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.ProjectAuditorModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.PropertiesModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.QuickInstallModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.QuickSearchModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.SafeModeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.SceneTemplateModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.SceneViewModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.ShaderBuildSettingsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.ShaderCompilationModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.ShaderFoundryModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.ShaderPreprocessorModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.SketchUpModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.SpriteMaskModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.SpriteShapeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.SubstanceModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.SyntaxTreeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.TerrainModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.TextCoreFontEngineModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.TextCoreTextEngineModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.TextRenderingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.TilemapModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.TimelineFoundationModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.TreeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.U2DModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.UIAutomationModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.UIBuilderModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.UIElementsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.UIElementsSamplesModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.UIToolkitAuthoringModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.UmbraModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.UnityConnectModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.VFXModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.VectorGraphicsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.VideoModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.XRModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEditor.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.AMDModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.ARModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.AccessibilityModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.AdaptivePerformanceModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.AndroidJNIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.AnimationModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.AssetBundleModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.AudioModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.BurstModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.ClothModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.ClusterInputModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.ClusterRendererModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.ContentLoadModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.CoreModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.CrashReportingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.DSPGraphModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.DirectorModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.GIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.GameCenterModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.GraphicsStateCollectionSerializerModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.GridModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.HierarchyCoreModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.HierarchyModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.HotReloadModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.IMGUIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.IdentifiersModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.ImageConversionModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.InputForUIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.InputLegacyModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.InputModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.InsightsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.JSONSerializeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.LocalizationModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.ManagedKernelModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.MarshallingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.MathematicsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.MultiplayerModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.NVIDIAModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.ParticleSystemModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.PerformanceReportingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.Physics2DModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.PhysicsBackendPhysXModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.PhysicsCore2DModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.PhysicsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.PropertiesModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.RenderAs2DModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.ScreenCaptureModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.ScriptingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.ShaderVariantAnalyticsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.SpriteMaskModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.SpriteShapeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.StreamingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.SubstanceModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.SubsystemsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.TLSModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.TerrainModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.TerrainPhysicsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.TetgenModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.TextCoreFontEngineModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.TextCoreTextEngineModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.TextRenderingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.TilemapModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.TimelineFoundationModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.U2DRuntimeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.UIElementsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.UIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.UmbraModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.UnityAnalyticsCommonModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.UnityAnalyticsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.UnityConnectModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.UnityConsentModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.UnityCurlModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.UnityWebRequestAssetBundleModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.UnityWebRequestAudioModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.UnityWebRequestModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.UnityWebRequestTextureModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.UnityWebRequestWWWModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.VFXModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.VectorGraphicsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.VehiclesModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.VideoModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.VirtualTexturingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.WindModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.XRModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/AndroidPlayer/Unity.Android.Gradle.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/AndroidPlayer/Unity.Android.Types.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/Microsoft.Win32.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.AppContext.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Buffers.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Collections.Concurrent.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Collections.NonGeneric.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Collections.Specialized.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Collections.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ComponentModel.Annotations.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ComponentModel.EventBasedAsync.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ComponentModel.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ComponentModel.TypeConverter.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ComponentModel.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Console.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Data.Common.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Diagnostics.Contracts.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Diagnostics.Debug.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Diagnostics.FileVersionInfo.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Diagnostics.Process.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Diagnostics.StackTrace.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Diagnostics.TextWriterTraceListener.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Diagnostics.Tools.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Diagnostics.TraceSource.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Drawing.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Dynamic.Runtime.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Globalization.Calendars.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Globalization.Extensions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Globalization.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.IO.Compression.ZipFile.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.IO.FileSystem.DriveInfo.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.IO.FileSystem.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.IO.FileSystem.Watcher.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.IO.FileSystem.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.IO.IsolatedStorage.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.IO.MemoryMappedFiles.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.IO.Pipes.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.IO.UnmanagedMemoryStream.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.IO.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Linq.Expressions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Linq.Parallel.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Linq.Queryable.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Linq.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Memory.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Net.Http.Rtc.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Net.NameResolution.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Net.NetworkInformation.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Net.Ping.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Net.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Net.Requests.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Net.Security.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Net.Sockets.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Net.WebHeaderCollection.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Net.WebSockets.Client.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Net.WebSockets.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ObjectModel.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Reflection.DispatchProxy.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Reflection.Emit.ILGeneration.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Reflection.Emit.Lightweight.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Reflection.Emit.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Reflection.Extensions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Reflection.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Reflection.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Resources.Reader.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Resources.ResourceManager.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Resources.Writer.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.CompilerServices.VisualC.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.Extensions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.Handles.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.InteropServices.RuntimeInformation.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.InteropServices.WindowsRuntime.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.InteropServices.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.Numerics.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.Serialization.Formatters.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.Serialization.Json.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.Serialization.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.Serialization.Xml.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Security.Claims.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Security.Cryptography.Algorithms.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Security.Cryptography.Csp.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Security.Cryptography.Encoding.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Security.Cryptography.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Security.Cryptography.X509Certificates.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Security.Principal.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Security.SecureString.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ServiceModel.Duplex.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ServiceModel.Http.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ServiceModel.NetTcp.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ServiceModel.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ServiceModel.Security.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Text.Encoding.Extensions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Text.Encoding.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Text.RegularExpressions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Threading.Overlapped.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Threading.Tasks.Extensions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Threading.Tasks.Parallel.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Threading.Tasks.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Threading.Thread.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Threading.ThreadPool.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Threading.Timer.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Threading.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ValueTuple.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Xml.ReaderWriter.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Xml.XDocument.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Xml.XPath.XDocument.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Xml.XPath.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Xml.XmlDocument.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Xml.XmlSerializer.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/netstandard.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Microsoft.CSharp.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.ComponentModel.Composition.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Core.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Data.DataSetExtensions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Data.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Drawing.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.IO.Compression.FileSystem.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.IO.Compression.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Net.Http.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Numerics.Vectors.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Numerics.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Runtime.Serialization.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Transactions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Xml.Linq.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Xml.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/mscorlib.dll"
+-r:"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Plugins/CodeAnalysis/6_5/Microsoft.CodeAnalysis.CSharp_AIA.dll"
+-r:"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Plugins/CodeAnalysis/6_5/Microsoft.CodeAnalysis_AIA.dll"
+-r:"Library/PackageCache/com.unity.ext.nunit@0198eae3b53e/net472/unity-custom/nunit.framework.dll"
+-r:"Library/PackageCache/com.unity.nuget.mono-cecil@ecb9724e46ff/Mono.Cecil.dll"
+-r:"Library/PackageCache/com.unity.nuget.newtonsoft-json@4dfd81071c64/Runtime/Newtonsoft.Json.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Unity.AI.Assistant.Agent.Dynamic.Extension.Editor.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Unity.AI.Assistant.Bridge.Editor.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Unity.AI.Assistant.Runtime.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Unity.AI.Toolkit.Accounts.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Unity.AI.Toolkit.Asset.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Unity.AI.Toolkit.Async.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Unity.AI.Tracing.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/UnityEditor.TestRunner.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/UnityEngine.TestRunner.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.ref.dll"
+-analyzer:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/analyzers/dotnet/roslyn4.0/cs/Microsoft.Extensions.Logging.Generators.dll"
+-analyzer:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/analyzers/dotnet/roslyn4.0/cs/System.Text.Json.SourceGeneration.dll"
+-analyzer:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Tools/BuildPipeline/Unity.Analyzers/Unity.Analyzers.Common.dll"
+-analyzer:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Tools/BuildPipeline/Unity.Analyzers/Unity.Analyzers.LongLiving.dll"
+-analyzer:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Tools/BuildPipeline/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll"
+-analyzer:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Tools/BuildPipeline/Unity.SourceGenerators/Unity.SourceGenerators.dll"
+-analyzer:"C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Tools/BuildPipeline/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/AcpContentBlock.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/AcpContextBuilder.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/AcpConversationStorage.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/AcpPermissionMapping.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/AcpPermissionOption.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/AcpPermissionOutcome.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/AcpPermissionRequest.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/AcpPlanBlock.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/AcpProvider.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/AcpSession.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/AcpSessionCleanupManager.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/AcpSessionRegistry.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/AcpSessionTracker.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/AcpToolCall.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/AcpToolCallBlock.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/AcpToolCallLocation.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/AcpToolCallModels.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/AcpToolCallStorageKeys.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/AcpToolCostCalculator.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/AcpTracing.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/AssistantProviderFactory.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/GatewayCapReachedException.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/GatewayCapacityGuard.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/IAcpToolCallRenderer.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/IAcpWidgetRenderer.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/McpToolApprovalHandler.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/McpToolApprovalModels.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Acp/TierDenial.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Analytics/AIAssistantAnalytics.Gateway.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Analytics/AIAssistantAnalytics.MCP.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Analytics/AIAssistantAnalytics.UI.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Analytics/AIAssistantAnalytics.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Analytics/AIAssistantErrorType.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/AssemblyInfo.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/AssetKnowledge.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Assistant.Conversation.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Assistant.Points.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Assistant.Prompt.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Assistant.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/AssistantAssetModificationDelegates.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/AssistantConstants.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/AssistantEnvironment.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/AssistantProtocolInitializer.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Backend/AssistantWebSocketBackend.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Backend/BaseWebSocketBackend.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/AssetSaveResult.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/AssistantCheckpoints.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/CheckpointErrorType.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/CheckpointFileChange.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/CheckpointFileChangeType.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/CheckpointInfo.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/CheckpointResult.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/CheckpointSystem.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/Events/EventCheckpointDeleteCompleted.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/Events/EventCheckpointDeleteRequested.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/Events/EventCheckpointDiscoveryBannerRefreshRequested.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/Events/EventCheckpointEnableStateChanged.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/Events/EventCheckpointInitializationProgress.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/Events/EventCheckpointInitializationStarted.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/Events/EventCheckpointRestoreCompleted.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/Events/EventCheckpointRestoreRequested.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/Events/EventCheckpointsChanged.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/Git/GitAdapter.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/Git/GitInstanceConfig.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/Git/GitInstanceResolver.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/Git/GitInstanceType.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/Git/GitValidationResult.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/IVcsAdapter.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/VcsCommitInfo.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/VcsRepositoryHealth.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/VcsRepositoryHealthStatus.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Checkpoint/VcsResult.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/CodeAnalyze/CSharpFixProvider.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/CodeAnalyze/ClassCodeTextDefinition.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/CodeAnalyze/CompilationErrors.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/CodeAnalyze/DynamicAssemblyBuilder.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/CodeAnalyze/ExpressionEvaluator.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/CodeAnalyze/FixAmbiguousReference.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/CodeAnalyze/FixMissingBrace.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/CodeAnalyze/FixMissingImports.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/CodeAnalyze/FixMissingParenthesis.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/CodeAnalyze/FixMissingSemicolon.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/CodeAnalyze/FixMissingSquareBracket.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/CodeAnalyze/Inspection/InputSystemAnalyzer.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/CodeAnalyze/Inspection/ObsoleteApiAnalyzer.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/CodeAnalyze/PublicMethodCallWalker.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/CodeAnalyze/SyntaxTreeUtility.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/CodeBlock/CodeBlockValidator.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/CodeBlockUtils.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/CodeFormat.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Config/AssistantConfiguration.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Config/Credentials/EditorCredentialsProvider.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Config/Credentials/ICredentialsProvider.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Connection/ConnectionSupervisor.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Connection/WakeDetector.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Context/AnnotationMaskUtility.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Context/ConsoleContextSelection.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Context/ContextBuilder.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Context/ContextRetrievalBuilderAttribute.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Context/ContextSerializationHelper.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Context/FolderContextSelection.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Context/IContextRetrievalBuilder.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Context/IContextSelection.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Context/ImageReferenceImporter.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Context/ScreenContextUtility.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Context/StaticDataBasedContextRetrievalBuilder.Selector.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Context/StaticDataBasedContextRetrievalBuilder.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Context/UnityObjectContextSelection.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Context/VirtualAttachmentUtils.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Context/VirtualContextSelection.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/CredentialsContext.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Data/AssistantPrompt.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Data/ConversationContext.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Data/ScreenContextData.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Data/ScreenWindowContextData.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Data/XmlParsable.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Diagnostics/AssistantPerfMenu.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/ErrorHandling/BackendFailureClassifier.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/ErrorHandling/ErrorHandlingUtility.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/ErrorHandling/ErrorInfo.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/ErrorHandling/TracesUploader.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/FunctionCalling/Permissions/ListRegisteredTools.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/FunctionCalling/Permissions/SettingsPermissionsPolicyProvider.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/FunctionCalling/Permissions/ToolPermissionIgnoreAttribute.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/FunctionCalling/Permissions/ToolPermissionRules.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/FunctionCalling/Permissions/ToolPermissionValidator.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/FunctionCalling/ToolValidator.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/FunctionCalling/Utils/CompilationErrorUtils.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/FunctionCalling/Utils/MethodInfoUtils.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/GraphGeneration/AssetTypeUtils.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/GraphGeneration/AssistantGraphGenerator.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/GraphGeneration/CodeDependencyAnalyzer.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/GraphGeneration/GraphGenerationConstants.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/GraphGeneration/GraphQueryEngine.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/GraphGeneration/GraphRefreshManager.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/GraphGeneration/GraphRestructurer.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/GraphGeneration/GraphTypes.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/GraphGeneration/PendingChangesTypes.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/GraphRefreshPostprocessor.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/IAssistantProvider.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/Configuration/ConfigLoadResult.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/Configuration/McpConfigFileHelper.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/Configuration/McpServerConfigUtils.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/Manager/McpManagedServer.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/Manager/McpManagedServerStateData.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/Manager/McpManagedTool.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/Manager/McpServerManagerService.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/McpAssistantFunction.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/McpInitializer.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/Transport/IUnityMcpHttpClient.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/Transport/Models/McpProjectConfig.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/Transport/Models/McpServerCapabilities.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/Transport/Models/McpServerConfigEntry.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/Transport/Models/McpServerEntry.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/Transport/Models/McpServerInfo.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/Transport/Models/McpServerStartResponse.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/Transport/Models/McpServerStatusResponse.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/Transport/Models/McpServerStopResponse.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/Transport/Models/McpTool.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/Transport/Models/McpToolCallRequest.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/Transport/Models/McpToolCallResponse.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/Transport/Models/McpToolInputSchema.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/MCP/Transport/UnityMcpHttpClient.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Markup/LinkHandlerRegistry.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/PlanPrompt/IPlanPromptFile.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/PlanPrompt/PlanPromptFile.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/ProjectOverview.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/ProviderState/ProviderChanges.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/ProviderState/ProviderStateObserver.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/Acp/AcpClient.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/Acp/AcpConstants.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/Acp/AcpProviderDescriptor.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/Acp/AcpProvidersRegistry.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/Acp/AcpSessionConfig.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/Acp/AcpSessionError.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/Acp/CredentialClient.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/Acp/PrerequisiteChecker.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/AssistantRelayBackend.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/Bus/ChannelNaming.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/Bus/RelayBus.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/Bus/RelayChannels.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/Bus/RelayEnvelope.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/Bus/RelayEvent.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/Bus/RelayMethod.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/IRelayConnection.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/McpSessionBuffer.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/RelayChatWorkflow.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/RelayConnectionException.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/RelayConstants.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/RelayFunctionCallFallback.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/RelayPersistenceService.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/RelayProtocol.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/RelayService.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/RelayWebSocketAdapter.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/Utils/ProjectScriptCompilation.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/Utils/RelayUtility.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Relay/WebSocketRelayClient.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/RunCommand/AgentRunCommand.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/RunCommand/MacroEvaluatorParcelUtility.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/RunCommand/RunCommandCodeAnalyzer.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/RunCommand/RunCommandMetadata.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/RunCommand/RunCommandUtils.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Serialization/BuiltinOverrides/AnimationClipOverrides.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Serialization/BuiltinOverrides/AudioManagerOverrides.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Serialization/BuiltinOverrides/FontOverrides.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Serialization/BuiltinOverrides/GraphicsSettingsOverrides.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Serialization/BuiltinOverrides/MeshOverrides.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Serialization/BuiltinOverrides/PlayerSettingsOverrides.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Serialization/BuiltinOverrides/ShaderOverrides.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Serialization/ISerializationOverride.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Serialization/ISerializationOverrideProvider.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Serialization/SerializationOverride.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Serialization/SerializationOverrideAttribute.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Serialization/SerializationOverrideProvider.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Serialization/SerializationOverrideUtility.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/SerializationObjectJsonAdapter.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/ServerCompatibility/AccountRefreshManipulator.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/ServerCompatibility/AssistantStatusTracker.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/ServerCompatibility/NotificationsState.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/ServerCompatibility/ServerCompatibility.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/ServerCompatibility/ServerCompatibilityChanges.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/ServerCompatibility/ServerCompatibilityDeprecatedNotificationView.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/ServerCompatibility/ServerCompatibilityNotSupportedBanner.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/ServerCompatibility/ServerCompatibilityText.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Service/AssistantGlobal.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Service/IService.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Service/ServiceContainer.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Service/ServiceHandle.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/SessionBanner/AcpSessionStatusBannerProvider.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/SessionBanner/AssistantPackageAutoUpdater.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/SessionBanner/ExecutableAvailabilityState.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/SessionBanner/PackageUpdateState.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/SessionBanner/PackageUpdateStateChanges.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/SessionBanner/PointsBalanceChanges.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/SessionBanner/SessionBanner.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/SessionBanner/UpdateAvailableBanner.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/SessionBanner/UpdateBannerButtons.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Settings/AssistantEditorPreferences.Permissions.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Settings/AssistantEditorPreferences.Skills.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Settings/AssistantEditorPreferences.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Settings/AssistantProjectPreferences.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Settings/Fetchable.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Settings/GatewayProjectPreferences.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Skills/SkillsLoadResults.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Skills/SkillsRegistryInitializer.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Skills/SkillsScanner.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/TrackSelectedAssetsProcessor.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/UnityDataUtils.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/UserSessionState.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/AccessTokenRefreshUtility.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/Acp/GatewayPreferenceService.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/Acp/PreferencesData.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/AssemblyUtils.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/AssistantMessageUtils.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/AttachementUtils.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/ChatContextEntryExtensions.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/ChatResponseUtils.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/CodeUtils.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/CredentialsUtils.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/DateTimeExtensions.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/EnumUtils.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/Event/AssistantEvents.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/Event/BaseEventAggregate.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/Event/BaseEventSubscriptionTicket.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/Event/BaseEventTargetCollection.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/Event/IAssistantEvent.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/FolderContextUtils.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/GameObjectExtensions.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/IScreenshotOpener.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/LocalConversationStorageHelper.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/OrchestrationDataUtilities.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/PromptUtils.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/RequestExtensions.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/ServiceRegistry.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/TaskUtils.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/TextureUtils.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/TypeDef.cs"
+"Library/PackageCache/com.unity.ai.assistant@1b11b9bfd84a/Editor/Assistant/Utils/UIElementsUtils.cs"
+-langversion:9.0
+/unsafe+
+/deterministic
+/optimize+
+/debug:portable
+/nologo
+/RuntimeMetadataVersion:v4.0.30319
+-ruleset:"C:/Unity Projects/TeamWape/Library/ImmutablePackage.ruleset"
+/nowarn:0169
+/nowarn:0649
+/nowarn:0282
+/nowarn:1701
+/nowarn:1702
+/utf8output
+/preferreduilang:en-US
+/additionalfile:"Library/Bee/artifacts/1900b0aE.dag/Unity.AI.Assistant.Editor.UnityAdditionalFile.txt"

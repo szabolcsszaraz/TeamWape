@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad50d8bdf54d4c47a3aa5348e08dc8b0, type: 3}
+  m_Name: GameGenre
+  m_EditorClassIdentifier: Unity.Multiplayer.Center.Editor::Unity.Multiplayer.Center.Window.GameGenreDescription
+  Descriptions:
+  - Genre: 0
+    Name: Casual co-op
+    Description: Casual co-op games center friendly teamwork and communication. Common
+      game types are collaborative puzzle games, group exploration, and co-op platformers.
+    Header: {fileID: 9197481963319205126, guid: a73e3729fc91e544c931c37ebe21ea93, type: 3}
+    Complexity: {x: 36, y: 68}
+    ComplexityDescription: Casual co-op games don't require the extra infrastructure 
+      needed for competitive games. Players act as hosts, removing the need for a 
+      dedicated server, and there are fewer concerns around matchmaking and management 
+      because players are often playing with friends.
+    ComplexitySummary: Medium
+    Cost: {x: 0, y: 56}
+    CostDescription: In a casual co-op game one of the players hosts the game  session
+      on their own machine. While live, the game coordinates  network information
+      which incurs a small cost for the game developer. The main technical costs
+      of hosting (game simulation) are on the player themselves."
+    CostSummary: Low/Medium
+    Architecture: Casual co-op games can use an authoritative server or a peer-to-peer
+      client server for more casual games. The game needs to create rooms (or sessions)
+      for players to interact in and as well as a system for synchronizing the game
+      state across instances.
+    ArchitectureSummary: Client hosting
+  - Genre: 1
+    Name: Competitive
+    Description: In fast-paced competitive games, multiplayer gameplay involves 
+      constantly exchanging player actions and game state information in real  time.
+      Common games types are first-person shooters, fighting games,  and battle royales.
+    Header: {fileID: 9197481963319205126, guid: ff431a7b3eb8b134d94706de7fbcbd93, type: 3}
+    Complexity: {x: 46, y: 100}
+    ComplexityDescription: 'Competitive games require more effort to set up and manage
+      over time compared to casual and turn-based games. Hosting requirements, server
+      locations, and many other pieces need to be considered. '
+    ComplexitySummary: Medium/High
+    Cost: {x: 46, y: 100}
+    CostDescription: Competitive games require an arbiter to ensure no cheating is
+      taking place, so an authoritative game simulation is  run on a dedicated server.
+      This simulation requires more resources which leads to a higher cost.
+    CostSummary: Medium/High
+    Architecture: Competitive games most often use a client-server model with an
+      authoritative server that enforces the rules of the game to enforce fairness
+      across the players. These games are often fast-paced and require netcode optimization
+      for the best user experiences, or additional tools like client-side prediction
+      systems to create smoother experiences and deal with latency between users.
+    ArchitectureSummary: Dedicated servers
+  - Genre: 2
+    Name: Turn-based
+    Description: "In turn-based games, players don't share all information in
+      real time and take turns to influence the game state. Common game types are
+      strategy games, board games, and card games."
+    Header: {fileID: 9197481963319205126, guid: 3965d8f06d27b5e48b5ca2725c7c4adc, type: 3}
+    Complexity: {x: 0, y: 34}
+    ComplexityDescription: Turn-based games have fewer requirements than competitive
+      real-time games but still require an authoritative server, state management
+      and functionality around player management. Games need to communicate a shared
+      game state consistently and enforce game rules.
+    ComplexitySummary: Low
+    Cost: {x: 0, y: 12}
+    CostDescription: Event-driven games require some functions  that run on a server
+      or database, which adds to the overall cost. However, because these functions
+      run intermittently, they cost less than continuously simulating a game on a
+      server.
+    CostSummary: Low
+    Architecture: Turn-based games are built around a shared game state that changes
+      through clearly ordered player actions which are validated by a server. Players
+      take turns making decisions, and the game records, validates, and applies those
+      decisions in sequence so that everyone sees the same board, battle, or strategic
+      situation. The architecture focuses less on fast movement and more on reliable
+      state progression, turn order, and rule-driven outcomes.
+    ArchitectureSummary: Event Driven

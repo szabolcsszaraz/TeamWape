@@ -1,0 +1,19 @@
+.code-edit-content {
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.code-edit-header-actions {
+    flex-direction: row;
+    align-items: center;
+    margin-left: auto;
+    height: 24px;
+}
+
+.code-edit-header-actions .mui-action-buttons-container {
+    flex-direction: row;
+}
+
+.code-edit-header-actions #functionCallExpandButton {
+    margin-left: 8px;
+}

@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="plan-approval-footer-row">
+        <ui:Button name="denyButton" text="Discard" class="plan-approval-footer-deny-btn"/>
+        <ui:Button name="approveButton" text="Run plan" class="plan-approval-footer-approve-btn"/>
+    </ui:VisualElement>
+</ui:UXML>

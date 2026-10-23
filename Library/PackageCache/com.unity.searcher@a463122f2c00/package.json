@@ -1,0 +1,31 @@
+{
+  "name": "com.unity.searcher",
+  "displayName": "Searcher",
+  "version": "4.9.5",
+  "unity": "6000.0",
+  "description": "General search window for use in the Editor. First target use is for GraphView node search.",
+  "keywords": [
+    "search",
+    "searcher"
+  ],
+  "_upm": {
+    "changelog": "- Update minimum Editor version to 6000.0\n- Fixed spaces disappearing between highlighted matches in search results (UUM-146469)."
+  },
+  "upmCi": {
+    "footprint": "e78f176d596e1716b1f33b891b10ab3ea391dadd"
+  },
+  "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.searcher@4.9/manual/index.html",
+  "repository": {
+    "url": "https://github.cds.internal.unity3d.com/unity/com.unity.searcher.git",
+    "type": "git",
+    "revision": "e72cb042d767a07688d186a1e80f7d2d7e5de87f"
+  },
+  "samples": [
+    {
+      "displayName": "Searchers Samples",
+      "description": "Some Searcher's basic examples",
+      "path": "Samples~"
+    }
+  ],
+  "_fingerprint": "a463122f2c00f83398f41790942a0793431e70ea"
+}

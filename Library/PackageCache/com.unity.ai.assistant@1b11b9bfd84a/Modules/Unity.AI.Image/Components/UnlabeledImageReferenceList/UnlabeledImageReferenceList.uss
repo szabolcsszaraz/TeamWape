@@ -1,0 +1,22 @@
+/* Styling for UnlabeledImageReferenceList */
+.unlabeled-image-reference-list {
+}
+
+.unlabeled-slot {
+    margin-bottom: 4px;
+}
+
+.object-field-no-margin {
+    margin: 0;
+}
+
+.remove-button {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+}
+
+.count-field {
+    width: 40px;
+    min-width: 40px;
+}

@@ -1,0 +1,11 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/com.unity.multiplayer.center/Editor/MultiplayerCenterWindow/UI/Community.uss"/>
+    <Style src="project://database/Packages/com.unity.multiplayer.center/Editor/MultiplayerCenterWindow/UI/Recommendations.uss"/>
+    <ui:VisualElement name="community-handle">
+        <ui:VisualElement class="recommendation-headline">
+            <ui:Label text="Connect with the community" class="section-headline"/>
+        </ui:VisualElement>
+        <Unity.Multiplayer.Center.Editor.RecommendationsGrid class="recommendation-grid"
+                                                             item-template="project://database/Packages/com.unity.multiplayer.center/Editor/MultiplayerCenterWindow/UI/SimpleHyperLink.uxml?fileID=9197481963319205126&amp;guid=1a012efc688a59b4da396437b51c7522&amp;type=3#SimpleHyperLink" recommendations="&lt;a href=&quot;https://discussions.unity.com/&quot;&gt;Unity Discussions&lt;/a&gt;,&lt;a href=&quot;https://discord.gg/unity&quot;&gt;Unity Multiplayer Discord&lt;/a&gt;"/>
+    </ui:VisualElement>
+</ui:UXML>

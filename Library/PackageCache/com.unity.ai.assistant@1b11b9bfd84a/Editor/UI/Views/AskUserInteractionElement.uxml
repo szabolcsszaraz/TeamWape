@@ -1,0 +1,16 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="askUserRoot" class="ask-user-root">
+        <ui:VisualElement name="askUserTabContent" class="ask-user-tab-content" />
+        <ui:VisualElement class="ask-user-notes-section">
+            <TextField name="askUserNotesField" class="ask-user-notes-field" multiline="true" vertical-scroller-visibility="Auto" />
+        </ui:VisualElement>
+        <ui:VisualElement name="askUserButtonRow" class="ask-user-button-row">
+            <ui:Button name="askUserCancelButton" text="Cancel" class="ask-user-ghost-button" />
+            <ui:VisualElement class="ask-user-right-buttons">
+                <ui:Button name="askUserSkipButton" text="Skip" class="ask-user-ghost-button" />
+                <ui:Button name="askUserContinueButton" text="Continue" class="ask-user-ghost-button ask-user-continue-button" />
+                <ui:Button name="askUserSubmitButton" text="Submit" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

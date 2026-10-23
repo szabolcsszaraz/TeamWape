@@ -1,0 +1,6 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="infoTitle" class="mui-chat-response-info-title">
+        <ui:Image class="mui-action-button-image mui-icon-info"/>
+        <ui:Label name="infoText"/>
+    </ui:VisualElement>
+</UXML>

@@ -1,0 +1,14 @@
+{
+  "name": "com.unity.2d.sprite",
+  "displayName": "2D Sprite",
+  "version": "1.0.0",
+  "keywords": [
+    "2d",
+    "sprite",
+    "sprite editor window"
+  ],
+  "category": "2D",
+  "description": "Use Unity Sprite Editor Window to create and edit Sprite asset properties like pivot, borders and Physics shape",
+  "dependencies": {},
+  "_fingerprint": "752945c75a6f582fe9c61947f5abc1d0e29a7348"
+}

@@ -1,0 +1,13 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:editorui="UnityEditor.UIElements">
+    <VisualElement class="model-reference pr-1">
+        <editorui:Template src="../ImageReference/ImageReferenceHeader.uxml" name="ImageReferenceHeader" />
+        <Instance template="ImageReferenceHeader" class="pl-2">
+            <AttributeOverrides element-name="header-title" text="Model Reference"
+                tooltip="Use a GLB or FBX from your project as input for this model." />
+        </Instance>
+        <VisualElement class="p-4-2">
+            <editorui:ObjectField class="p-0 m-0"
+                type="UnityEngine.GameObject, UnityEngine.CoreModule" />
+        </VisualElement>
+    </VisualElement>
+</UXML>

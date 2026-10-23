@@ -1,0 +1,6 @@
+<UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="checkpointAffectedFileRowRoot" class="checkpoint-affected-file-row">
+        <ui:Image name="rowIcon" picking-mode="Ignore" class="checkpoint-affected-file-row__icon" />
+        <ui:Label name="rowPath" picking-mode="Ignore" class="checkpoint-affected-file-row__path" />
+    </ui:VisualElement>
+</UXML>

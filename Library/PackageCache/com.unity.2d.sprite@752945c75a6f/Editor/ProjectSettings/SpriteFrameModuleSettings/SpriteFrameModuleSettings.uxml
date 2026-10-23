@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <Style src="./SpriteFrameModuleSettings.uss" />
+    <Toggle name="spriteFrameEditCapabilityOverride" label="Sprite Frame field edit lock override" class="toggle" tooltip="Allow unlocking field editing in Sprite Frame that are locked by the importer."/>
+    <HelpBox name="spriteFrameEditCapabilityOverrideWarning" message-type="Info" text="Editing importer-locked fields is deprecated. Unlocking fields for editing is available for now, but this option may be removed in a future version. The override will be reset when the Sprite Frame module unloads."/>
+</UXML>

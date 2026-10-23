@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:engine="UnityEngine.UIElements"
+        xmlns:appui="Unity.AppUI.UI"
+        xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
+>
+    <engine:Style src="../Styles/Inspector.uss"/>
+    <engine:VisualElement class="header-content">
+        <appui:Heading name="InspectorHeading" class="visualizer-inspector-heading" style="font-size: 14px;"/>
+        <appui:IconButton icon="focus-mode-tracking" quiet="true" tooltip="Focus this item on the canvas"/>
+    </engine:VisualElement>
+    <engine:ScrollView name="InspectorScrollView" class="visualizer-inspector-scrollview"/>
+</engine:UXML>

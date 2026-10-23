@@ -1,0 +1,4 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:ui="Unity.AI.Image.Components">
+    <DropdownField label="Aspect Ratio" name="aspect-ratio-dropdown" 
+                   tooltip="Choose the output aspect ratio."/>
+</UXML>

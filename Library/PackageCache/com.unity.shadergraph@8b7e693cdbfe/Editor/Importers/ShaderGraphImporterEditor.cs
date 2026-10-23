@@ -1,0 +1,216 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using UnityEditor.Callbacks;
+using UnityEditor.AssetImporters;
+using UnityEditor.ShaderGraph.Drawing;
+using UnityEngine;
+using UnityEditor.Graphing;
+using System.Text;
+using UnityEditor.ShaderGraph.Serialization;
+
+namespace UnityEditor.ShaderGraph
+{
+    [CustomEditor(typeof(ShaderGraphImporter))]
+    class ShaderGraphImporterEditor : ScriptedImporterEditor
+    {
+        MaterialEditor materialEditor = null;
+
+        public override void OnInspectorGUI()
+        {
+            var useAsTemplateProp = serializedObject.FindProperty(ShaderGraphImporter.UseAsTemplateFieldName);
+            var exposeTemplateAsShaderProp = serializedObject.FindProperty(ShaderGraphImporter.ExposeTemplateAsShaderFieldName);
+            var templateProp = serializedObject.FindProperty(ShaderGraphImporter.TemplateFieldName);
+
+            serializedObject.Update();
+
+            GraphData GetGraphData(AssetImporter importer)
+            {
+                var textGraph = FileUtilities.ReadAllTextUTF8(importer.assetPath);
+                var graphObject = CreateInstance<GraphObject>();
+                graphObject.hideFlags = HideFlags.HideAndDontSave;
+                bool isSubGraph;
+                var extension = Path.GetExtension(importer.assetPath).Replace(".", "");
+                switch (extension)
+                {
+                    case ShaderGraphImporter.Extension:
+                        isSubGraph = false;
+                        break;
+                    case ShaderGraphImporter.LegacyExtension:
+                        isSubGraph = false;
+                        break;
+                    case ShaderSubGraphImporter.Extension:
+                        isSubGraph = true;
+                        break;
+                    default:
+                        throw new Exception($"Invalid file extension {extension}");
+                }
+                var assetGuid = AssetDatabase.AssetPathToGUID(importer.assetPath);
+                graphObject.graph = new GraphData
+                {
+                    assetGuid = assetGuid,
+                    isSubGraph = isSubGraph,
+                    messageManager = null
+                };
+                MultiJson.Deserialize(graphObject.graph, textGraph);
+                graphObject.graph.OnEnable();
+                graphObject.graph.ValidateGraph();
+                return graphObject.graph;
+            }
+
+            if (GUILayout.Button("Open Shader Editor"))
+            {
+                AssetImporter importer = target as AssetImporter;
+                Debug.Assert(importer != null, "importer != null");
+                ShowGraphEditWindow(importer.assetPath);
+            }
+
+            using (var horizontalScope = new GUILayout.HorizontalScope())
+            {
+                AssetImporter importer = target as AssetImporter;
+                string assetName = Path.GetFileNameWithoutExtension(importer.assetPath);
+                string path = String.Format("Temp/GeneratedFromGraph-{0}.shader", assetName.Replace(" ", ""));
+                bool alreadyExists = File.Exists(path);
+                bool update = false;
+                bool open = false;
+
+                if (GUILayout.Button("View Generated Shader"))
+                {
+                    update = true;
+                    open = true;
+                }
+
+                if (alreadyExists && GUILayout.Button("Regenerate"))
+                    update = true;
+
+                var pathList = new List<string>();
+                pathList.Add(path);
+
+                if (update)
+                {
+                    var graphData = GetGraphData(importer);
+                    var generator = new Generator(graphData, null, GenerationMode.ForReals, assetName, humanReadable: true);
+                    if (!GraphUtil.WriteToFile(path, generator.generatedShader))
+                        open = false;
+                    var generatedShaderCount = 0;
+                    foreach (var generatedShader in generator.allGeneratedShaders)
+                    {
+                        if (generatedShaderCount > 0)
+                        {
+                            string pathSub = String.Format("Temp/GeneratedFromGraph-{0}_{1}.shader", assetName.Replace(" ", ""), generatedShaderCount);
+                            pathList.Add(pathSub);
+                            GraphUtil.WriteToFile(pathSub, generatedShader.codeString);
+                        }
+                        generatedShaderCount++;
+                    }
+                }
+
+                if (open)
+                {
+                    for (int i = 1; i < pathList.Count; ++i)
+                        GraphUtil.OpenFile(pathList[i]);
+                    GraphUtil.OpenFile(pathList[0]);
+                }
+            }
+            if (Unsupported.IsDeveloperMode())
+            {
+                if (GUILayout.Button("View Preview Shader"))
+                {
+                    AssetImporter importer = target as AssetImporter;
+                    string assetName = Path.GetFileNameWithoutExtension(importer.assetPath);
+                    string path = String.Format("Temp/GeneratedFromGraph-{0}-Preview.shader", assetName.Replace(" ", ""));
+
+                    var graphData = GetGraphData(importer);
+                    var generator = new Generator(graphData, null, GenerationMode.Preview, $"{assetName}-Preview", humanReadable: true);
+                    if (GraphUtil.WriteToFile(path, generator.generatedShader))
+                        GraphUtil.OpenFile(path);
+                }
+            }
+            if (GUILayout.Button("Copy Shader"))
+            {
+                AssetImporter importer = target as AssetImporter;
+                string assetName = Path.GetFileNameWithoutExtension(importer.assetPath);
+
+                var graphData = GetGraphData(importer);
+                var generator = new Generator(graphData, null, GenerationMode.ForReals, assetName, humanReadable: true);
+                GUIUtility.systemCopyBuffer = generator.generatedShader;
+            }
+
+            EditorGUI.BeginDisabled(EditorApplication.isPlaying);
+            EditorGUILayout.Space();
+            EditorGUILayout.PropertyField(useAsTemplateProp);
+            using (new EditorGUI.IndentLevelScope(1))
+            using (new EditorGUI.DisabledScope(!useAsTemplateProp.boolValue))
+            {
+                EditorGUILayout.PropertyField(exposeTemplateAsShaderProp, new GUIContent("Expose as Shader", "Toggle whether or not the template shader should be exposed in shader dropdowns."));
+                EditorGUILayout.PropertyField(templateProp);
+            }
+            EditorGUI.EndDisabled();
+
+            ApplyRevertGUI();
+
+            if (materialEditor)
+            {
+                EditorGUILayout.Space();
+                materialEditor.DrawHeader();
+                using (new EditorGUI.DisabledGroupScope(true))
+                    materialEditor.OnInspectorGUI();
+            }
+        }
+
+        public override void OnEnable()
+        {
+            base.OnEnable();
+            AssetImporter importer = (AssetImporter)target;
+            var material = AssetDatabase.LoadAssetAtPath<Material>(importer.assetPath);
+            if (material)
+                materialEditor = (MaterialEditor)CreateEditor(material);
+        }
+
+        public override void OnDisable()
+        {
+            base.OnDisable();
+
+            if (materialEditor != null)
+                DestroyImmediate(materialEditor);
+        }
+
+        internal static bool ShowGraphEditWindow(string path, bool disablePreviewsForTesting = false)
+        {
+            var guid = AssetDatabase.AssetPathToGUID(path);
+            var extension = Path.GetExtension(path);
+            if (string.IsNullOrEmpty(extension))
+                return false;
+            // Path.GetExtension returns the extension prefixed with ".", so we remove it. We force lower case such that
+            // the comparison will be case-insensitive.
+            extension = extension.Substring(1).ToLowerInvariant();
+            if (extension != ShaderGraphImporter.Extension && extension != ShaderSubGraphImporter.Extension)
+                return false;
+
+            foreach (var w in Resources.FindObjectsOfTypeAll<MaterialGraphEditWindow>())
+            {
+                if (w.selectedGuid == guid)
+                {
+                    if (w.m_Parent != null)
+                    {
+                        w.Focus();
+                        return true;
+                    }
+                }
+            }
+
+            var window = EditorWindow.CreateWindow<MaterialGraphEditWindow>(typeof(MaterialGraphEditWindow), typeof(SceneView));
+            window.m_DisablePreviewsForTesting = disablePreviewsForTesting;
+            window.Initialize(guid);
+            window.Focus();
+            return true;
+        }
+
+        [OnOpenAsset(0)]
+        public static bool OnOpenAsset(EntityId entityId, int line)
+        {
+            var path = AssetDatabase.GetAssetPath(entityId);
+            return ShowGraphEditWindow(path);
+        }
+    }
+}

@@ -1,0 +1,18 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="todoProgressRoot" class="todo-progress-root">
+        <ui:VisualElement name="headerRow" class="todo-progress-header-row">
+            <ui:Label name="titleLabel" class="todo-progress-title" text="Task List"/>
+            <ui:Button name="expandButton" class="todo-progress-expand-btn">
+                <ui:VisualElement name="expandIcon" class="mui-icon-caret-up-down-maximize"/>
+            </ui:Button>
+        </ui:VisualElement>
+        <ui:Label name="subtitleLabel" class="todo-progress-subtitle"/>
+        <ui:VisualElement name="currentStepRow" class="todo-progress-current-row">
+            <ui:VisualElement name="spinnerSlot" class="todo-progress-spinner-slot"/>
+            <ui:Label name="currentStepLabel" class="todo-progress-current-step"/>
+        </ui:VisualElement>
+        <ui:ScrollView name="taskListScroll" class="todo-progress-task-scroll" mode="Vertical">
+            <ui:VisualElement name="taskList" class="todo-progress-task-list"/>
+        </ui:ScrollView>
+    </ui:VisualElement>
+</ui:UXML>

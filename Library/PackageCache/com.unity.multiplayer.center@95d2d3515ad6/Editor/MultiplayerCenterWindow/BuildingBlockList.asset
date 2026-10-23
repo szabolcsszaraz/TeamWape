@@ -1,0 +1,120 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 219e642922b140bcbd4b1b19f88038a0, type: 3}
+  m_Name: BuildingBlockList
+  m_EditorClassIdentifier: Unity.Multiplayer.Center.Editor.Models:GenreAssociatedBuildingBlocks
+  Descriptions:
+  - m_Genre: 0
+    m_Blocks:
+    - m_Title: Achievements
+      m_Description: The Achievements Building Block combines the Remote Config,
+        Cloud Code, and Cloud Save services to offer a system for defining player
+        achievements, storing their progress, and displaying the collection of achievements
+        in-game.
+      m_AssetStoreURL: https://assetstore.unity.com/packages/slug/341918
+      m_Preview: {fileID: 2800000, guid: e01193cfdc7e68e4e8c72fac39ecffec, type: 3}
+    - m_Title: Leaderboards
+      m_Description: The Leaderboards Unity Building Block combines the Authentication,
+        Cloud Code, and Leaderboards services to offer an extendable UI to represent
+        leaderboard progression from their users in their project.
+      m_AssetStoreURL: https://assetstore.unity.com/packages/slug/341926
+      m_Preview: {fileID: 2800000, guid: 93e273179c173b34d9e80e37fda41baf, type: 3}
+    - m_Title: Player Account
+      m_Description: The Player Account Unity Building Block combines the Authentication,
+        Cloud Code, and Cloud Save services to offer an extendable UI to represent
+        user sign up, sign in and player account management for their users in their
+        project.
+      m_AssetStoreURL: https://assetstore.unity.com/packages/slug/341928
+      m_Preview: {fileID: 2800000, guid: 925c1c4afd6fa5f47a9b1d206146de01, type: 3}
+    - m_Title: Matchmaking Session
+      m_Description: "The Matchmaker Session Building Block helps you integrate Unity\u2019s
+        Matchmaker\_into your project to connect players together. It can serve as
+        a starting point for your multiplayer projects, or as a quick integration
+        of Matchmaker throughout development."
+      m_AssetStoreURL: https://assetstore.unity.com/packages/slug/341932
+      m_Preview: {fileID: 2800000, guid: 2b5c1c756642f9a4db4b4832fff5aa16, type: 3}
+    - m_Title: Unity Building Block - Multiplayer Session
+      m_Description: Implement Unity's multiplayer sessions in your project with
+        this Building Block's pre-made UI elements. Learn what sessions are, how
+        to set them up, and how to connect to Unity's Netcode packages.
+      m_AssetStoreURL: https://assetstore.unity.com/packages/slug/341930
+      m_Preview: {fileID: 2800000, guid: 4e35979facdd58d4a886d60ae376c33b, type: 3}
+  - m_Genre: 1
+    m_Blocks:
+    - m_Title: Achievements
+      m_Description: The Achievements Building Block combines the Remote Config,
+        Cloud Code, and Cloud Save services to offer a system for defining player
+        achievements, storing their progress, and displaying the collection of achievements
+        in-game.
+      m_AssetStoreURL: https://assetstore.unity.com/packages/slug/341918
+      m_Preview: {fileID: 2800000, guid: e01193cfdc7e68e4e8c72fac39ecffec, type: 3}
+    - m_Title: Leaderboards
+      m_Description: The Leaderboards Unity Building Block combines the Authentication,
+        Cloud Code, and Leaderboards services to offer an extendable UI to represent
+        leaderboard progression from their users in their project.
+      m_AssetStoreURL: https://assetstore.unity.com/packages/slug/341926
+      m_Preview: {fileID: 2800000, guid: 93e273179c173b34d9e80e37fda41baf, type: 3}
+    - m_Title: Player Account
+      m_Description: The Player Account Unity Building Block combines the Authentication,
+        Cloud Code, and Cloud Save services to offer an extendable UI to represent
+        user sign up, sign in and player account management for their users in their
+        project.
+      m_AssetStoreURL: https://assetstore.unity.com/packages/slug/341928
+      m_Preview: {fileID: 2800000, guid: 925c1c4afd6fa5f47a9b1d206146de01, type: 3}
+    - m_Title: Matchmaking Session
+      m_Description: "The Matchmaker Session Building Block helps you integrate Unity\u2019s
+        Matchmaker\_into your project to connect players together. It can serve as
+        a starting point for your multiplayer projects, or as a quick integration
+        of Matchmaker throughout development."
+      m_AssetStoreURL: https://assetstore.unity.com/packages/slug/341932
+      m_Preview: {fileID: 2800000, guid: 2b5c1c756642f9a4db4b4832fff5aa16, type: 3}
+    - m_Title: Unity Building Block - Multiplayer Session
+      m_Description: Implement Unity's multiplayer sessions in your project with
+        this Building Block's pre-made UI elements. Learn what sessions are, how
+        to set them up, and how to connect to Unity's Netcode packages.
+      m_AssetStoreURL: https://assetstore.unity.com/packages/slug/341930
+      m_Preview: {fileID: 2800000, guid: 4e35979facdd58d4a886d60ae376c33b, type: 3}
+  - m_Genre: 2
+    m_Blocks:
+    - m_Title: Achievements
+      m_Description: The Achievements Building Block combines the Remote Config,
+        Cloud Code, and Cloud Save services to offer a system for defining player
+        achievements, storing their progress, and displaying the collection of achievements
+        in-game.
+      m_AssetStoreURL: https://assetstore.unity.com/packages/slug/341918
+      m_Preview: {fileID: 2800000, guid: e01193cfdc7e68e4e8c72fac39ecffec, type: 3}
+    - m_Title: Leaderboards
+      m_Description: The Leaderboards Unity Building Block combines the Authentication,
+        Cloud Code, and Leaderboards services to offer an extendable UI to represent
+        leaderboard progression from their users in their project.
+      m_AssetStoreURL: https://assetstore.unity.com/packages/slug/341926
+      m_Preview: {fileID: 2800000, guid: 93e273179c173b34d9e80e37fda41baf, type: 3}
+    - m_Title: Player Account
+      m_Description: The Player Account Unity Building Block combines the Authentication,
+        Cloud Code, and Cloud Save services to offer an extendable UI to represent
+        user sign up, sign in and player account management for their users in their
+        project.
+      m_AssetStoreURL: https://assetstore.unity.com/packages/slug/341928
+      m_Preview: {fileID: 2800000, guid: 925c1c4afd6fa5f47a9b1d206146de01, type: 3}
+    - m_Title: Matchmaking Session
+      m_Description: "The Matchmaker Session Building Block helps you integrate Unity\u2019s
+        Matchmaker\_into your project to connect players together. It can serve as
+        a starting point for your multiplayer projects, or as a quick integration
+        of Matchmaker throughout development."
+      m_AssetStoreURL: https://assetstore.unity.com/packages/slug/341932
+      m_Preview: {fileID: 2800000, guid: 2b5c1c756642f9a4db4b4832fff5aa16, type: 3}
+    - m_Title: Unity Building Block - Multiplayer Session
+      m_Description: Implement Unity's multiplayer sessions in your project with
+        this Building Block's pre-made UI elements. Learn what sessions are, how
+        to set them up, and how to connect to Unity's Netcode packages.
+      m_AssetStoreURL: https://assetstore.unity.com/packages/slug/341930
+      m_Preview: {fileID: 2800000, guid: 4e35979facdd58d4a886d60ae376c33b, type: 3}

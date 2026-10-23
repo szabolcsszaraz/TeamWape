@@ -1,0 +1,36 @@
+.subagent-header-root {
+    flex-direction: row;
+    align-items: center;
+    padding: 6px 12px;
+    margin-bottom: 4px;
+    cursor: link;
+}
+
+.subagent-chevron {
+    width: 8px;
+    height: 8px;
+    margin-right: 8px;
+    padding: 0;
+    flex-shrink: 0;
+    align-self: center;
+}
+
+.subagent-status-container {
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+    flex-shrink: 0;
+    align-self: center;
+}
+
+.subagent-progress {
+    flex-grow: 1;
+    -unity-text-align: middle-right;
+    font-size: 11px;
+    color: var(--muse-chat-text-secondary);
+    align-self: center;
+}
+
+.subagent-content {
+    margin-left: 12px;
+}

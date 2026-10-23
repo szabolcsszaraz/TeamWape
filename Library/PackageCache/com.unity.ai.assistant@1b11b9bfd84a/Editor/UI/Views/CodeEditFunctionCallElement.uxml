@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="codeEditContent" class="code-edit-content">
+        <ui:VisualElement name="codeEditHeaderActions" class="code-edit-header-actions" />
+    </ui:VisualElement>
+</ui:UXML>

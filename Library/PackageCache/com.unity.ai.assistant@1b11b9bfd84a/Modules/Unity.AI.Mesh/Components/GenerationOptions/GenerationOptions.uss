@@ -1,0 +1,3 @@
+SliderInt .unity-text-field {
+    min-width: 100px;
+}

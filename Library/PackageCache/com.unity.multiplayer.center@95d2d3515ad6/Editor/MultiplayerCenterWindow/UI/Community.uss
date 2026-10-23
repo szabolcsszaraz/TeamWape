@@ -1,0 +1,4 @@
+﻿.community-handle {
+    -unity-font-style: bold;
+    color: var(--link-color);
+}

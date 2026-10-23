@@ -1,0 +1,6 @@
+.prompt-image-reference-container .metadata-object-field__input-field,
+.model-reference-container .metadata-object-field__input-field,
+.multiview-references-container .metadata-object-field__input-field {
+    flex-grow: 1;
+    margin: 0;
+}

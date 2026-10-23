@@ -1,0 +1,14 @@
+:root {
+    padding-right: 14px;
+}
+
+.visualizer-inspector-heading {
+    width: auto;
+    padding-right: var(--appui-spacing-100);
+}
+
+.header-content {
+    flex-grow: 1;
+    flex-direction: row;
+    align-items: center;
+}

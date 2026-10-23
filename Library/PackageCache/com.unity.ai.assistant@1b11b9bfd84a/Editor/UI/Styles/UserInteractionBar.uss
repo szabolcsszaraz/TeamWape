@@ -1,0 +1,68 @@
+.user-interaction-bar-root {
+    padding: 8px 12px;
+    border-width: 1px;
+    border-color: var(--muse-chat-foregrounds-310);
+    background-color: var(--muse-chat-backgrounds-175);
+    border-top-left-radius: var(--muse-chat-border-radius);
+    border-top-right-radius: var(--muse-chat-border-radius);
+}
+
+.interaction-bar-header {
+    flex-direction: row;
+    margin-bottom: 2px;
+}
+
+#titleIconElement {
+    width: 12px;
+    height: 12px;
+    align-self: center;
+}
+
+.interaction-bar-title {
+    flex-grow: 1;
+    flex-shrink: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.interaction-bar-nav {
+    flex-direction: row;
+    align-items: center;
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+
+.counter-label {
+    color: var(--muse-chat-text-thoughts);
+    -unity-text-align: middle-center;
+    min-width: 32px;
+}
+
+.interaction-bar-nav-button {
+    border-width: 0;
+    background-color: transparent;
+    padding: 0 4px;
+    margin: 0;
+    min-width: 16px;
+    color: var(--muse-chat-text-thoughts);
+    -unity-font-style: bold;
+}
+
+.interaction-bar-detail {
+    color: var(--muse-chat-text-secondary);
+    margin-bottom: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#scopeButton {
+    margin-left: 0;
+}
+
+.interaction-bar-rounded .user-interaction-bar-root {
+    border-bottom-left-radius: var(--muse-chat-border-radius);
+    border-bottom-right-radius: var(--muse-chat-border-radius);
+}
+

@@ -1,0 +1,29 @@
+﻿.no-image {
+}
+
+.place-holder {
+    display: none;
+    flex-grow: 1;
+}
+
+.no-image .place-holder {
+    justify-content: center;
+    display: flex;
+    background-color: transparent;
+}
+
+.place-holder__icon {
+    align-self: center;
+    align-content: center;
+    min-width: 32px;
+    min-height: 32px;
+    height: 35%;
+    width: 35%;
+    aspect-ratio: 1;
+    background-image: var(--icon-unity-cube);
+}
+
+.place-holder__icon:hover {
+    height: 35.5%;
+    width: 35.5%;
+}

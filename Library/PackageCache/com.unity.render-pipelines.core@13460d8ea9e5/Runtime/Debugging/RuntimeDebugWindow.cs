@@ -1,0 +1,335 @@
+#if ENABLE_UIELEMENTS_MODULE && UNITY_ENABLE_CHECKS
+#define ENABLE_RENDERING_DEBUGGER_UI
+#endif
+
+#if ENABLE_RENDERING_DEBUGGER_UI
+using System.Collections.Generic;
+using UnityEngine.UIElements;
+
+namespace UnityEngine.Rendering
+{
+    [AddComponentMenu("")] // Hide from Add Component menu
+    class RuntimeDebugWindow : MonoBehaviour
+    {
+        PanelRenderer m_PanelRenderer;
+        VisualElement m_RootVisualElement;
+        VisualElement m_PanelRootElement;
+        TabView m_TabViewElement;
+
+        DebugUI.Panel m_SelectedPanel;
+        bool m_PortraitOrientation;
+        bool m_NeedsRebuild;
+
+        int m_UIVersion = 0;
+        Dictionary<string, Vector2> m_ScrollPositions = new Dictionary<string, Vector2>();
+
+        void Awake()
+        {
+            DebugManager.instance.onSetDirty += RequestRebuild;
+            DebugManager.instance.onRecreateDebugUI += RequestRebuild;
+
+            if (m_PanelRenderer == null)
+            {
+                m_PanelRenderer = gameObject.AddComponent<PanelRenderer>();
+                if (GraphicsSettings.TryGetRenderPipelineSettings<RenderingDebuggerRuntimeResources>(out var resources))
+                {
+                    m_PanelRenderer.panelSettings = resources.panelSettings;
+                    m_PanelRenderer.visualTreeAsset = resources.visualTreeAsset;
+                }
+            }
+
+            m_PanelRenderer.RegisterUIReloadCallback(OnUIReload);
+        }
+
+        internal void OnUIReload(PanelRenderer renderer, VisualElement rootElement, int version)
+        {
+            // Called on initial load AND on any asset change
+            if (rootElement == null || rootElement.childCount == 0)
+                return;
+
+            if (version == m_UIVersion)
+                return;
+
+            m_UIVersion = version;
+
+            m_PanelRootElement = rootElement;
+            m_RootVisualElement = rootElement[0];
+
+            var resources = GraphicsSettings.GetRenderPipelineSettings<RenderingDebuggerRuntimeResources>();
+            var styleSheets = resources.styleSheets;
+            foreach (var uss in styleSheets)
+                m_PanelRootElement.styleSheets.Add(uss);
+
+            BuildDebugUI();
+        }
+
+        void BuildDebugUI()
+        {
+            if (m_RootVisualElement == null)
+                return;
+
+            UpdateOrientation(forceUpdate: true);
+
+            // Save scroll positions before clearing
+            if (m_TabViewElement != null)
+            {
+                m_ScrollPositions.Clear();
+                foreach (var tab in m_TabViewElement.Query<Tab>().ToList())
+                {
+                    var scrollView = tab.Q<ScrollView>();
+                    if (scrollView != null)
+                    {
+                        m_ScrollPositions[tab.label] = scrollView.scrollOffset;
+                    }
+                }
+            }
+
+            m_TabViewElement = m_RootVisualElement.Q<TabView>(name: "debug-window-tabview");
+            m_TabViewElement.Clear();
+
+            var resetButton = m_RootVisualElement.Q<Button>(name: "btn-reset");
+            resetButton.clicked -= ResetClicked;
+            resetButton.clicked += ResetClicked;
+
+            var panels = DebugManager.instance.panels;
+            var activePanels = new List<DebugUI.Panel>();
+
+            // Filter out editor only panels and panels with no active children
+            foreach (var panel in panels)
+            {
+                bool isEditorOnlyPanel = panel.isEditorOnly;
+                bool hasVisibleChildren = false;
+                foreach (var w in panel.children)
+                {
+                    if (!w.isEditorOnly && !w.isHidden)
+                    {
+                        hasVisibleChildren = true;
+                        break;
+                    }
+                }
+
+                if (!isEditorOnlyPanel && hasVisibleChildren)
+                {
+                    activePanels.Add(panel);
+                }
+            }
+
+            bool hasDebugItems = activePanels.Count > 0;
+            m_RootVisualElement.Q<HelpBox>(name: "no-debug-items-message").style.display = hasDebugItems ? DisplayStyle.None : DisplayStyle.Flex;
+            m_RootVisualElement.Q<VisualElement>(name: "content-container").style.display = hasDebugItems ? DisplayStyle.Flex : DisplayStyle.None;
+
+            if (!hasDebugItems)
+                return;
+
+            var uiPanels = DebugUIExtensions.CreatePanels(activePanels, DebugUI.Context.Runtime);
+
+            foreach (var (tabLabel, panel) in uiPanels)
+            {
+                ScrollView scrollView = new ScrollView();
+                scrollView.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+                scrollView.verticalScroller.slider.focusable = false;
+                scrollView.Add(panel);
+
+                // Restore scroll position if saved
+                if (m_ScrollPositions.TryGetValue(tabLabel.text, out var savedScrollOffset))
+                {
+                    scrollView.schedule.Execute(() => scrollView.scrollOffset = savedScrollOffset).StartingIn(0);
+                }
+
+                Tab tab = new Tab(tabLabel.text);
+                tab.name = tabLabel.name;
+                tab.selected += t => SetSelectedPanel(t.label);
+                tab.Add(scrollView);
+
+                m_TabViewElement.Add(tab);
+            }
+
+            // We want to treat Up/Down NavigationMoveEvents as Next/Previous instead to get correct focus ring behavior, i.e. make
+            // up/down arrows behave as tab/shift+tab. To do this we intercept the Up/Down events and send Next/Previous instead.
+            m_PanelRootElement.UnregisterCallback<NavigationMoveEvent>(ConvertNavigationMoveEvents, TrickleDown.TrickleDown);
+            m_PanelRootElement.RegisterCallback<NavigationMoveEvent>(ConvertNavigationMoveEvents, TrickleDown.TrickleDown);
+
+            string selectedPanelName;
+            if (m_SelectedPanel == null || !activePanels.Contains(m_SelectedPanel))
+                selectedPanelName = DebugManager.instance.panels.Count > 0 ? DebugManager.instance.panels[0].displayName : null;
+            else
+                selectedPanelName = m_SelectedPanel.displayName;
+
+            // Defer until after layout so all AttachToPanelEvent callbacks from ScheduleTracked
+            // have fired and registered their schedulers before SetHierarchyEnabled is called.
+            m_TabViewElement.schedule.Execute(_ => SetSelectedPanel(selectedPanelName)).StartingIn(100);
+
+            m_NeedsRebuild = false;
+        }
+
+        void OnDestroy()
+        {
+            DebugManager.instance.onSetDirty -= RequestRebuild;
+            DebugManager.instance.onRecreateDebugUI -= RequestRebuild;
+
+            if (m_PanelRenderer != null)
+            {
+                // Unregister the UI reload callback
+                m_PanelRenderer.UnregisterUIReloadCallback(OnUIReload);
+
+                // Need to unregister here as well because when the UI is closed and reopened, it is a different object so the member
+                // function will be a different object and the Unregister call in RecreateGUI does nothing.
+                m_PanelRootElement?.UnregisterCallback<NavigationMoveEvent>(ConvertNavigationMoveEvents, TrickleDown.TrickleDown);
+            }
+
+            DebugManager.instance.displayRuntimeUI = false;
+        }
+
+        void ConvertNavigationMoveEvents(NavigationMoveEvent evt)
+        {
+            if (m_PanelRootElement == null)
+                return;
+
+            if (IsPopupOpen())
+                return; // Popup navigation uses up/down normally
+
+            if (evt.direction != NavigationMoveEvent.Direction.Up &&
+                evt.direction != NavigationMoveEvent.Direction.Down)
+                return;
+
+            evt.StopPropagation();
+            m_PanelRootElement.focusController.IgnoreEvent(evt);
+
+            var newDirection = evt.direction == NavigationMoveEvent.Direction.Down
+                ? NavigationMoveEvent.Direction.Next
+                : NavigationMoveEvent.Direction.Previous;
+
+            using (var newEvt = NavigationMoveEvent.GetPooled(newDirection))
+            {
+                newEvt.target = evt.target;
+                m_PanelRootElement.panel.visualTree.SendEvent(newEvt);
+            }
+        }
+
+        internal void RequestRebuild()
+        {
+            m_NeedsRebuild = true;
+        }
+
+        void Update()
+        {
+            UpdateOrientation();
+
+            if (m_NeedsRebuild)
+                BuildDebugUI();
+        }
+
+        void UpdateOrientation(bool forceUpdate = false)
+        {
+            // We use screen dimensions instead of Screen.orientation to handle desktop platforms where it's better
+            // to treat typical screen resolutions as "Landscape", but Screen.orientation reports it as "Portrait".
+            bool portraitOrientation = Screen.width < Screen.height;
+            if (forceUpdate || m_PortraitOrientation != portraitOrientation)
+            {
+                m_PortraitOrientation = portraitOrientation;
+
+                const string portraitClassName = "portrait-orientation";
+                const string landscapeClassName = "landscape-orientation";
+
+                var debugWindowElement = m_PanelRootElement?.Q("debug-window");
+                if (debugWindowElement == null)
+                    return;
+
+                debugWindowElement.RemoveFromClassList(portraitClassName);
+                debugWindowElement.RemoveFromClassList(landscapeClassName);
+
+                if (m_PortraitOrientation)
+                {
+                    debugWindowElement.AddToClassList(portraitClassName);
+                }
+                else
+                {
+                    debugWindowElement.AddToClassList(landscapeClassName);
+                }
+            }
+        }
+
+        void ResetClicked()
+        {
+            DebugDisplaySerializer.SaveFoldoutStates();
+
+            DebugDisplaySerializer.Clear();
+            DebugManager.instance.Reset();
+
+            DebugDisplaySerializer.LoadFoldoutStates();
+        }
+
+        void SetSelectedPanel(string panelName)
+        {
+            if (string.IsNullOrEmpty(panelName))
+                return;
+
+            if (m_SelectedPanel != null)
+            {
+                var previousPanel = DebugManager.instance.GetPanel(m_SelectedPanel.displayName);
+                if (previousPanel != null)
+                    DebugManager.instance.schedulerTracker.SetHierarchyEnabled(DebugUI.Context.Runtime, previousPanel, false);
+            }
+
+            m_SelectedPanel = DebugManager.instance.GetPanel(panelName);
+
+            if (m_SelectedPanel != null)
+            {
+                var newSelectedTab = m_TabViewElement.Q<Tab>(name: $"{m_SelectedPanel.displayName}_Tab");
+                if (newSelectedTab != null)
+                    m_TabViewElement.activeTab = newSelectedTab;
+
+                DebugManager.instance.schedulerTracker.SetHierarchyEnabled(DebugUI.Context.Runtime, m_SelectedPanel, true);
+
+                // Focus first focusable child in the panel
+                foreach (var widget in m_SelectedPanel.children)
+                {
+                    if (widget.m_VisualElement is { focusable: true })
+                    {
+                        widget.m_VisualElement.Focus();
+                        break;
+                    }
+                }
+            }
+        }
+
+        internal bool IsPopupOpen()
+        {
+            if (m_PanelRootElement == null)
+                return false;
+
+            const string popupClassName = "unity-base-dropdown";
+            var numPanelChildren = m_PanelRootElement.childCount;
+            // reverse loop because the popup will appear at the end
+            for (int i = numPanelChildren - 1; i >= 0; i--)
+            {
+                var child = m_PanelRootElement[i];
+                if (child != null && child.ClassListContains(popupClassName))
+                    return true;
+            }
+            return false;
+        }
+
+        internal void SelectNextPanel() => SelectPanelWithOffset(+1);
+
+        internal void SelectPreviousPanel() => SelectPanelWithOffset(-1);
+
+        void SelectPanelWithOffset(int offset)
+        {
+            if (m_SelectedPanel == null)
+                return;
+
+            var panels = DebugManager.instance.panels;
+            int index = DebugManager.instance.FindPanelIndex(m_SelectedPanel.displayName);
+
+            int Mod(int x, int m)
+            {
+                return (x % m + m) % m; // Handle negative offset correctly
+            }
+
+            int nextIndex = Mod(index + offset, panels.Count);
+            SetSelectedPanel(panels[nextIndex].displayName);
+        }
+    }
+}
+#endif

@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
+         xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="retryContentRoot">
+        <ui:VisualElement class="retry-controls-row">
+            <ui:VisualElement class="controls-spacer"/>
+            <ui:Button name="dismissButton" text="Dismiss"/>
+            <ui:Button name="retryButton" text="Retry"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

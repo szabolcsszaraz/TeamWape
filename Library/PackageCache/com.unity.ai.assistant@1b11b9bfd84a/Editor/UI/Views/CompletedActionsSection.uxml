@@ -1,0 +1,6 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="mui-completed-actions-container">
+        <ui:Label name="completedActionsHeader" text="Completed actions (0)" class="mui-completed-actions-header"/>
+        <ui:VisualElement name="completedActionsContent"/>
+    </ui:VisualElement>
+</UXML>

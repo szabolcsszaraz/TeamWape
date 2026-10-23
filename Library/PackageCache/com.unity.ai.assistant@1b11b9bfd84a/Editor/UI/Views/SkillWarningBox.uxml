@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="warningContainer" class="assistant-warning-container">
+        <ui:Image name="warningIcon" />
+        <ui:Label name="warningMessage" enable-rich-text="true" />
+    </ui:VisualElement>
+</ui:UXML>

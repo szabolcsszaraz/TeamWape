@@ -1,0 +1,39 @@
+/* SwipeView */
+.appui-swipeview {
+    display: flex;
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--appui-alias-control-border-radius);
+    align-items: stretch;
+    justify-content: flex-start;
+}
+
+.appui-swipeview__container {
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-start;
+    width: 100%;
+    height: 100%;
+}
+
+.appui-swipeview--vertical > .appui-swipeview__container {
+    flex-direction: column;
+}
+
+.appui-swipeview--horizontal > .appui-swipeview__container {
+    flex-direction: row;
+}
+
+.appui--rtl .appui-swipeview--horizontal > .appui-swipeview__container {
+    flex-direction: row-reverse;
+}
+
+/* SwipeViewItem */
+.appui-swipeview-item {
+    /*position: absolute;*/
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

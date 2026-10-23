@@ -1,0 +1,52 @@
+#include "Packages/com.unity.ai.inference/Runtime/Core/Resources/Sentis/ComputeShaders/Tensor.cginc"
+
+#pragma kernel LocalResponseNormalization
+
+StructuredBuffer<float> Xptr;
+RWStructuredBuffer<float> Optr;
+
+uint2 unrolledDispatchArgs;
+
+uint X_channels;
+uint X_strideC; // channel axis elements stride
+uint LeftSupportLength;
+uint RightSupportLength;
+float AlphaDivSupportLength;
+
+float Bias;
+float Beta;
+
+#define NUMTHREADS_X 128
+
+[numthreads(NUMTHREADS_X, 1, 1)] // NUMTHREADS in y and z must be 1, we used "UnrolledDispatch" in cs
+void LocalResponseNormalization(uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID, uint3 groupID : SV_GroupID, uint groupThreadIndex : SV_GroupIndex)
+{
+
+    uint gridSizeX = unrolledDispatchArgs.x;
+    uint totalNumthreads  = unrolledDispatchArgs.y;
+
+    // In the following, it is assumed numthreads.y and .z are == 1, and that groupID.z is 0,
+    // ie there's only one TG along the grid Z dimension:
+    uint globalThreadIdx = dispatchThreadID.x + groupID.y * NUMTHREADS_X * gridSizeX;
+    if (globalThreadIdx < totalNumthreads)
+    {
+        uint xbatchChannelNum = globalThreadIdx / X_strideC;
+        uint channelNum = xbatchChannelNum % X_channels;
+
+        uint supportStart = (uint) max(0, (int)channelNum - (int)LeftSupportLength);
+        uint supportEnd = min(X_channels - 1, channelNum + RightSupportLength);
+
+        uint channelStride = X_strideC;
+        uint curGlobalThreadIdx = globalThreadIdx - ((channelNum - supportStart) * channelStride); // note: channelNum >= supportStart
+        float sumOfSquares = 0.0;
+
+        for (uint channelIdx = supportStart; channelIdx <= supportEnd; ++channelIdx, curGlobalThreadIdx += channelStride)
+        {
+            float val = Xptr[curGlobalThreadIdx];
+            sumOfSquares += val * val;
+        }
+
+        //Optr[globalThreadIdx] = Xptr[globalThreadIdx] / pow(abs(Bias + AlphaDivSupportLength * sumOfSquares), Beta);
+        Optr[globalThreadIdx] = Xptr[globalThreadIdx] / SignedPow((Bias + AlphaDivSupportLength * sumOfSquares), Beta);
+    }
+}

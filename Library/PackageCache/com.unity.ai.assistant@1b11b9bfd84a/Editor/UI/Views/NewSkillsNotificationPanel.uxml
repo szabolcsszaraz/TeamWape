@@ -1,0 +1,16 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="mui-new-skills-notification-root">
+        <ui:VisualElement class="mui-new-skills-notification-icon-row">
+            <ui:Image class="mui-action-button-image mui-icon-scene-view-lighting mui-new-skills-notification-icon" picking-mode="Ignore"/>
+            <ui:Label name="titleLabel" class="mui-new-skills-notification-title" picking-mode="Ignore"/>
+            <ui:Button name="dismissButton" class="mui-action-button mui-new-skills-notification-dismiss">
+                <ui:Image class="mui-action-button-image mui-icon-close" picking-mode="Ignore"/>
+            </ui:Button>
+        </ui:VisualElement>
+        <ui:Label name="bodyLabel" class="mui-new-skills-notification-body" picking-mode="Ignore"/>
+        <ui:VisualElement class="mui-new-skills-notification-actions">
+            <ui:Button name="openPrefsButton" text="See in Preferences" class="mui-action-button mui-new-skills-notification-open-prefs"/>
+            <ui:Button name="enableAllButton" text="Enable All" class="mui-action-button mui-new-skills-notification-enable-all"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

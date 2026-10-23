@@ -1,0 +1,26 @@
+.assistant-skills-folder-row {
+    flex-direction: row;
+    align-items: center;
+}
+
+.assistant-skills-path-label {
+    min-width: 90px;
+}
+
+.assistant-skills-path-text-field {
+    flex-shrink: 1; /* override .unity-base-field so field narrows to fit left of the "Browse" button */
+    flex-grow: 1;
+    margin-right: 4px;
+}
+
+.assistant-skills-path-browse-button {
+    margin-left: auto; /* pushes browse button to the right */
+    width: 22px;
+    height: 20px;
+    align-items: center;
+}
+
+.mui-icon-folder {
+    width: 16px;
+    height: 16px;
+}

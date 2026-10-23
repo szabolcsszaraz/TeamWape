@@ -1,0 +1,25 @@
+{
+    "name": "Unity.InferenceEngine.Editor",
+    "rootNamespace": "",
+    "references": [
+        "Unity.InferenceEngine",
+        "Unity.InferenceEngine.Editor.Visualizer",
+        "Unity.Mathematics",
+        "Unity.InferenceEngine.ONNX.Editor",
+        "Unity.Collections"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Google.Protobuf_Packed.dll",
+        "Newtonsoft.Json.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
