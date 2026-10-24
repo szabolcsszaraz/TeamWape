@@ -1,1 +1,0 @@
-{"status":"Valid","reason":"Signature is ok","isLegacy":false,"attestation":{"version":1,"format":"archive","integrity":"sha256-vyR+oUy58ftKVe5kr/qcWEf2mH/jahZamCY1Hn9B/gI=","packageName":"com.unity.ide.rider","packageVersion":"3.1.0","publishingChannel":"unity","entitlementKeys":[],"artifactType":"upmPackage"}}
