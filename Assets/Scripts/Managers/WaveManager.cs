@@ -10,21 +10,26 @@ public class WaveManager : MonoBehaviour
 
     public int CurrentWave { get; private set; }
     public bool IsWaveActive { get; private set; }
+    public bool IsArrivalComplete { get; private set; }
 
     private int lastWaveDay = -1;
+    private int spawnedTourists = 0;
     private Coroutine spawnCoroutine;
 
     public event Action<int> OnWaveStarted;
+    public event Action<int> OnWaveArrivalCompleted;
 
     [Header("Tourist Spawn Points")]
-    [SerializeField] private List<TouristSpawnPoint> spawnPoints = new();
+    [SerializeField]
+    private List<TouristSpawnPoint> spawnPoints = new();
 
-    public IReadOnlyList<TouristSpawnPoint> SpawnPoints => spawnPoints;
+    public IReadOnlyList<TouristSpawnPoint> SpawnPoints
+        => spawnPoints;
 
     [Header("Tourist Settings")]
     [SerializeField] private GameObject touristPrefab;
-    [SerializeField] private int touristsPerWave = 6;
-    [SerializeField] private float spawnInterval = 1f;
+    [SerializeField, Min(1)] private int touristsPerWave = 6;
+    [SerializeField, Min(0f)] private float spawnInterval = 1f;
 
     private void Awake()
     {
@@ -41,10 +46,12 @@ public class WaveManager : MonoBehaviour
     {
         CurrentWave = 0;
         IsWaveActive = false;
+        IsArrivalComplete = false;
 
         if (DayStateManager.Instance != null)
         {
-            DayStateManager.Instance.OnPhaseChanged += HandlePhaseChanged;
+            DayStateManager.Instance.OnPhaseChanged
+                += HandlePhaseChanged;
         }
 
         Debug.Log("WaveManager initialized successfully!");
@@ -61,7 +68,9 @@ public class WaveManager : MonoBehaviour
 
         if (!DayStateManager.Instance.IsActivePhase)
         {
-            Debug.LogWarning("Cannot start wave during Passive Phase!");
+            Debug.LogWarning(
+                "Cannot start wave during Passive Phase!"
+            );
             return;
         }
 
@@ -86,11 +95,24 @@ public class WaveManager : MonoBehaviour
             return;
         }
 
+        if (touristsPerWave <= 0)
+        {
+            Debug.LogWarning(
+                "Tourists Per Wave must be greater than zero!"
+            );
+            return;
+        }
+
         CurrentWave++;
         lastWaveDay = currentDay;
-        IsWaveActive = true;
 
-        Debug.Log($"Day {currentDay}: Wave {CurrentWave} started!");
+        IsWaveActive = true;
+        IsArrivalComplete = false;
+        spawnedTourists = 0;
+
+        Debug.Log(
+            $"Day {currentDay}: Wave {CurrentWave} started!"
+        );
 
         OnWaveStarted?.Invoke(CurrentWave);
 
@@ -103,7 +125,8 @@ public class WaveManager : MonoBehaviour
         {
             if (!IsWaveActive)
             {
-                break;
+                spawnCoroutine = null;
+                yield break;
             }
 
             TouristSpawnPoint spawnPoint =
@@ -115,10 +138,14 @@ public class WaveManager : MonoBehaviour
                 spawnPoint.SpawnRotation
             );
 
-            tourist.name = $"Tourist_{CurrentWave}_{i + 1}";
+            tourist.name =
+                $"Tourist_{CurrentWave}_{i + 1}";
+
+            spawnedTourists++;
 
             Debug.Log(
-                $"Tourist {i + 1} spawned at {spawnPoint.name}"
+                $"Tourist {spawnedTourists}/{touristsPerWave} " +
+                $"spawned at {spawnPoint.name}"
             );
 
             if (i < touristsPerWave - 1)
@@ -131,9 +158,18 @@ public class WaveManager : MonoBehaviour
 
         spawnCoroutine = null;
 
-        if (IsWaveActive)
+        if (IsWaveActive &&
+            !IsArrivalComplete &&
+            spawnedTourists == touristsPerWave)
         {
-            Debug.Log("All tourists have spawned!");
+            IsArrivalComplete = true;
+
+            Debug.Log(
+                $"Wave {CurrentWave}: " +
+                "All tourists have arrived!"
+            );
+
+            OnWaveArrivalCompleted?.Invoke(CurrentWave);
         }
     }
 
@@ -157,7 +193,8 @@ public class WaveManager : MonoBehaviour
     {
         if (DayStateManager.Instance != null)
         {
-            DayStateManager.Instance.OnPhaseChanged -= HandlePhaseChanged;
+            DayStateManager.Instance.OnPhaseChanged
+                -= HandlePhaseChanged;
         }
 
         if (Instance == this)
