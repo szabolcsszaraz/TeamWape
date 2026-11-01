@@ -1190,6 +1190,50 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 854fd65109e887142a60bc86d4a8b989, type: 3}
   m_PrefabInstance: {fileID: 1500889205}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &874014248
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 874014250}
+  - component: {fileID: 874014249}
+  m_Layer: 0
+  m_Name: RestaurantQueue
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &874014249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 874014248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be5a0e521b6d5914fbca70ee6a87a955, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ServiceQueue
+--- !u!4 &874014250
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 874014248}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 30.91817, y: 5.58506, z: 21.82328}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &893164328 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8f1e219c45e16ec49b41be89d2892922, type: 3}
@@ -3763,3 +3807,4 @@ SceneRoots:
   - {fileID: 716374356}
   - {fileID: 142534905}
   - {fileID: 1512050536}
+  - {fileID: 874014250}
