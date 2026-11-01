@@ -12,7 +12,13 @@ public class ServiceQueue : MonoBehaviour
 
     public int WaitingGuestCount { get; private set; }
 
+    public bool IsOverLimit => WaitingGuestCount > warningLimit;
+
     public event Action<int> OnQueueCountChanged;
+
+    public event Action<bool> OnQueueWarningChanged;
+
+    private bool wasOverLimit = false;
 
     public void AddGuest()
     {
@@ -39,6 +45,36 @@ public class ServiceQueue : MonoBehaviour
         Debug.Log(
             $"{gameObject.name}: {WaitingGuestCount} guests waiting."
         );
+
+        CheckQueueLimit();
+    }
+
+    private void CheckQueueLimit()
+    {
+        bool isOverLimit = IsOverLimit;
+
+        if (isOverLimit == wasOverLimit)
+        {
+            return;
+        }
+
+        wasOverLimit = isOverLimit;
+
+        OnQueueWarningChanged?.Invoke(isOverLimit);
+
+        if (isOverLimit)
+        {
+            Debug.LogWarning(
+                $"{gameObject.name}: Queue warning! " +
+                $"Waiting guests: {WaitingGuestCount}, Limit: {warningLimit}"
+            );
+        }
+        else
+        {
+            Debug.Log(
+                $"{gameObject.name}: Queue is back within the limit."
+            );
+        }
     }
 
     [ContextMenu("Test / Add Guest")]
