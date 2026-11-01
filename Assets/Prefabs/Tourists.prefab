@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2165829633448420238}
   - component: {fileID: 3437060364421514748}
   - component: {fileID: 440166359138181862}
+  - component: {fileID: -2518430375597178592}
   m_Layer: 0
   m_Name: Tourists
   m_TagString: Untagged
@@ -114,3 +115,19 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-2518430375597178592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2672076648522587730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b2e03ef7648c4c45a7aa3bf65da5648, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::TouristNeeds
+  minNeeds: 1
+  maxNeeds: 3
+  alwaysNeedsRoom: 1
+  needs: []
