@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class ServiceQueue : MonoBehaviour
 {
+    [Header("Queue Settings")]
+    [SerializeField, Min(0)]
+    private int warningLimit = 5;
+
+    public int WarningLimit => warningLimit;
+
     public int WaitingGuestCount { get; private set; }
 
     public event Action<int> OnQueueCountChanged;
