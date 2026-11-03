@@ -22,7 +22,8 @@ public class ServiceBuilding : MonoBehaviour
     [SerializeField] private bool hasWorker = true;
 
     [Tooltip("Service speed multiplier without a worker.")]
-    [SerializeField, Range(0.01f, 1f)] private float noWorkerUtilization = 0.33f;
+    [SerializeField, Range(0.01f, 1f)]
+    private float noWorkerUtilization = 0.33f;
 
     [Header("Queue (optional)")]
     [Tooltip("Mirrors this need's waiting count, so QueueWarningUI works.")]
@@ -31,6 +32,11 @@ public class ServiceBuilding : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private int occupiedSeats;
     [SerializeField] private int servedThisWave;
+
+    [Header("Load Debug")]
+    [SerializeField] private int waitingRequests;
+    [SerializeField] private int totalLoad;
+    [SerializeField] private float loadRatio;
 
     private class ActiveService
     {
@@ -49,6 +55,11 @@ public class ServiceBuilding : MonoBehaviour
     public bool HasWorker => hasWorker;
     public int OccupiedSeats => activeServices.Count;
     public int ServedThisWave => servedThisWave;
+
+    // Service load properties
+    public int WaitingRequests => waitingRequests;
+    public int TotalLoad => totalLoad;
+    public float LoadRatio => loadRatio;
 
     public float Utilization => hasWorker ? 1f : noWorkerUtilization;
 
@@ -93,6 +104,20 @@ public class ServiceBuilding : MonoBehaviour
         SyncServiceQueue(need);
 
         occupiedSeats = activeServices.Count;
+
+        // SCRUM-102: Calculate service load
+        CalculateServiceLoad(need);
+    }
+
+    private void CalculateServiceLoad(GuestNeed need)
+    {
+        waitingRequests = need.WaitingCount;
+
+        totalLoad = occupiedSeats + waitingRequests;
+
+        loadRatio = seats > 0
+            ? (float)totalLoad / seats
+            : 0f;
     }
 
     private void UpdateActiveServices(GuestNeed need)
@@ -171,8 +196,14 @@ public class ServiceBuilding : MonoBehaviour
     private void HandleNeedsReset()
     {
         activeServices.Clear();
+
         occupiedSeats = 0;
         servedThisWave = 0;
+
+        // Reset load values
+        waitingRequests = 0;
+        totalLoad = 0;
+        loadRatio = 0f;
     }
 
     private void OnDestroy()

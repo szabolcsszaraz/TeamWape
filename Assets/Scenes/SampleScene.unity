@@ -1388,6 +1388,9 @@ MonoBehaviour:
   serviceQueue: {fileID: 874014249}
   occupiedSeats: 0
   servedThisWave: 0
+  waitingRequests: 0
+  totalLoad: 0
+  loadRatio: 0
 --- !u!4 &893164328 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8f1e219c45e16ec49b41be89d2892922, type: 3}
@@ -1443,9 +1446,12 @@ MonoBehaviour:
   qualityStars: 2
   hasWorker: 1
   noWorkerUtilization: 0.33
-  serviceQueue: {fileID: 0}
+  serviceQueue: {fileID: 2127506319}
   occupiedSeats: 0
   servedThisWave: 0
+  waitingRequests: 0
+  totalLoad: 0
+  loadRatio: 0
 --- !u!1 &910000011
 GameObject:
   m_ObjectHideFlags: 0
@@ -1499,6 +1505,9 @@ MonoBehaviour:
   serviceQueue: {fileID: 0}
   occupiedSeats: 0
   servedThisWave: 0
+  waitingRequests: 0
+  totalLoad: 0
+  loadRatio: 0
 --- !u!4 &929541570 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6721412949723261072, guid: 3d6ee73ce0cc2f34fb0943aee27b056a, type: 3}
@@ -4042,6 +4051,51 @@ MonoBehaviour:
   endDayButton: {fileID: 420509330}
   nextDayButton: {fileID: 683869127}
   statusText: {fileID: 1989636539}
+--- !u!1 &2127506318
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2127506320}
+  - component: {fileID: 2127506319}
+  m_Layer: 0
+  m_Name: HotelQueue
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2127506319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2127506318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be5a0e521b6d5914fbca70ee6a87a955, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ServiceQueue
+  warningLimit: 5
+--- !u!4 &2127506320
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2127506318}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 275.9958, y: -0, z: -930.60583}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2133705466
 GameObject:
   m_ObjectHideFlags: 0
@@ -4275,3 +4329,4 @@ SceneRoots:
   - {fileID: 910000002}
   - {fileID: 910000012}
   - {fileID: 223338196}
+  - {fileID: 2127506320}
