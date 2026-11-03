@@ -3,6 +3,13 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// SCRUM-104: Possible service states
+public enum ServiceLoadState
+{
+    Normal,
+    Overloaded
+}
+
 public class ServiceBuilding : MonoBehaviour
 {
     [Header("Service")]
@@ -44,9 +51,13 @@ public class ServiceBuilding : MonoBehaviour
     [SerializeField] private int totalLoad;
     [SerializeField] private float loadRatio;
 
-    // SCRUM-103: Overload detection
     [Header("Overload Debug")]
     [SerializeField] private bool isOverloaded;
+
+    // SCRUM-104: Current service state
+    [Header("Service State")]
+    [SerializeField]
+    private ServiceLoadState currentState = ServiceLoadState.Normal;
 
     private class ActiveService
     {
@@ -70,13 +81,19 @@ public class ServiceBuilding : MonoBehaviour
     public int TotalLoad => totalLoad;
     public float LoadRatio => loadRatio;
 
-    // SCRUM-103
     public bool IsOverloaded => isOverloaded;
+
+    // SCRUM-104: Public state
+    public ServiceLoadState CurrentState => currentState;
 
     public float Utilization =>
         hasWorker ? 1f : noWorkerUtilization;
 
     public event Action<ServiceBuilding, float> OnUnitServed;
+
+    // SCRUM-104: Notify other systems when the state changes
+    public event Action<ServiceBuilding, ServiceLoadState>
+        OnServiceStateChanged;
 
     private void Awake()
     {
@@ -124,10 +141,11 @@ public class ServiceBuilding : MonoBehaviour
         CheckOverloadCondition();
     }
 
-    // SCRUM-102: Service load calculation
+    // SCRUM-102: Calculate current load
     private void CalculateServiceLoad(GuestNeed need)
     {
         waitingRequests = need.WaitingCount;
+
         totalLoad = occupiedSeats + waitingRequests;
 
         loadRatio = seats > 0
@@ -135,33 +153,39 @@ public class ServiceBuilding : MonoBehaviour
             : 0f;
     }
 
-    // SCRUM-103: Overload detection
+    // SCRUM-103: Detect overload
     private void CheckOverloadCondition()
     {
         bool newOverloadState = totalLoad > seats;
 
-        if (newOverloadState == isOverloaded)
+        // SCRUM-104: Update service state
+        ServiceLoadState newState = newOverloadState
+            ? ServiceLoadState.Overloaded
+            : ServiceLoadState.Normal;
+
+        UpdateServiceState(newState);
+    }
+
+    // SCRUM-104: Dynamic state management
+    private void UpdateServiceState(ServiceLoadState newState)
+    {
+        if (currentState == newState)
         {
             return;
         }
 
-        isOverloaded = newOverloadState;
+        currentState = newState;
 
-        if (isOverloaded)
-        {
-            Debug.LogWarning(
-                $"{name}: SERVICE OVERLOADED! " +
-                $"Load: {totalLoad}, " +
-                $"Capacity: {seats}, " +
-                $"Load Ratio: {loadRatio:0.00}"
-            );
-        }
-        else
-        {
-            Debug.Log(
-                $"{name}: Service is no longer overloaded."
-            );
-        }
+        isOverloaded =
+            currentState == ServiceLoadState.Overloaded;
+
+        // Notify subscribed systems
+        OnServiceStateChanged?.Invoke(this, currentState);
+
+        Debug.Log(
+            $"{name}: Service state changed to {currentState}. " +
+            $"Load: {totalLoad}, Capacity: {seats}"
+        );
     }
 
     private void UpdateActiveServices(GuestNeed need)
@@ -248,6 +272,8 @@ public class ServiceBuilding : MonoBehaviour
         totalLoad = 0;
         loadRatio = 0f;
 
+        // Reset state and notify listeners if necessary
+        UpdateServiceState(ServiceLoadState.Normal);
         isOverloaded = false;
     }
 
