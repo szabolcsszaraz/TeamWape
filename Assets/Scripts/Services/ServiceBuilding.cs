@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-// SCRUM-104: Possible service states
 public enum ServiceLoadState
 {
     Normal,
-    Overloaded
+    Overloaded,
+    Inactive
 }
 
 public class ServiceBuilding : MonoBehaviour
@@ -20,25 +20,27 @@ public class ServiceBuilding : MonoBehaviour
     [SerializeField, Min(1)]
     private int seats = 3;
 
-    [Tooltip("Seconds to serve one unit with a worker assigned.")]
+    [Tooltip("Seconds to serve one unit.")]
     [SerializeField, Min(0.1f)]
     private float serviceTime = 12f;
 
     [Header("Quality")]
-    [Tooltip("Service quality (e.g. chef stars). Used by the rating later.")]
     [SerializeField, Range(1, 5)]
     private int qualityStars = 2;
 
-    [Header("Worker")]
+    [Header("Worker Requirements")]
+    [Tooltip("Requires at least one assigned worker to operate.")]
+    [SerializeField]
+    private bool requiresWorkers = true;
+
+    [Header("Worker - Legacy Settings")]
     [SerializeField]
     private bool hasWorker = true;
 
-    [Tooltip("Service speed multiplier without a worker.")]
     [SerializeField, Range(0.01f, 1f)]
     private float noWorkerUtilization = 0.33f;
 
     [Header("Queue (optional)")]
-    [Tooltip("Mirrors this need's waiting count, so QueueWarningUI works.")]
     [SerializeField]
     private ServiceQueue serviceQueue;
 
@@ -54,10 +56,15 @@ public class ServiceBuilding : MonoBehaviour
     [Header("Overload Debug")]
     [SerializeField] private bool isOverloaded;
 
-    // SCRUM-104: Current service state
     [Header("Service State")]
     [SerializeField]
-    private ServiceLoadState currentState = ServiceLoadState.Normal;
+    private ServiceLoadState currentState =
+        ServiceLoadState.Normal;
+
+    [Header("Worker Requirement Debug")]
+    [SerializeField] private int assignedWorkerCount;
+    [SerializeField] private bool isMissingRequiredWorkers;
+    [SerializeField] private bool canOperate;
 
     private class ActiveService
     {
@@ -68,12 +75,22 @@ public class ServiceBuilding : MonoBehaviour
     private readonly List<ActiveService> activeServices = new();
 
     private GuestNeedsManager needsManager;
+    private WorkerAssignment workerAssignment;
 
     public GuestNeedType ServiceNeed => serviceNeed;
     public int Seats => seats;
     public float ServiceTime => serviceTime;
     public int QualityStars => qualityStars;
+
+    public bool RequiresWorkers => requiresWorkers;
     public bool HasWorker => hasWorker;
+
+    public int AssignedWorkerCount => assignedWorkerCount;
+    public bool IsMissingRequiredWorkers =>
+        isMissingRequiredWorkers;
+
+    public bool CanOperate => canOperate;
+
     public int OccupiedSeats => activeServices.Count;
     public int ServedThisWave => servedThisWave;
 
@@ -82,16 +99,14 @@ public class ServiceBuilding : MonoBehaviour
     public float LoadRatio => loadRatio;
 
     public bool IsOverloaded => isOverloaded;
-
-    // SCRUM-104: Public state
     public ServiceLoadState CurrentState => currentState;
 
+    // Retained for compatibility with existing service logic.
     public float Utilization =>
         hasWorker ? 1f : noWorkerUtilization;
 
     public event Action<ServiceBuilding, float> OnUnitServed;
 
-    // SCRUM-104: Notify other systems when the state changes
     public event Action<ServiceBuilding, ServiceLoadState>
         OnServiceStateChanged;
 
@@ -100,6 +115,79 @@ public class ServiceBuilding : MonoBehaviour
         if (serviceQueue == null)
         {
             serviceQueue = GetComponent<ServiceQueue>();
+        }
+
+        workerAssignment = GetComponent<WorkerAssignment>();
+
+        if (requiresWorkers && workerAssignment == null)
+        {
+            Debug.LogWarning(
+                $"{name}: Requires Workers is enabled, " +
+                "but WorkerAssignment is missing!",
+                this
+            );
+        }
+
+        RefreshWorkerRequirement();
+    }
+
+    private void OnEnable()
+    {
+        if (workerAssignment == null)
+        {
+            workerAssignment = GetComponent<WorkerAssignment>();
+        }
+
+        if (workerAssignment != null)
+        {
+            workerAssignment.OnWorkersChanged -= HandleWorkersChanged;
+            workerAssignment.OnWorkersChanged += HandleWorkersChanged;
+        }
+
+        RefreshWorkerRequirement();
+    }
+
+    private void OnDisable()
+    {
+        if (workerAssignment != null)
+        {
+            workerAssignment.OnWorkersChanged -= HandleWorkersChanged;
+        }
+    }
+
+    private void HandleWorkersChanged(WorkerAssignment assignment)
+    {
+        if (assignment != workerAssignment)
+            return;
+
+        RefreshWorkerRequirement();
+    }
+
+    // SCRUM-23: Check whether workers are available.
+    private void RefreshWorkerRequirement()
+    {
+        bool wasOperating = canOperate;
+
+        assignedWorkerCount = workerAssignment != null
+            ? workerAssignment.AssignedWorkerCount
+            : 0;
+
+        isMissingRequiredWorkers =
+            requiresWorkers && assignedWorkerCount == 0;
+
+        canOperate = !isMissingRequiredWorkers;
+
+        // Immediately update the visual state when workers change.
+        UpdateCurrentServiceState();
+
+        if (wasOperating != canOperate)
+        {
+            Debug.Log(
+                $"{name}: Service operation " +
+                (canOperate ? "RESUMED" : "PAUSED") +
+                $" (Workers: {assignedWorkerCount})",
+                this
+            );
         }
     }
 
@@ -110,7 +198,8 @@ public class ServiceBuilding : MonoBehaviour
         if (needsManager == null)
         {
             Debug.LogError(
-                $"{name}: GuestNeedsManager not found!"
+                $"{name}: GuestNeedsManager not found!",
+                this
             );
 
             enabled = false;
@@ -120,32 +209,43 @@ public class ServiceBuilding : MonoBehaviour
         needsManager.UnlockNeed(serviceNeed);
         needsManager.OnNeedsReset += HandleNeedsReset;
 
+        UpdateCurrentServiceState();
+
         Debug.Log(
             $"{name}: serves {serviceNeed.ToDisplayName()} " +
             $"({seats} seats, {qualityStars} stars, " +
-            $"worker: {(hasWorker ? "yes" : "no")})"
+            $"workers: {assignedWorkerCount}, " +
+            $"can operate: {canOperate})",
+            this
         );
     }
 
     private void Update()
     {
+        if (needsManager == null)
+            return;
+
         GuestNeed need = needsManager.GetNeed(serviceNeed);
 
-        UpdateActiveServices(need);
-        SeatWaitingUnits(need);
+        // Do not process services if required workers are missing.
+        if (canOperate)
+        {
+            UpdateActiveServices(need);
+            SeatWaitingUnits(need);
+        }
+
+        // Keep queue information updated even while inactive.
         SyncServiceQueue(need);
 
         occupiedSeats = activeServices.Count;
 
         CalculateServiceLoad(need);
-        CheckOverloadCondition();
+        UpdateCurrentServiceState();
     }
 
-    // SCRUM-102: Calculate current load
     private void CalculateServiceLoad(GuestNeed need)
     {
         waitingRequests = need.WaitingCount;
-
         totalLoad = occupiedSeats + waitingRequests;
 
         loadRatio = seats > 0
@@ -153,38 +253,45 @@ public class ServiceBuilding : MonoBehaviour
             : 0f;
     }
 
-    // SCRUM-103: Detect overload
-    private void CheckOverloadCondition()
+    // SCRUM-23: Determine the state by priority.
+    private void UpdateCurrentServiceState()
     {
-        bool newOverloadState = totalLoad > seats;
+        ServiceLoadState newState;
 
-        // SCRUM-104: Update service state
-        ServiceLoadState newState = newOverloadState
-            ? ServiceLoadState.Overloaded
-            : ServiceLoadState.Normal;
+        if (!canOperate)
+        {
+            // Inactive takes priority over overloaded.
+            newState = ServiceLoadState.Inactive;
+        }
+        else if (totalLoad > seats)
+        {
+            newState = ServiceLoadState.Overloaded;
+        }
+        else
+        {
+            newState = ServiceLoadState.Normal;
+        }
 
         UpdateServiceState(newState);
     }
 
-    // SCRUM-104: Dynamic state management
     private void UpdateServiceState(ServiceLoadState newState)
     {
         if (currentState == newState)
-        {
             return;
-        }
 
         currentState = newState;
 
         isOverloaded =
             currentState == ServiceLoadState.Overloaded;
 
-        // Notify subscribed systems
         OnServiceStateChanged?.Invoke(this, currentState);
 
         Debug.Log(
             $"{name}: Service state changed to {currentState}. " +
-            $"Load: {totalLoad}, Capacity: {seats}"
+            $"Load: {totalLoad}, Capacity: {seats}, " +
+            $"Workers: {assignedWorkerCount}",
+            this
         );
     }
 
@@ -198,23 +305,20 @@ public class ServiceBuilding : MonoBehaviour
             service.RemainingTime -= progress;
 
             if (service.RemainingTime > 0f)
-            {
                 continue;
-            }
 
             activeServices.RemoveAt(i);
 
             if (!need.CompleteService())
-            {
                 continue;
-            }
 
             servedThisWave++;
 
             Debug.Log(
                 $"{name}: served 1 {serviceNeed.ToDisplayName()} " +
                 $"({need.ServedCount}/{need.TotalDemand}, " +
-                $"waited {service.WaitTime:0.0}s)"
+                $"waited {service.WaitTime:0.0}s)",
+                this
             );
 
             GuestSatisfactionManager.Instance?.RecordService(
@@ -243,9 +347,7 @@ public class ServiceBuilding : MonoBehaviour
     private void SyncServiceQueue(GuestNeed need)
     {
         if (serviceQueue == null)
-        {
             return;
-        }
 
         while (serviceQueue.WaitingGuestCount < need.WaitingCount)
         {
@@ -255,9 +357,7 @@ public class ServiceBuilding : MonoBehaviour
         while (serviceQueue.WaitingGuestCount > need.WaitingCount)
         {
             if (!serviceQueue.RemoveGuest())
-            {
                 break;
-            }
         }
     }
 
@@ -272,9 +372,8 @@ public class ServiceBuilding : MonoBehaviour
         totalLoad = 0;
         loadRatio = 0f;
 
-        // Reset state and notify listeners if necessary
-        UpdateServiceState(ServiceLoadState.Normal);
-        isOverloaded = false;
+        // Preserve Inactive if the building has no workers.
+        UpdateCurrentServiceState();
     }
 
     private void OnDestroy()
@@ -291,9 +390,10 @@ public class ServiceBuilding : MonoBehaviour
         hasWorker = !hasWorker;
 
         Debug.Log(
-            $"{name}: worker " +
-            $"{(hasWorker ? "assigned" : "removed")}, " +
-            $"speed x{Utilization:0.00}"
+            $"{name}: legacy worker flag " +
+            $"{(hasWorker ? "enabled" : "disabled")}, " +
+            $"speed x{Utilization:0.00}",
+            this
         );
     }
 }

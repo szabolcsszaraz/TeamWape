@@ -41,8 +41,8 @@ public class ServiceStateVisual : MonoBehaviour
         new Color(0.29f, 0.62f, 0.87f);
 
     [Header("Current State (Debug)")]
-    [SerializeField] private VisualState currentState =
-        VisualState.Normal;
+    [SerializeField]
+    private VisualState currentState = VisualState.Normal;
 
     public VisualState CurrentState => currentState;
 
@@ -72,10 +72,12 @@ public class ServiceStateVisual : MonoBehaviour
 
         if (serviceBuilding != null)
         {
-            serviceBuilding.OnServiceStateChanged
-                += HandleServiceStateChanged;
+            serviceBuilding.OnServiceStateChanged -=
+                HandleServiceStateChanged;
 
-            // Synchronize the current state immediately.
+            serviceBuilding.OnServiceStateChanged +=
+                HandleServiceStateChanged;
+
             SyncWithServiceBuilding();
         }
         else
@@ -91,8 +93,8 @@ public class ServiceStateVisual : MonoBehaviour
     {
         if (serviceBuilding != null)
         {
-            serviceBuilding.OnServiceStateChanged
-                -= HandleServiceStateChanged;
+            serviceBuilding.OnServiceStateChanged -=
+                HandleServiceStateChanged;
         }
     }
 
@@ -101,9 +103,7 @@ public class ServiceStateVisual : MonoBehaviour
         ServiceLoadState newState)
     {
         if (building != serviceBuilding)
-        {
             return;
-        }
 
         switch (newState)
         {
@@ -114,11 +114,18 @@ public class ServiceStateVisual : MonoBehaviour
             case ServiceLoadState.Overloaded:
                 SetState(VisualState.Overloaded);
                 break;
+
+            case ServiceLoadState.Inactive:
+                SetState(VisualState.Inactive);
+                break;
         }
     }
 
     private void SyncWithServiceBuilding()
     {
+        if (serviceBuilding == null)
+            return;
+
         HandleServiceStateChanged(
             serviceBuilding,
             serviceBuilding.CurrentState
