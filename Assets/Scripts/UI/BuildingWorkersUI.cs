@@ -1,4 +1,6 @@
 
+using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -14,6 +16,14 @@ public class BuildingWorkersUI : MonoBehaviour
 
     [Header("Prefab")]
     [SerializeField] private GameObject workerListItemPrefab;
+
+    private WorkerData selectedWorker;
+
+    private readonly List<WorkerListItemUI> displayedItems = new();
+
+    public WorkerData SelectedWorker => selectedWorker;
+
+    public event Action<WorkerData> OnWorkerSelected;
 
     private void OnEnable()
     {
@@ -35,10 +45,16 @@ public class BuildingWorkersUI : MonoBehaviour
 
     private void HandleWorkersChanged(WorkerAssignment assignment)
     {
-        if (assignment == workerAssignment)
+        if (assignment != workerAssignment)
+            return;
+
+        if (selectedWorker != null &&
+            !workerAssignment.ContainsWorker(selectedWorker))
         {
-            RefreshUI();
+            selectedWorker = null;
         }
+
+        RefreshUI();
     }
 
     public void SetBuilding(WorkerAssignment newAssignment)
@@ -46,6 +62,11 @@ public class BuildingWorkersUI : MonoBehaviour
         if (workerAssignment != null && isActiveAndEnabled)
         {
             workerAssignment.OnWorkersChanged -= HandleWorkersChanged;
+        }
+
+        if (workerAssignment != newAssignment)
+        {
+            selectedWorker = null;
         }
 
         workerAssignment = newAssignment;
@@ -58,13 +79,49 @@ public class BuildingWorkersUI : MonoBehaviour
         RefreshUI();
     }
 
+    private void HandleMoveClicked(WorkerData worker)
+    {
+        if (worker == null)
+            return;
+
+        selectedWorker = worker;
+
+        UpdateSelectionVisuals();
+
+        Debug.Log(
+            $"Worker selected for transfer: {worker.WorkerName}",
+            this
+        );
+
+        OnWorkerSelected?.Invoke(worker);
+    }
+
+    private void UpdateSelectionVisuals()
+    {
+        foreach (WorkerListItemUI item in displayedItems)
+        {
+            if (item == null)
+                continue;
+
+            item.SetSelected(
+                item.Worker == selectedWorker
+            );
+        }
+    }
+
     private void RefreshUI()
     {
+        displayedItems.Clear();
+
         if (workersList != null)
         {
             for (int i = workersList.childCount - 1; i >= 0; i--)
             {
-                Destroy(workersList.GetChild(i).gameObject);
+                GameObject oldItem =
+                    workersList.GetChild(i).gameObject;
+
+                oldItem.SetActive(false);
+                Destroy(oldItem);
             }
         }
 
@@ -100,19 +157,29 @@ public class BuildingWorkersUI : MonoBehaviour
             if (worker == null)
                 continue;
 
-            GameObject item = Instantiate(
+            GameObject itemObject = Instantiate(
                 workerListItemPrefab,
                 workersList
             );
 
-            TMP_Text[] texts =
-                item.GetComponentsInChildren<TMP_Text>();
+            WorkerListItemUI item =
+                itemObject.GetComponent<WorkerListItemUI>();
 
-            if (texts.Length >= 2)
+            if (item == null)
             {
-                texts[0].text = worker.WorkerName;
-                texts[1].text = $"Lv. {worker.PerformanceLevel}";
+                Debug.LogError(
+                    "WorkerListItem prefab is missing WorkerListItemUI!",
+                    itemObject
+                );
+
+                Destroy(itemObject);
+                continue;
             }
+
+            item.Setup(worker, HandleMoveClicked);
+            displayedItems.Add(item);
         }
+
+        UpdateSelectionVisuals();
     }
 }

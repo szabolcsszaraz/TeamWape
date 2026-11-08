@@ -1074,6 +1074,7 @@ MonoBehaviour:
   seats: 3
   serviceTime: 12
   qualityStars: 2
+  requiresWorkers: 1
   hasWorker: 1
   noWorkerUtilization: 0.33
   serviceQueue: {fileID: 588455877}
@@ -1084,6 +1085,9 @@ MonoBehaviour:
   loadRatio: 0
   isOverloaded: 0
   currentState: 0
+  assignedWorkerCount: 0
+  isMissingRequiredWorkers: 0
+  canOperate: 0
 --- !u!114 &266638060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3170,7 +3174,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: 3343f8977cb22be499f0c5e29ad09a20, type: 3}
+  m_Texture: {fileID: 2800000, guid: b02f0927bf3ea924caf91d1c9ce12733, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -3355,6 +3359,7 @@ MonoBehaviour:
   seats: 3
   serviceTime: 12
   qualityStars: 2
+  requiresWorkers: 1
   hasWorker: 1
   noWorkerUtilization: 0.33
   serviceQueue: {fileID: 874014249}
@@ -3365,6 +3370,9 @@ MonoBehaviour:
   loadRatio: 0
   isOverloaded: 0
   currentState: 0
+  assignedWorkerCount: 0
+  isMissingRequiredWorkers: 0
+  canOperate: 0
 --- !u!1 &880442711
 GameObject:
   m_ObjectHideFlags: 0
@@ -3518,6 +3526,7 @@ MonoBehaviour:
   seats: 3
   serviceTime: 12
   qualityStars: 2
+  requiresWorkers: 1
   hasWorker: 1
   noWorkerUtilization: 0.33
   serviceQueue: {fileID: 2127506319}
@@ -3528,6 +3537,9 @@ MonoBehaviour:
   loadRatio: 0
   isOverloaded: 0
   currentState: 0
+  assignedWorkerCount: 0
+  isMissingRequiredWorkers: 0
+  canOperate: 0
 --- !u!1 &910000011
 GameObject:
   m_ObjectHideFlags: 0
@@ -3577,6 +3589,7 @@ MonoBehaviour:
   seats: 3
   serviceTime: 12
   qualityStars: 2
+  requiresWorkers: 1
   hasWorker: 1
   noWorkerUtilization: 0.33
   serviceQueue: {fileID: 588455877}
@@ -3587,6 +3600,9 @@ MonoBehaviour:
   loadRatio: 0
   isOverloaded: 0
   currentState: 0
+  assignedWorkerCount: 0
+  isMissingRequiredWorkers: 0
+  canOperate: 0
 --- !u!114 &910000014
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6518,6 +6534,7 @@ MonoBehaviour:
   seats: 3
   serviceTime: 12
   qualityStars: 2
+  requiresWorkers: 1
   hasWorker: 1
   noWorkerUtilization: 0.33
   serviceQueue: {fileID: 2127506319}
@@ -6528,6 +6545,9 @@ MonoBehaviour:
   loadRatio: 0
   isOverloaded: 0
   currentState: 0
+  assignedWorkerCount: 0
+  isMissingRequiredWorkers: 0
+  canOperate: 0
 --- !u!114 &1673033195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8453,6 +8473,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   maxRayDistance: 1000
+  selectedWorker: {fileID: 0}
+  sourceBuilding: {fileID: 0}
+  targetBuilding: {fileID: 0}
 --- !u!1 &2144317311
 GameObject:
   m_ObjectHideFlags: 0
