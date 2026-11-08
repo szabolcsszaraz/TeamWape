@@ -16,11 +16,9 @@ public class ServiceBuilding : MonoBehaviour
     [SerializeField]
     private GuestNeedType serviceNeed = GuestNeedType.Rooms;
 
-    [Tooltip("How many units can be served at the same time.")]
     [SerializeField, Min(1)]
     private int seats = 3;
 
-    [Tooltip("Seconds to serve one unit.")]
     [SerializeField, Min(0.1f)]
     private float serviceTime = 12f;
 
@@ -29,7 +27,6 @@ public class ServiceBuilding : MonoBehaviour
     private int qualityStars = 2;
 
     [Header("Worker Requirements")]
-    [Tooltip("Requires at least one assigned worker to operate.")]
     [SerializeField]
     private bool requiresWorkers = true;
 
@@ -39,6 +36,10 @@ public class ServiceBuilding : MonoBehaviour
 
     [SerializeField, Range(0.01f, 1f)]
     private float noWorkerUtilization = 0.33f;
+
+    [Header("Worker Performance")]
+    [SerializeField, Min(0f)]
+    private float additionalWorkerBonus = 0.5f;
 
     [Header("Queue (optional)")]
     [SerializeField]
@@ -66,6 +67,10 @@ public class ServiceBuilding : MonoBehaviour
     [SerializeField] private bool isMissingRequiredWorkers;
     [SerializeField] private bool canOperate;
 
+    [Header("Performance Debug")]
+    [SerializeField] private float buildingPerformanceMultiplier;
+    [SerializeField] private float effectiveServiceTime;
+
     private class ActiveService
     {
         public float RemainingTime;
@@ -73,6 +78,8 @@ public class ServiceBuilding : MonoBehaviour
     }
 
     private readonly List<ActiveService> activeServices = new();
+
+    private readonly HashSet<WorkerData> observedWorkers = new();
 
     private GuestNeedsManager needsManager;
     private WorkerAssignment workerAssignment;
@@ -101,14 +108,20 @@ public class ServiceBuilding : MonoBehaviour
     public bool IsOverloaded => isOverloaded;
     public ServiceLoadState CurrentState => currentState;
 
-    // Retained for compatibility with existing service logic.
-    public float Utilization =>
-        hasWorker ? 1f : noWorkerUtilization;
+    public float BuildingPerformanceMultiplier =>
+        buildingPerformanceMultiplier;
+
+    public float EffectiveServiceTime => effectiveServiceTime;
+
+    public float Utilization => buildingPerformanceMultiplier;
 
     public event Action<ServiceBuilding, float> OnUnitServed;
 
     public event Action<ServiceBuilding, ServiceLoadState>
         OnServiceStateChanged;
+
+    public event Action<ServiceBuilding, float>
+        OnPerformanceChanged;
 
     private void Awake()
     {
@@ -153,6 +166,8 @@ public class ServiceBuilding : MonoBehaviour
         {
             workerAssignment.OnWorkersChanged -= HandleWorkersChanged;
         }
+
+        UnsubscribeFromWorkers();
     }
 
     private void HandleWorkersChanged(WorkerAssignment assignment)
@@ -163,7 +178,6 @@ public class ServiceBuilding : MonoBehaviour
         RefreshWorkerRequirement();
     }
 
-    // SCRUM-23: Check whether workers are available.
     private void RefreshWorkerRequirement()
     {
         bool wasOperating = canOperate;
@@ -177,7 +191,8 @@ public class ServiceBuilding : MonoBehaviour
 
         canOperate = !isMissingRequiredWorkers;
 
-        // Immediately update the visual state when workers change.
+        RefreshWorkerSubscriptions();
+        RecalculateBuildingPerformance();
         UpdateCurrentServiceState();
 
         if (wasOperating != canOperate)
@@ -187,6 +202,128 @@ public class ServiceBuilding : MonoBehaviour
                 (canOperate ? "RESUMED" : "PAUSED") +
                 $" (Workers: {assignedWorkerCount})",
                 this
+            );
+        }
+    }
+
+    // SCRUM-24: Subscribe to changes in workers'
+    // individual performance levels.
+    private void RefreshWorkerSubscriptions()
+    {
+        UnsubscribeFromWorkers();
+
+        if (workerAssignment == null || !isActiveAndEnabled)
+            return;
+
+        foreach (WorkerData worker in workerAssignment.AssignedWorkers)
+        {
+            if (worker == null)
+                continue;
+
+            if (observedWorkers.Add(worker))
+            {
+                worker.OnPerformanceLevelChanged +=
+                    HandleWorkerPerformanceChanged;
+            }
+        }
+    }
+
+    private void UnsubscribeFromWorkers()
+    {
+        foreach (WorkerData worker in observedWorkers)
+        {
+            if (worker != null)
+            {
+                worker.OnPerformanceLevelChanged -=
+                    HandleWorkerPerformanceChanged;
+            }
+        }
+
+        observedWorkers.Clear();
+    }
+
+    private void HandleWorkerPerformanceChanged(
+        WorkerData worker,
+        int newLevel)
+    {
+        if (workerAssignment == null ||
+            !workerAssignment.ContainsWorker(worker))
+        {
+            return;
+        }
+
+        RecalculateBuildingPerformance();
+    }
+
+    // SCRUM-24: Recalculate service speed based on
+    // assigned workers and their performance levels.
+    private void RecalculateBuildingPerformance()
+    {
+        float previousMultiplier = buildingPerformanceMultiplier;
+
+        if (!canOperate)
+        {
+            buildingPerformanceMultiplier = 0f;
+        }
+        else if (assignedWorkerCount == 0)
+        {
+            // Buildings that do not require assigned workers
+            // retain their previous standalone behavior.
+            buildingPerformanceMultiplier =
+                hasWorker ? 1f : noWorkerUtilization;
+        }
+        else
+        {
+            float performanceBonus = 0f;
+            int validWorkerCount = 0;
+
+            foreach (WorkerData worker in
+                     workerAssignment.AssignedWorkers)
+            {
+                if (worker == null)
+                    continue;
+
+                validWorkerCount++;
+
+                performanceBonus +=
+                    worker.PerformanceMultiplier - 1f;
+            }
+
+            if (validWorkerCount == 0)
+            {
+                buildingPerformanceMultiplier = 0f;
+            }
+            else
+            {
+                float workerCountBonus =
+                    Mathf.Max(0, validWorkerCount - 1) *
+                    additionalWorkerBonus;
+
+                buildingPerformanceMultiplier =
+                    1f + workerCountBonus + performanceBonus;
+            }
+        }
+
+        effectiveServiceTime =
+            buildingPerformanceMultiplier > 0f
+                ? serviceTime / buildingPerformanceMultiplier
+                : 0f;
+
+        if (!Mathf.Approximately(
+                previousMultiplier,
+                buildingPerformanceMultiplier))
+        {
+            Debug.Log(
+                $"{name}: Performance recalculated. " +
+                $"Workers: {assignedWorkerCount}, " +
+                $"Speed: x{buildingPerformanceMultiplier:0.00}, " +
+                $"Service time: {effectiveServiceTime:0.00}s",
+                this
+            );
+
+            OnPerformanceChanged?.Invoke(
+                this,
+                buildingPerformanceMultiplier
             );
         }
     }
@@ -215,7 +352,7 @@ public class ServiceBuilding : MonoBehaviour
             $"{name}: serves {serviceNeed.ToDisplayName()} " +
             $"({seats} seats, {qualityStars} stars, " +
             $"workers: {assignedWorkerCount}, " +
-            $"can operate: {canOperate})",
+            $"speed: x{buildingPerformanceMultiplier:0.00})",
             this
         );
     }
@@ -227,14 +364,12 @@ public class ServiceBuilding : MonoBehaviour
 
         GuestNeed need = needsManager.GetNeed(serviceNeed);
 
-        // Do not process services if required workers are missing.
         if (canOperate)
         {
             UpdateActiveServices(need);
             SeatWaitingUnits(need);
         }
 
-        // Keep queue information updated even while inactive.
         SyncServiceQueue(need);
 
         occupiedSeats = activeServices.Count;
@@ -253,14 +388,12 @@ public class ServiceBuilding : MonoBehaviour
             : 0f;
     }
 
-    // SCRUM-23: Determine the state by priority.
     private void UpdateCurrentServiceState()
     {
         ServiceLoadState newState;
 
         if (!canOperate)
         {
-            // Inactive takes priority over overloaded.
             newState = ServiceLoadState.Inactive;
         }
         else if (totalLoad > seats)
@@ -302,6 +435,7 @@ public class ServiceBuilding : MonoBehaviour
         for (int i = activeServices.Count - 1; i >= 0; i--)
         {
             ActiveService service = activeServices[i];
+
             service.RemainingTime -= progress;
 
             if (service.RemainingTime > 0f)
@@ -372,7 +506,6 @@ public class ServiceBuilding : MonoBehaviour
         totalLoad = 0;
         loadRatio = 0f;
 
-        // Preserve Inactive if the building has no workers.
         UpdateCurrentServiceState();
     }
 
@@ -382,12 +515,16 @@ public class ServiceBuilding : MonoBehaviour
         {
             needsManager.OnNeedsReset -= HandleNeedsReset;
         }
+
+        UnsubscribeFromWorkers();
     }
 
     [ContextMenu("Test / Toggle Worker")]
     private void TestToggleWorker()
     {
         hasWorker = !hasWorker;
+
+        RefreshWorkerRequirement();
 
         Debug.Log(
             $"{name}: legacy worker flag " +
