@@ -10,11 +10,17 @@ public class BuildingCapacityWarningUI : MonoBehaviour
     [SerializeField] private TMP_Text warningTitle;
     [SerializeField] private TMP_Text warningText;
 
+    [Header("Warning Settings")]
+    [SerializeField, Min(0.1f)]
+    private float refreshInterval = 0.25f;
+
     private readonly List<ServiceBuilding> buildings = new();
+
+    private float nextRefreshTime;
 
     private void Start()
     {
-        // Find all service buildings in the scene.
+        // Find service buildings in the scene.
         ServiceBuilding[] foundBuildings =
             FindObjectsByType<ServiceBuilding>(
                 FindObjectsSortMode.None
@@ -22,13 +28,27 @@ public class BuildingCapacityWarningUI : MonoBehaviour
 
         foreach (ServiceBuilding building in foundBuildings)
         {
+            if (building == null)
+                continue;
+
             buildings.Add(building);
 
-            // Listen for capacity state changes.
-            building.OnServiceStateChanged += HandleStateChanged;
+            building.OnServiceStateChanged +=
+                HandleStateChanged;
         }
 
-        // Hide the warning initially.
+        RefreshWarning();
+    }
+
+    private void Update()
+    {
+        // Update warnings periodically because waiting
+        // requests can change without a state change.
+        if (Time.time < nextRefreshTime)
+            return;
+
+        nextRefreshTime = Time.time + refreshInterval;
+
         RefreshWarning();
     }
 
@@ -36,33 +56,53 @@ public class BuildingCapacityWarningUI : MonoBehaviour
         ServiceBuilding building,
         ServiceLoadState state)
     {
-        Debug.Log(
-            $"{building.name} capacity state: {state}"
-        );
-
         RefreshWarning();
     }
 
     private void RefreshWarning()
     {
         if (warningPanel == null)
-        {
             return;
-        }
 
-        List<ServiceBuilding> overloadedBuildings = new();
+        List<string> inactiveMessages = new();
+        List<string> overloadedMessages = new();
 
         foreach (ServiceBuilding building in buildings)
         {
-            if (building != null &&
-                building.CurrentState == ServiceLoadState.Overloaded)
+            if (building == null)
+                continue;
+
+            // The building cannot serve guests because
+            // no required workers are assigned.
+            if (building.IsMissingRequiredWorkers &&
+                building.WaitingRequests > 0)
             {
-                overloadedBuildings.Add(building);
+                inactiveMessages.Add(
+                    $"{building.name}: No workers assigned! " +
+                    $"Waiting guests: {building.WaitingRequests}"
+                );
+            }
+            // The building is operating but does not
+            // have enough service capacity.
+            else if (building.CurrentState ==
+                     ServiceLoadState.Overloaded)
+            {
+                overloadedMessages.Add(
+                    $"{building.name}: " +
+                    $"Demand {building.TotalLoad} / " +
+                    $"Capacity {building.Seats}"
+                );
             }
         }
 
-        // No overloaded buildings: hide the panel.
-        if (overloadedBuildings.Count == 0)
+        bool hasInactiveWarnings =
+            inactiveMessages.Count > 0;
+
+        bool hasOverloadWarnings =
+            overloadedMessages.Count > 0;
+
+        // Hide the panel if there are no problems.
+        if (!hasInactiveWarnings && !hasOverloadWarnings)
         {
             warningPanel.SetActive(false);
             return;
@@ -72,34 +112,42 @@ public class BuildingCapacityWarningUI : MonoBehaviour
 
         if (warningTitle != null)
         {
-            warningTitle.text = "INSUFFICIENT CAPACITY!";
+            if (hasInactiveWarnings && hasOverloadWarnings)
+            {
+                warningTitle.text = "SERVICE WARNINGS!";
+            }
+            else if (hasInactiveWarnings)
+            {
+                warningTitle.text = "NO WORKERS ASSIGNED!";
+            }
+            else
+            {
+                warningTitle.text = "INSUFFICIENT CAPACITY!";
+            }
         }
 
         if (warningText != null)
         {
-            List<string> messages = new();
+            List<string> allMessages = new();
 
-            foreach (ServiceBuilding building in overloadedBuildings)
-            {
-                messages.Add(
-                    $"{building.name}: " +
-                    $"Demand {building.TotalLoad} / " +
-                    $"Capacity {building.Seats}"
-                );
-            }
+            allMessages.AddRange(inactiveMessages);
+            allMessages.AddRange(overloadedMessages);
 
-            warningText.text = string.Join("\n", messages);
+            warningText.text = string.Join(
+                "\n",
+                allMessages
+            );
         }
     }
 
     private void OnDestroy()
     {
-        // Unsubscribe from events.
         foreach (ServiceBuilding building in buildings)
         {
             if (building != null)
             {
-                building.OnServiceStateChanged -= HandleStateChanged;
+                building.OnServiceStateChanged -=
+                    HandleStateChanged;
             }
         }
 

@@ -9,10 +9,16 @@ public class BuildingWorkersUI : MonoBehaviour
     [Header("Building")]
     [SerializeField] private WorkerAssignment workerAssignment;
 
+    private ServiceBuilding serviceBuilding;
+
     [Header("UI References")]
     [SerializeField] private TMP_Text buildingNameText;
     [SerializeField] private TMP_Text workerCountText;
     [SerializeField] private Transform workersList;
+
+    [Header("Service Status UI")]
+    [SerializeField] private TMP_Text serviceStatusText;
+    [SerializeField] private TMP_Text serviceSpeedText;
 
     [Header("Prefab")]
     [SerializeField] private GameObject workerListItemPrefab;
@@ -27,19 +33,53 @@ public class BuildingWorkersUI : MonoBehaviour
 
     private void OnEnable()
     {
-        if (workerAssignment != null)
-        {
-            workerAssignment.OnWorkersChanged += HandleWorkersChanged;
-        }
-
+        SubscribeToBuildingEvents();
         RefreshUI();
     }
 
     private void OnDisable()
     {
+        UnsubscribeFromBuildingEvents();
+    }
+
+    private void SubscribeToBuildingEvents()
+    {
         if (workerAssignment != null)
         {
             workerAssignment.OnWorkersChanged -= HandleWorkersChanged;
+            workerAssignment.OnWorkersChanged += HandleWorkersChanged;
+        }
+
+        if (serviceBuilding != null)
+        {
+            serviceBuilding.OnServiceStateChanged -=
+                HandleServiceStateChanged;
+
+            serviceBuilding.OnServiceStateChanged +=
+                HandleServiceStateChanged;
+
+            serviceBuilding.OnPerformanceChanged -=
+                HandlePerformanceChanged;
+
+            serviceBuilding.OnPerformanceChanged +=
+                HandlePerformanceChanged;
+        }
+    }
+
+    private void UnsubscribeFromBuildingEvents()
+    {
+        if (workerAssignment != null)
+        {
+            workerAssignment.OnWorkersChanged -= HandleWorkersChanged;
+        }
+
+        if (serviceBuilding != null)
+        {
+            serviceBuilding.OnServiceStateChanged -=
+                HandleServiceStateChanged;
+
+            serviceBuilding.OnPerformanceChanged -=
+                HandlePerformanceChanged;
         }
     }
 
@@ -57,11 +97,31 @@ public class BuildingWorkersUI : MonoBehaviour
         RefreshUI();
     }
 
+    private void HandleServiceStateChanged(
+        ServiceBuilding building,
+        ServiceLoadState newState)
+    {
+        if (building != serviceBuilding)
+            return;
+
+        RefreshServiceInformation();
+    }
+
+    private void HandlePerformanceChanged(
+        ServiceBuilding building,
+        float newMultiplier)
+    {
+        if (building != serviceBuilding)
+            return;
+
+        RefreshServiceInformation();
+    }
+
     public void SetBuilding(WorkerAssignment newAssignment)
     {
-        if (workerAssignment != null && isActiveAndEnabled)
+        if (isActiveAndEnabled)
         {
-            workerAssignment.OnWorkersChanged -= HandleWorkersChanged;
+            UnsubscribeFromBuildingEvents();
         }
 
         if (workerAssignment != newAssignment)
@@ -71,9 +131,13 @@ public class BuildingWorkersUI : MonoBehaviour
 
         workerAssignment = newAssignment;
 
-        if (workerAssignment != null && isActiveAndEnabled)
+        serviceBuilding = workerAssignment != null
+            ? workerAssignment.GetComponent<ServiceBuilding>()
+            : null;
+
+        if (isActiveAndEnabled)
         {
-            workerAssignment.OnWorkersChanged += HandleWorkersChanged;
+            SubscribeToBuildingEvents();
         }
 
         RefreshUI();
@@ -103,9 +167,7 @@ public class BuildingWorkersUI : MonoBehaviour
             if (item == null)
                 continue;
 
-            item.SetSelected(
-                item.Worker == selectedWorker
-            );
+            item.SetSelected(item.Worker == selectedWorker);
         }
     }
 
@@ -131,8 +193,9 @@ public class BuildingWorkersUI : MonoBehaviour
                 buildingNameText.text = "No Building Selected";
 
             if (workerCountText != null)
-                workerCountText.text = "Workers: -";
+                workerCountText.text = "-";
 
+            RefreshServiceInformation();
             return;
         }
 
@@ -145,9 +208,10 @@ public class BuildingWorkersUI : MonoBehaviour
         if (workerCountText != null)
         {
             workerCountText.text =
-                $"Workers: {workerAssignment.AssignedWorkerCount} / " +
-                $"{workerAssignment.MaxWorkerSlots}";
+                $"{workerAssignment.AssignedWorkerCount}/{workerAssignment.MaxWorkerSlots}";
         }
+
+        RefreshServiceInformation();
 
         if (workersList == null || workerListItemPrefab == null)
             return;
@@ -181,5 +245,61 @@ public class BuildingWorkersUI : MonoBehaviour
         }
 
         UpdateSelectionVisuals();
+    }
+
+    // SCRUM-24: Update operational state and speed.
+    private void RefreshServiceInformation()
+    {
+        if (serviceBuilding == null)
+        {
+            if (serviceStatusText != null)
+                serviceStatusText.text = "Status: N/A";
+
+            if (serviceSpeedText != null)
+                serviceSpeedText.text = "Speed: N/A";
+
+            return;
+        }
+
+        if (serviceStatusText != null)
+        {
+            serviceStatusText.text =
+                $"Status: {serviceBuilding.CurrentState}";
+
+            switch (serviceBuilding.CurrentState)
+            {
+                case ServiceLoadState.Normal:
+                    serviceStatusText.color = new Color(
+                        0.27f, 0.73f, 0.46f
+                    );
+                    break;
+
+                case ServiceLoadState.Overloaded:
+                    serviceStatusText.color = new Color(
+                        0.91f, 0.35f, 0.33f
+                    );
+                    break;
+
+                case ServiceLoadState.Inactive:
+                    serviceStatusText.color = new Color(
+                        0.55f, 0.58f, 0.61f
+                    );
+                    break;
+            }
+        }
+
+        if (serviceSpeedText != null)
+        {
+            if (!serviceBuilding.CanOperate)
+            {
+                serviceSpeedText.text = "Speed: 0.00x";
+            }
+            else
+            {
+                serviceSpeedText.text =
+                    $"Speed: " +
+                    $"{serviceBuilding.BuildingPerformanceMultiplier:0.00}x";
+            }
+        }
     }
 }
