@@ -15,13 +15,71 @@ public class ResortRatingManager : MonoBehaviour
     [SerializeField, Range(0f, 100f)]
     private float currentRating = 50f;
 
+    [Header("Last Wave Performance")]
+    [SerializeField]
+    private int lastProcessedWave = -1;
+
+    [SerializeField, Range(0f, 100f)]
+    private float lastWavePerformance;
+
+    private ServicePerformanceTracker performanceTracker;
+
     public float CurrentRating => currentRating;
+    public float LastWavePerformance => lastWavePerformance;
 
     public event Action<float> OnRatingChanged;
 
     private void Awake()
     {
         currentRating = Mathf.Clamp(startingRating, 0f, 100f);
+    }
+
+    private void Start()
+    {
+        performanceTracker =
+            FindFirstObjectByType<ServicePerformanceTracker>();
+
+        if (performanceTracker == null)
+        {
+            Debug.LogError(
+                "ResortRatingManager: ServicePerformanceTracker not found!"
+            );
+
+            enabled = false;
+            return;
+        }
+
+        performanceTracker.OnWaveResultStored += HandleWaveResultStored;
+
+        Debug.Log(
+            "ResortRatingManager: Connected to ServicePerformanceTracker."
+        );
+    }
+
+    private void HandleWaveResultStored(
+        ServicePerformanceTracker.WaveResult result)
+    {
+        if (result == null || result.waveNumber <= lastProcessedWave)
+            return;
+
+        lastProcessedWave = result.waveNumber;
+
+        float performance = CalculateWavePerformance(result);
+
+        if (performance < 0f)
+        {
+            Debug.Log(
+                $"ResortRatingManager: Wave {result.waveNumber} has no requests."
+            );
+            return;
+        }
+
+        lastWavePerformance = performance;
+
+        Debug.Log(
+            $"ResortRatingManager: Wave {result.waveNumber} " +
+            $"performance collected: {lastWavePerformance:F1}%"
+        );
     }
 
     public float CalculateWavePerformance(
@@ -68,5 +126,13 @@ public class ResortRatingManager : MonoBehaviour
             0f,
             100f
         );
+    }
+
+    private void OnDestroy()
+    {
+        if (performanceTracker != null)
+        {
+            performanceTracker.OnWaveResultStored -= HandleWaveResultStored;
+        }
     }
 }
