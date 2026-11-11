@@ -94,12 +94,17 @@ public class ResortRatingManager : MonoBehaviour
         calculatedNewRating = CalculateNewRating(performance);
         ratingChange = calculatedNewRating - currentRating;
 
+        // SCRUM-201: Update the actual Resort Rating.
+        currentRating = calculatedNewRating;
+
+        // Notify other systems (HUD, rewards, etc.).
+        OnRatingChanged?.Invoke(currentRating);
+
         Debug.Log(
             $"ResortRatingManager: Wave {result.waveNumber} " +
             $"performance={lastWavePerformance:F1}%, " +
-            $"current rating={currentRating:F1}%, " +
-            $"calculated rating={calculatedNewRating:F1}%, " +
-            $"change={ratingChange:+0.0;-0.0;0.0} points"
+            $"rating change={ratingChange:+0.0;-0.0;0.0} points, " +
+            $"new resort rating={currentRating:F1}%"
         );
     }
 
