@@ -23,10 +23,17 @@ public class WaveRewardManager : MonoBehaviour
     [SerializeField, Range(0f, 100f)]
     private float lastWavePerformance;
 
+    [SerializeField, Range(0f, 100f)]
+    private float lastResortRating;
+
+    [SerializeField]
+    private float lastRatingMultiplier = 1f;
+
     [SerializeField]
     private int lastProcessedWave = -1;
 
     private ServicePerformanceTracker performanceTracker;
+    private ResortRatingManager ratingManager;
 
     public int CoinsPerSuccessfulService =>
         coinsPerSuccessfulService;
@@ -40,15 +47,24 @@ public class WaveRewardManager : MonoBehaviour
     public float LastWavePerformance =>
         lastWavePerformance;
 
+    public float LastResortRating =>
+        lastResortRating;
+
+    public float LastRatingMultiplier =>
+        lastRatingMultiplier;
+
     private void Start()
     {
         performanceTracker =
             FindFirstObjectByType<ServicePerformanceTracker>();
 
-        if (performanceTracker == null)
+        ratingManager =
+            FindFirstObjectByType<ResortRatingManager>();
+
+        if (performanceTracker == null || ratingManager == null)
         {
             Debug.LogError(
-                "WaveRewardManager: ServicePerformanceTracker not found!"
+                "WaveRewardManager: Required manager missing!"
             );
 
             enabled = false;
@@ -56,9 +72,10 @@ public class WaveRewardManager : MonoBehaviour
         }
 
         performanceTracker.OnWaveResultStored += HandleWaveResultStored;
+        ratingManager.OnRatingChanged += HandleRatingChanged;
 
         Debug.Log(
-            "WaveRewardManager: Connected to ServicePerformanceTracker."
+            "WaveRewardManager: Connected to performance and rating managers."
         );
     }
 
@@ -68,34 +85,81 @@ public class WaveRewardManager : MonoBehaviour
         if (result == null || result.waveNumber <= lastProcessedWave)
             return;
 
+        // When the wave has no requests, the Resort Rating
+        // does not change and no rating event is sent.
+        int totalRequests = 0;
+
+        if (result.serviceResults != null)
+        {
+            foreach (var service in result.serviceResults)
+            {
+                if (service != null)
+                    totalRequests += Mathf.Max(0, service.totalRequests);
+            }
+        }
+
+        if (totalRequests == 0)
+        {
+            ProcessWaveReward(result, ratingManager.CurrentRating);
+        }
+
+        // Otherwise wait for OnRatingChanged.
+        // It provides the updated Resort Rating.
+    }
+
+    private void HandleRatingChanged(float newRating)
+    {
+        if (performanceTracker == null)
+            return;
+
+        var result = performanceTracker.LastWaveResult;
+
+        if (result == null || result.waveNumber <= lastProcessedWave)
+            return;
+
+        ProcessWaveReward(result, newRating);
+    }
+
+    private void ProcessWaveReward(
+        ServicePerformanceTracker.WaveResult result,
+        float resortRating)
+    {
+        if (result == null || result.waveNumber <= lastProcessedWave)
+            return;
+
         lastProcessedWave = result.waveNumber;
 
         lastSuccessfulServices = 0;
         lastWavePerformance = 0f;
-        lastCalculatedReward = 0;
 
-        if (result.serviceResults == null)
-            return;
+        lastResortRating =
+            Mathf.Clamp(resortRating, 0f, 100f);
+
+        lastRatingMultiplier =
+            CalculateRatingMultiplier(lastResortRating);
 
         float weightedPerformance = 0f;
         int totalRequests = 0;
 
-        foreach (var service in result.serviceResults)
+        if (result.serviceResults != null)
         {
-            if (service == null)
-                continue;
+            foreach (var service in result.serviceResults)
+            {
+                if (service == null)
+                    continue;
 
-            lastSuccessfulServices +=
-                Mathf.Max(0, service.successfulRequests);
+                lastSuccessfulServices +=
+                    Mathf.Max(0, service.successfulRequests);
 
-            if (service.totalRequests <= 0)
-                continue;
+                if (service.totalRequests <= 0)
+                    continue;
 
-            weightedPerformance +=
-                Mathf.Clamp(service.performanceScore, 0f, 100f)
-                * service.totalRequests;
+                weightedPerformance +=
+                    Mathf.Clamp(service.performanceScore, 0f, 100f)
+                    * service.totalRequests;
 
-            totalRequests += service.totalRequests;
+                totalRequests += service.totalRequests;
+            }
         }
 
         if (totalRequests > 0)
@@ -107,17 +171,19 @@ public class WaveRewardManager : MonoBehaviour
             );
         }
 
-        // SCRUM-204: Calculate reward without Resort Rating multiplier.
-        lastCalculatedReward = CalculateBaseReward(
+        lastCalculatedReward = CalculateReward(
             lastSuccessfulServices,
-            lastWavePerformance
+            lastWavePerformance,
+            lastResortRating
         );
 
         Debug.Log(
             $"WaveRewardManager: Wave {result.waveNumber} " +
             $"successful services={lastSuccessfulServices}, " +
             $"performance={lastWavePerformance:F1}%, " +
-            $"base reward={lastCalculatedReward} coins"
+            $"resort rating={lastResortRating:F1}%, " +
+            $"multiplier={lastRatingMultiplier:F2}x, " +
+            $"final reward={lastCalculatedReward} coins"
         );
     }
 
@@ -177,6 +243,11 @@ public class WaveRewardManager : MonoBehaviour
         if (performanceTracker != null)
         {
             performanceTracker.OnWaveResultStored -= HandleWaveResultStored;
+        }
+
+        if (ratingManager != null)
+        {
+            ratingManager.OnRatingChanged -= HandleRatingChanged;
         }
     }
 }
