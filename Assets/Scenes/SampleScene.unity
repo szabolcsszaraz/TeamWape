@@ -1071,7 +1071,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 108bd5949273b89f11f9af84a0c62cea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ServiceBuilding
-  serviceNeed: 0
+  serviceNeed: 2
   seats: 3
   serviceTime: 12
   qualityStars: 2
@@ -9251,6 +9251,7 @@ GameObject:
   - component: {fileID: 2133705472}
   - component: {fileID: 2133705473}
   - component: {fileID: 2133705474}
+  - component: {fileID: 2133705475}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -9387,6 +9388,19 @@ MonoBehaviour:
   servedGuestsValueText: {fileID: 846483912}
   servedGuestsTracker: {fileID: 2133705473}
   dayStateManager: {fileID: 2133705467}
+--- !u!114 &2133705475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2133705466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e304e4c5e7a709f46aa9a075ca845f21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ServicePerformanceTracker
+  serviceUsage: []
 --- !u!1 &2144317311
 GameObject:
   m_ObjectHideFlags: 0
