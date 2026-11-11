@@ -34,11 +34,42 @@ public class ServicePerformanceTracker : MonoBehaviour
 
         [HideInInspector]
         public float totalWaitingScore;
+
+        public ServiceUsageData CreateCopy()
+        {
+            return new ServiceUsageData
+            {
+                serviceType = serviceType,
+                totalRequests = totalRequests,
+                successfulRequests = successfulRequests,
+                failedRequests = failedRequests,
+                pendingRequests = pendingRequests,
+                averageWaitTime = averageWaitTime,
+                waitingSatisfaction = waitingSatisfaction,
+                completionRate = completionRate,
+                performanceScore = performanceScore,
+                totalWaitTime = totalWaitTime,
+                totalWaitingScore = totalWaitingScore
+            };
+        }
+    }
+
+    [Serializable]
+    public class WaveResult
+    {
+        public int waveNumber;
+        public int dayNumber;
+
+        public List<ServiceUsageData> serviceResults = new();
     }
 
     [Header("Current Wave Statistics")]
     [SerializeField]
     private List<ServiceUsageData> serviceUsage = new();
+
+    [Header("Last Completed Wave")]
+    [SerializeField]
+    private WaveResult lastWaveResult;
 
     private readonly Dictionary<GuestNeedType, int>
         previousDemand = new();
@@ -55,6 +86,11 @@ public class ServicePerformanceTracker : MonoBehaviour
 
     public IReadOnlyList<ServiceUsageData> ServiceUsage
         => serviceUsage;
+
+    public WaveResult LastWaveResult
+        => lastWaveResult;
+
+    public event Action<WaveResult> OnWaveResultStored;
 
     private void Start()
     {
@@ -79,8 +115,7 @@ public class ServicePerformanceTracker : MonoBehaviour
         {
             Debug.LogWarning(
                 "ServicePerformanceTracker: " +
-                "GuestSatisfactionManager not found. " +
-                "Waiting satisfaction will not be calculated."
+                "GuestSatisfactionManager not found."
             );
         }
 
@@ -285,19 +320,49 @@ public class ServicePerformanceTracker : MonoBehaviour
             data.pendingRequests = 0;
 
             CalculatePerformance(data);
+        }
 
+        StoreWaveResult();
+    }
+
+    private void StoreWaveResult()
+    {
+        int waveNumber = waveManager.CurrentWave;
+
+        if (waveNumber <= 0)
+            return;
+
+        WaveResult result = new WaveResult
+        {
+            waveNumber = waveNumber,
+            dayNumber = dayStateManager.CurrentDay
+        };
+
+        foreach (ServiceUsageData data in serviceUsage)
+        {
+            result.serviceResults.Add(data.CreateCopy());
+        }
+
+        lastWaveResult = result;
+
+        Debug.Log(
+            $"ServicePerformanceTracker: " +
+            $"Wave {result.waveNumber} results stored."
+        );
+
+        foreach (ServiceUsageData data in result.serviceResults)
+        {
             Debug.Log(
-                $"{data.serviceType} Wave Result: " +
+                $"Wave {result.waveNumber} - {data.serviceType}: " +
                 $"Total={data.totalRequests}, " +
                 $"Successful={data.successfulRequests}, " +
                 $"Failed={data.failedRequests}, " +
                 $"AverageWait={data.averageWaitTime:0.0}s, " +
-                $"WaitingSatisfaction=" +
-                $"{data.waitingSatisfaction:0.0}%, " +
-                $"CompletionRate={data.completionRate:0.0}%, " +
-                $"PerformanceScore={data.performanceScore:0.0}%"
+                $"Performance={data.performanceScore:0.0}%"
             );
         }
+
+        OnWaveResultStored?.Invoke(result);
     }
 
     private ServiceUsageData GetServiceData(GuestNeedType type)
