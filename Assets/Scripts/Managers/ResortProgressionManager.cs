@@ -70,6 +70,10 @@ public class ResortProgressionManager : MonoBehaviour
         currentLevel = Mathf.Max(1, startingLevel);
         currentXP = Mathf.Max(0, startingXP);
         totalXP = currentXP;
+
+        // Normalize starting XP if it already exceeds
+        // the required XP for the starting level.
+        ApplyLevelUps();
     }
 
     private void Start()
@@ -120,11 +124,51 @@ public class ResortProgressionManager : MonoBehaviour
         lastCalculatedXP =
             CalculateWaveXP(lastSuccessfulServices);
 
+        // SCRUM-215: Credit earned XP.
+        AddXP(lastCalculatedXP);
+
         Debug.Log(
             $"ResortProgressionManager: Wave {result.waveNumber} " +
             $"successful services={lastSuccessfulServices}, " +
-            $"earned XP={lastCalculatedXP}"
+            $"earned XP={lastCalculatedXP}, " +
+            $"level={currentLevel}, " +
+            $"current XP={currentXP}/{XPRequiredForNextLevel}, " +
+            $"total XP={totalXP}"
         );
+    }
+
+    public void AddXP(int amount)
+    {
+        if (amount <= 0)
+            return;
+
+        // Protect against integer overflow.
+        long newCurrentXP = (long)currentXP + amount;
+        long newTotalXP = (long)totalXP + amount;
+
+        currentXP = (int)Math.Min(newCurrentXP, int.MaxValue);
+        totalXP = (int)Math.Min(newTotalXP, int.MaxValue);
+
+        ApplyLevelUps();
+
+        // Used later by the HUD.
+        OnProgressionChanged?.Invoke(currentLevel, currentXP);
+    }
+
+    private void ApplyLevelUps()
+    {
+        while (CanLevelUp())
+        {
+            currentXP -= XPRequiredForNextLevel;
+            currentLevel++;
+
+            Debug.Log(
+                $"ResortProgressionManager: LEVEL UP! " +
+                $"New Level = {currentLevel}"
+            );
+
+            OnLevelUp?.Invoke(currentLevel);
+        }
     }
 
     public int CalculateWaveXP(int successfulServices)
@@ -133,7 +177,8 @@ public class ResortProgressionManager : MonoBehaviour
 
         long earnedXP =
             (long)Mathf.Max(0, xpPerCompletedWave) +
-            (long)safeServices * Mathf.Max(0, xpPerSuccessfulService);
+            (long)safeServices *
+            Mathf.Max(0, xpPerSuccessfulService);
 
         return (int)Math.Min(earnedXP, int.MaxValue);
     }
@@ -160,7 +205,8 @@ public class ResortProgressionManager : MonoBehaviour
     {
         if (performanceTracker != null)
         {
-            performanceTracker.OnWaveResultStored -= HandleWaveResultStored;
+            performanceTracker.OnWaveResultStored -=
+                HandleWaveResultStored;
         }
     }
 }
