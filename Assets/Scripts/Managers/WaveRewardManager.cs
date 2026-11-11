@@ -1,4 +1,5 @@
 
+using System;
 using UnityEngine;
 
 public class WaveRewardManager : MonoBehaviour
@@ -53,6 +54,10 @@ public class WaveRewardManager : MonoBehaviour
     public float LastRatingMultiplier =>
         lastRatingMultiplier;
 
+    // SCRUM-206: Notify the economy when a reward is ready.
+    // Arguments: wave number, earned coins.
+    public event Action<int, int> OnRewardCalculated;
+
     private void Start()
     {
         performanceTracker =
@@ -82,11 +87,10 @@ public class WaveRewardManager : MonoBehaviour
     private void HandleWaveResultStored(
         ServicePerformanceTracker.WaveResult result)
     {
-        if (result == null || result.waveNumber <= lastProcessedWave)
+        if (result == null ||
+            result.waveNumber <= lastProcessedWave)
             return;
 
-        // When the wave has no requests, the Resort Rating
-        // does not change and no rating event is sent.
         int totalRequests = 0;
 
         if (result.serviceResults != null)
@@ -94,17 +98,22 @@ public class WaveRewardManager : MonoBehaviour
             foreach (var service in result.serviceResults)
             {
                 if (service != null)
-                    totalRequests += Mathf.Max(0, service.totalRequests);
+                    totalRequests += Mathf.Max(
+                        0, service.totalRequests
+                    );
             }
         }
 
+        // No requests means no Resort Rating update.
         if (totalRequests == 0)
         {
-            ProcessWaveReward(result, ratingManager.CurrentRating);
+            ProcessWaveReward(
+                result,
+                ratingManager.CurrentRating
+            );
         }
 
-        // Otherwise wait for OnRatingChanged.
-        // It provides the updated Resort Rating.
+        // Otherwise wait for the updated Resort Rating event.
     }
 
     private void HandleRatingChanged(float newRating)
@@ -114,7 +123,8 @@ public class WaveRewardManager : MonoBehaviour
 
         var result = performanceTracker.LastWaveResult;
 
-        if (result == null || result.waveNumber <= lastProcessedWave)
+        if (result == null ||
+            result.waveNumber <= lastProcessedWave)
             return;
 
         ProcessWaveReward(result, newRating);
@@ -124,7 +134,8 @@ public class WaveRewardManager : MonoBehaviour
         ServicePerformanceTracker.WaveResult result,
         float resortRating)
     {
-        if (result == null || result.waveNumber <= lastProcessedWave)
+        if (result == null ||
+            result.waveNumber <= lastProcessedWave)
             return;
 
         lastProcessedWave = result.waveNumber;
@@ -155,8 +166,9 @@ public class WaveRewardManager : MonoBehaviour
                     continue;
 
                 weightedPerformance +=
-                    Mathf.Clamp(service.performanceScore, 0f, 100f)
-                    * service.totalRequests;
+                    Mathf.Clamp(
+                        service.performanceScore, 0f, 100f
+                    ) * service.totalRequests;
 
                 totalRequests += service.totalRequests;
             }
@@ -184,6 +196,12 @@ public class WaveRewardManager : MonoBehaviour
             $"resort rating={lastResortRating:F1}%, " +
             $"multiplier={lastRatingMultiplier:F2}x, " +
             $"final reward={lastCalculatedReward} coins"
+        );
+
+        // SCRUM-206: Send reward to the Coins system.
+        OnRewardCalculated?.Invoke(
+            result.waveNumber,
+            lastCalculatedReward
         );
     }
 
@@ -242,12 +260,14 @@ public class WaveRewardManager : MonoBehaviour
     {
         if (performanceTracker != null)
         {
-            performanceTracker.OnWaveResultStored -= HandleWaveResultStored;
+            performanceTracker.OnWaveResultStored -=
+                HandleWaveResultStored;
         }
 
         if (ratingManager != null)
         {
-            ratingManager.OnRatingChanged -= HandleRatingChanged;
+            ratingManager.OnRatingChanged -=
+                HandleRatingChanged;
         }
     }
 }

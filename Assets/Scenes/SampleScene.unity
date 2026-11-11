@@ -5409,7 +5409,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1310741215
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9405,6 +9405,8 @@ GameObject:
   - component: {fileID: 2133705474}
   - component: {fileID: 2133705475}
   - component: {fileID: 2133705476}
+  - component: {fileID: 2133705477}
+  - component: {fileID: 2133705478}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -9579,6 +9581,44 @@ MonoBehaviour:
   lastWavePerformance: 0
   calculatedNewRating: 50
   ratingChange: 0
+--- !u!114 &2133705477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2133705466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba562267faff8264dadc1451c11c6984, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WaveRewardManager
+  coinsPerSuccessfulService: 10
+  minimumRatingMultiplier: 0.5
+  maximumRatingMultiplier: 1.5
+  lastCalculatedReward: 0
+  lastSuccessfulServices: 0
+  lastWavePerformance: 0
+  lastResortRating: 0
+  lastRatingMultiplier: 1
+  lastProcessedWave: -1
+--- !u!114 &2133705478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2133705466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efc1a91ac54268f42ae23331859eb548, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCoinsManager
+  startingCoins: 2500
+  currentCoins: 0
+  coinsText: {fileID: 1649682087}
+  lastRewardedWave: -1
+  lastEarnedCoins: 0
 --- !u!1 &2144317311
 GameObject:
   m_ObjectHideFlags: 0
