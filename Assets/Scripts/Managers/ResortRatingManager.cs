@@ -22,16 +22,26 @@ public class ResortRatingManager : MonoBehaviour
     [SerializeField, Range(0f, 100f)]
     private float lastWavePerformance;
 
+    [Header("Calculated Rating Change")]
+    [SerializeField, Range(0f, 100f)]
+    private float calculatedNewRating = 50f;
+
+    [SerializeField]
+    private float ratingChange;
+
     private ServicePerformanceTracker performanceTracker;
 
     public float CurrentRating => currentRating;
     public float LastWavePerformance => lastWavePerformance;
+    public float CalculatedNewRating => calculatedNewRating;
+    public float RatingChange => ratingChange;
 
     public event Action<float> OnRatingChanged;
 
     private void Awake()
     {
         currentRating = Mathf.Clamp(startingRating, 0f, 100f);
+        calculatedNewRating = currentRating;
     }
 
     private void Start()
@@ -68,17 +78,28 @@ public class ResortRatingManager : MonoBehaviour
 
         if (performance < 0f)
         {
+            lastWavePerformance = 0f;
+            calculatedNewRating = currentRating;
+            ratingChange = 0f;
+
             Debug.Log(
-                $"ResortRatingManager: Wave {result.waveNumber} has no requests."
+                $"ResortRatingManager: Wave {result.waveNumber} " +
+                "has no requests. Rating unchanged."
             );
             return;
         }
 
         lastWavePerformance = performance;
 
+        calculatedNewRating = CalculateNewRating(performance);
+        ratingChange = calculatedNewRating - currentRating;
+
         Debug.Log(
             $"ResortRatingManager: Wave {result.waveNumber} " +
-            $"performance collected: {lastWavePerformance:F1}%"
+            $"performance={lastWavePerformance:F1}%, " +
+            $"current rating={currentRating:F1}%, " +
+            $"calculated rating={calculatedNewRating:F1}%, " +
+            $"change={ratingChange:+0.0;-0.0;0.0} points"
         );
     }
 
