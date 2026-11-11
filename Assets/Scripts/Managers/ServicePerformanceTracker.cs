@@ -18,8 +18,16 @@ public class ServicePerformanceTracker : MonoBehaviour
 
         [Header("Waiting Statistics")]
         public float averageWaitTime;
+
         [Range(0f, 100f)]
         public float waitingSatisfaction;
+
+        [Header("Service Performance")]
+        [Range(0f, 100f)]
+        public float completionRate;
+
+        [Range(0f, 100f)]
+        public float performanceScore;
 
         [HideInInspector]
         public float totalWaitTime;
@@ -136,6 +144,9 @@ public class ServicePerformanceTracker : MonoBehaviour
             data.averageWaitTime = 0f;
             data.waitingSatisfaction = 0f;
 
+            data.completionRate = 0f;
+            data.performanceScore = 0f;
+
             data.totalWaitTime = 0f;
             data.totalWaitingScore = 0f;
 
@@ -149,7 +160,6 @@ public class ServicePerformanceTracker : MonoBehaviour
 
     private void HandleNeedsReset()
     {
-        // Synchronize with GuestNeedsManager's wave reset.
         foreach (ServiceUsageData data in serviceUsage)
         {
             GuestNeed need =
@@ -183,7 +193,9 @@ public class ServicePerformanceTracker : MonoBehaviour
             return;
 
         data.totalRequests += newRequests;
+
         UpdatePendingRequests(data);
+        CalculatePerformance(data);
     }
 
     private void HandleUnitServed(
@@ -201,14 +213,13 @@ public class ServicePerformanceTracker : MonoBehaviour
 
         data.successfulRequests++;
 
-        // Waiting time until the guest received a service seat.
         float safeWaitTime = Mathf.Max(0f, waitTime);
+
         data.totalWaitTime += safeWaitTime;
 
         data.averageWaitTime =
             data.totalWaitTime / data.successfulRequests;
 
-        // Reuse the game's existing waiting score formula.
         if (satisfactionManager != null)
         {
             float waitScore =
@@ -224,6 +235,7 @@ public class ServicePerformanceTracker : MonoBehaviour
         }
 
         UpdatePendingRequests(data);
+        CalculatePerformance(data);
     }
 
     private void UpdatePendingRequests(ServiceUsageData data)
@@ -231,6 +243,30 @@ public class ServicePerformanceTracker : MonoBehaviour
         data.pendingRequests = Mathf.Max(
             0,
             data.totalRequests - data.successfulRequests
+        );
+    }
+
+    private void CalculatePerformance(ServiceUsageData data)
+    {
+        if (data.totalRequests <= 0)
+        {
+            data.completionRate = 0f;
+            data.performanceScore = 0f;
+            return;
+        }
+
+        data.completionRate = Mathf.Clamp(
+            (float)data.successfulRequests /
+            data.totalRequests * 100f,
+            0f,
+            100f
+        );
+
+        data.performanceScore = Mathf.Clamp(
+            data.completionRate *
+            data.waitingSatisfaction / 100f,
+            0f,
+            100f
         );
     }
 
@@ -248,6 +284,8 @@ public class ServicePerformanceTracker : MonoBehaviour
             data.failedRequests = data.pendingRequests;
             data.pendingRequests = 0;
 
+            CalculatePerformance(data);
+
             Debug.Log(
                 $"{data.serviceType} Wave Result: " +
                 $"Total={data.totalRequests}, " +
@@ -255,7 +293,9 @@ public class ServicePerformanceTracker : MonoBehaviour
                 $"Failed={data.failedRequests}, " +
                 $"AverageWait={data.averageWaitTime:0.0}s, " +
                 $"WaitingSatisfaction=" +
-                $"{data.waitingSatisfaction:0.0}%"
+                $"{data.waitingSatisfaction:0.0}%, " +
+                $"CompletionRate={data.completionRate:0.0}%, " +
+                $"PerformanceScore={data.performanceScore:0.0}%"
             );
         }
     }
