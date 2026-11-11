@@ -2468,7 +2468,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -5409,7 +5409,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1310741215
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5446,7 +5446,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.09019608, g: 0.14901961, b: 0.21568628, a: 0.392}
+  m_Color: {r: 0.09019608, g: 0.14901961, b: 0.21568628, a: 0.941}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -7649,6 +7649,7 @@ GameObject:
   - component: {fileID: 1751368138}
   - component: {fileID: 1751368137}
   - component: {fileID: 1751368139}
+  - component: {fileID: 1751368140}
   m_Layer: 5
   m_Name: ResortRatingPanel
   m_TagString: Untagged
@@ -7737,6 +7738,19 @@ MonoBehaviour:
   m_LayoutPriority: 1
   m_MaxWidth: -1
   m_MaxHeight: -1
+--- !u!114 &1751368140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1751368135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 391cc3541edcc6e4d86dd1abf44be443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResortRatingUI
+  ratingText: {fileID: 533246755}
 --- !u!4 &1760912420 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6721412949723261072, guid: 3d6ee73ce0cc2f34fb0943aee27b056a, type: 3}
@@ -9390,6 +9404,7 @@ GameObject:
   - component: {fileID: 2133705473}
   - component: {fileID: 2133705474}
   - component: {fileID: 2133705475}
+  - component: {fileID: 2133705476}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -9545,6 +9560,25 @@ MonoBehaviour:
     waveNumber: 0
     dayNumber: 0
     serviceResults: []
+--- !u!114 &2133705476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2133705466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27c498f29b81d1843acdcb8ba9c3919e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResortRatingManager
+  startingRating: 50
+  waveWeight: 0.3
+  currentRating: 50
+  lastProcessedWave: -1
+  lastWavePerformance: 0
+  calculatedNewRating: 50
+  ratingChange: 0
 --- !u!1 &2144317311
 GameObject:
   m_ObjectHideFlags: 0
