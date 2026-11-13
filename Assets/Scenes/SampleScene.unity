@@ -712,6 +712,7 @@ GameObject:
   - component: {fileID: 142534903}
   - component: {fileID: 142534902}
   - component: {fileID: 142534906}
+  - component: {fileID: 142534907}
   m_Layer: 5
   m_Name: GameCanvas
   m_TagString: Untagged
@@ -827,6 +828,28 @@ MonoBehaviour:
   titleText: {fileID: 14102023}
   descriptionText: {fileID: 2144317313}
   displayDuration: 4
+--- !u!114 &142534907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 142534901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d33c8b6834a2e3f44a59cf0c37c2c93c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WaveRewardsUI
+  performanceTracker: {fileID: 2133705475}
+  rewardManager: {fileID: 2133705477}
+  progressionManager: {fileID: 2133705479}
+  ratingManager: {fileID: 2133705476}
+  rewardsPanel: {fileID: 2064802460}
+  rewardsTitleText: {fileID: 1160637655}
+  coinsRewardText: {fileID: 1917313633}
+  xpRewardText: {fileID: 919353427}
+  ratingRewardText: {fileID: 1224658941}
+  levelRewardText: {fileID: 519382305}
 --- !u!1 &204486423
 GameObject:
   m_ObjectHideFlags: 0
@@ -6370,7 +6393,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1310741215
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10381,7 +10404,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2064802461
 RectTransform:
   m_ObjectHideFlags: 0
