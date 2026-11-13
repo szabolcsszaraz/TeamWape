@@ -14,6 +14,10 @@ public class WaveRewardManager : MonoBehaviour
     [SerializeField, Range(0f, 2f)]
     private float maximumRatingMultiplier = 1.5f;
 
+    [Header("Minimum Reward Rules")]
+    [SerializeField, Min(0)]
+    private int minimumWaveReward = 10;
+
     [Header("Last Wave Reward")]
     [SerializeField, Min(0)]
     private int lastCalculatedReward;
@@ -54,8 +58,6 @@ public class WaveRewardManager : MonoBehaviour
     public float LastRatingMultiplier =>
         lastRatingMultiplier;
 
-    // SCRUM-206: Notify the economy when a reward is ready.
-    // Arguments: wave number, earned coins.
     public event Action<int, int> OnRewardCalculated;
 
     private void Start()
@@ -87,8 +89,7 @@ public class WaveRewardManager : MonoBehaviour
     private void HandleWaveResultStored(
         ServicePerformanceTracker.WaveResult result)
     {
-        if (result == null ||
-            result.waveNumber <= lastProcessedWave)
+        if (result == null || result.waveNumber <= lastProcessedWave)
             return;
 
         int totalRequests = 0;
@@ -98,19 +99,14 @@ public class WaveRewardManager : MonoBehaviour
             foreach (var service in result.serviceResults)
             {
                 if (service != null)
-                    totalRequests += Mathf.Max(
-                        0, service.totalRequests
-                    );
+                    totalRequests += Mathf.Max(0, service.totalRequests);
             }
         }
 
-        // No requests means no Resort Rating update.
+        // No requests: rating does not change.
         if (totalRequests == 0)
         {
-            ProcessWaveReward(
-                result,
-                ratingManager.CurrentRating
-            );
+            ProcessWaveReward(result, ratingManager.CurrentRating);
         }
 
         // Otherwise wait for the updated Resort Rating event.
@@ -123,8 +119,7 @@ public class WaveRewardManager : MonoBehaviour
 
         var result = performanceTracker.LastWaveResult;
 
-        if (result == null ||
-            result.waveNumber <= lastProcessedWave)
+        if (result == null || result.waveNumber <= lastProcessedWave)
             return;
 
         ProcessWaveReward(result, newRating);
@@ -134,8 +129,7 @@ public class WaveRewardManager : MonoBehaviour
         ServicePerformanceTracker.WaveResult result,
         float resortRating)
     {
-        if (result == null ||
-            result.waveNumber <= lastProcessedWave)
+        if (result == null || result.waveNumber <= lastProcessedWave)
             return;
 
         lastProcessedWave = result.waveNumber;
@@ -166,9 +160,8 @@ public class WaveRewardManager : MonoBehaviour
                     continue;
 
                 weightedPerformance +=
-                    Mathf.Clamp(
-                        service.performanceScore, 0f, 100f
-                    ) * service.totalRequests;
+                    Mathf.Clamp(service.performanceScore, 0f, 100f)
+                    * service.totalRequests;
 
                 totalRequests += service.totalRequests;
             }
@@ -183,10 +176,17 @@ public class WaveRewardManager : MonoBehaviour
             );
         }
 
-        lastCalculatedReward = CalculateReward(
+        // Normal reward calculation.
+        int normalReward = CalculateReward(
             lastSuccessfulServices,
             lastWavePerformance,
             lastResortRating
+        );
+
+        // SCRUM-220: Apply minimum reward before crediting Coins.
+        lastCalculatedReward = ApplyMinimumReward(
+            normalReward,
+            totalRequests
         );
 
         Debug.Log(
@@ -195,10 +195,10 @@ public class WaveRewardManager : MonoBehaviour
             $"performance={lastWavePerformance:F1}%, " +
             $"resort rating={lastResortRating:F1}%, " +
             $"multiplier={lastRatingMultiplier:F2}x, " +
+            $"calculated reward={normalReward}, " +
             $"final reward={lastCalculatedReward} coins"
         );
 
-        // SCRUM-206: Send reward to the Coins system.
         OnRewardCalculated?.Invoke(
             result.waveNumber,
             lastCalculatedReward
@@ -256,18 +256,39 @@ public class WaveRewardManager : MonoBehaviour
         return Mathf.Max(0, Mathf.RoundToInt(reward));
     }
 
+    public bool IsBelowMinimumReward(
+        int calculatedReward,
+        int totalRequests)
+    {
+        if (totalRequests <= 0)
+            return false;
+
+        return calculatedReward < minimumWaveReward;
+    }
+
+    public int ApplyMinimumReward(
+        int calculatedReward,
+        int totalRequests)
+    {
+        if (totalRequests <= 0)
+            return 0;
+
+        return Mathf.Max(
+            Mathf.Max(0, calculatedReward),
+            minimumWaveReward
+        );
+    }
+
     private void OnDestroy()
     {
         if (performanceTracker != null)
         {
-            performanceTracker.OnWaveResultStored -=
-                HandleWaveResultStored;
+            performanceTracker.OnWaveResultStored -= HandleWaveResultStored;
         }
 
         if (ratingManager != null)
         {
-            ratingManager.OnRatingChanged -=
-                HandleRatingChanged;
+            ratingManager.OnRatingChanged -= HandleRatingChanged;
         }
     }
 }

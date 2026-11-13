@@ -8,6 +8,10 @@ public class ResortRatingManager : MonoBehaviour
     [SerializeField, Range(0f, 100f)]
     private float startingRating = 50f;
 
+    [Header("Minimum Rating Rules")]
+    [SerializeField, Range(0f, 100f)]
+    private float minimumResortRating = 10f;
+
     [SerializeField, Range(0f, 1f)]
     private float waveWeight = 0.3f;
 
@@ -40,7 +44,12 @@ public class ResortRatingManager : MonoBehaviour
 
     private void Awake()
     {
-        currentRating = Mathf.Clamp(startingRating, 0f, 100f);
+        currentRating = Mathf.Clamp(
+            startingRating,
+            minimumResortRating,
+            100f
+        );
+
         calculatedNewRating = currentRating;
     }
 
@@ -86,25 +95,32 @@ public class ResortRatingManager : MonoBehaviour
                 $"ResortRatingManager: Wave {result.waveNumber} " +
                 "has no requests. Rating unchanged."
             );
+
             return;
         }
 
         lastWavePerformance = performance;
 
-        calculatedNewRating = CalculateNewRating(performance);
-        ratingChange = calculatedNewRating - currentRating;
+        float previousRating = currentRating;
 
-        // SCRUM-201: Update the actual Resort Rating.
+        // Calculate the normal rating.
+        float normalRating = CalculateNewRating(performance);
+
+        // SCRUM-220: Apply minimum rating if required.
+        calculatedNewRating = ApplyMinimumRating(normalRating);
+
+        ratingChange = calculatedNewRating - previousRating;
+
         currentRating = calculatedNewRating;
 
-        // Notify other systems (HUD, rewards, etc.).
         OnRatingChanged?.Invoke(currentRating);
 
         Debug.Log(
             $"ResortRatingManager: Wave {result.waveNumber} " +
             $"performance={lastWavePerformance:F1}%, " +
-            $"rating change={ratingChange:+0.0;-0.0;0.0} points, " +
-            $"new resort rating={currentRating:F1}%"
+            $"calculated rating={normalRating:F1}%, " +
+            $"final rating={currentRating:F1}%, " +
+            $"rating change={ratingChange:+0.0;-0.0;0.0} points"
         );
     }
 
@@ -150,6 +166,20 @@ public class ResortRatingManager : MonoBehaviour
             currentRating * (1f - weight)
             + Mathf.Clamp(wavePerformance, 0f, 100f) * weight,
             0f,
+            100f
+        );
+    }
+
+    public bool IsBelowMinimumRating(float calculatedRating)
+    {
+        return calculatedRating < minimumResortRating;
+    }
+
+    public float ApplyMinimumRating(float calculatedRating)
+    {
+        return Mathf.Clamp(
+            calculatedRating,
+            minimumResortRating,
             100f
         );
     }
