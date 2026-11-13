@@ -18,6 +18,9 @@ public class WaveRewardsUI : MonoBehaviour
     [SerializeField]
     private ResortRatingManager ratingManager;
 
+    [SerializeField]
+    private DayStateManager dayStateManager;
+
     [Header("Rewards Panel")]
     [SerializeField]
     private GameObject rewardsPanel;
@@ -61,14 +64,19 @@ public class WaveRewardsUI : MonoBehaviour
             ratingManager =
                 FindFirstObjectByType<ResortRatingManager>();
 
+        if (dayStateManager == null)
+            dayStateManager = DayStateManager.Instance;
+
         if (performanceTracker == null ||
             rewardManager == null ||
             progressionManager == null ||
-            ratingManager == null)
+            ratingManager == null ||
+            dayStateManager == null)
         {
             Debug.LogError(
                 "WaveRewardsUI: One or more managers are missing!"
             );
+
             enabled = false;
             return;
         }
@@ -83,11 +91,16 @@ public class WaveRewardsUI : MonoBehaviour
             Debug.LogError(
                 "WaveRewardsUI: Missing UI references!"
             );
+
             enabled = false;
             return;
         }
 
-        performanceTracker.OnWaveResultStored += HandleWaveResultStored;
+        performanceTracker.OnWaveResultStored +=
+            HandleWaveResultStored;
+
+        dayStateManager.OnPhaseChanged +=
+            HandlePhaseChanged;
 
         rewardsPanel.SetActive(false);
 
@@ -108,8 +121,12 @@ public class WaveRewardsUI : MonoBehaviour
 
     private IEnumerator CollectRewards(int waveNumber)
     {
-        // Allow all wave-end event handlers to finish.
+        // Wait for all reward calculations to finish.
         yield return new WaitForEndOfFrame();
+
+        // Do not show results if the next day has started.
+        if (dayStateManager.CurrentPhase == DayPhase.Active)
+            yield break;
 
         lastRewardsData = new WaveRewardsData(
             waveNumber,
@@ -120,6 +137,9 @@ public class WaveRewardsUI : MonoBehaviour
         );
 
         UpdateRewardsText(lastRewardsData);
+
+        // Show alongside Daily Summary.
+        rewardsPanel.SetActive(true);
 
         Debug.Log(
             $"WaveRewardsUI: Wave {waveNumber} rewards ready. " +
@@ -151,12 +171,26 @@ public class WaveRewardsUI : MonoBehaviour
             $"Resort Level: {data.resortLevel}";
     }
 
+    private void HandlePhaseChanged(DayPhase phase)
+    {
+        if (phase == DayPhase.Active)
+        {
+            rewardsPanel.SetActive(false);
+        }
+    }
+
     private void OnDestroy()
     {
         if (performanceTracker != null)
         {
             performanceTracker.OnWaveResultStored -=
                 HandleWaveResultStored;
+        }
+
+        if (dayStateManager != null)
+        {
+            dayStateManager.OnPhaseChanged -=
+                HandlePhaseChanged;
         }
     }
 }
