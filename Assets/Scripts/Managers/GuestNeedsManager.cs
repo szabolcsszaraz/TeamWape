@@ -135,6 +135,60 @@ public class GuestNeedsManager : MonoBehaviour
         Debug.Log($"{type.ToDisplayName()} need unlocked!");
     }
 
+    // Tourist spawned with this need: counts as demand, but the unit
+    // only joins the building queue when the tourist arrives.
+    public void ReserveDemand(GuestNeedType type, int units)
+    {
+        if (!IsUnlocked(type))
+        {
+            Debug.LogWarning(
+                $"Cannot add demand for locked need: {type.ToDisplayName()}"
+            );
+            return;
+        }
+
+        GuestNeed need = GetNeed(type);
+        need.ReserveDemand(units);
+
+        OnDemandAdded?.Invoke(need);
+    }
+
+    // Tourist arrived at a building: joins its queue. The ticket
+    // tells the tourist when it has been served.
+    public GuestServiceTicket RequestService(GuestNeedType type)
+    {
+        if (!IsUnlocked(type))
+        {
+            return null;
+        }
+
+        GuestNeed need = GetNeed(type);
+        int demandBefore = need.TotalDemand;
+
+        GuestServiceTicket ticket = need.ArriveForService(Time.time);
+
+        if (need.TotalDemand != demandBefore)
+        {
+            OnDemandAdded?.Invoke(need);
+        }
+
+        return ticket;
+    }
+
+    // Tourist will never get this need served (no reachable
+    // building, tourist removed).
+    public void AbandonDemand(GuestNeedType type)
+    {
+        GetNeed(type)?.AbandonReserved();
+    }
+
+    // Waiting tourist gave up.
+    public bool CancelService(GuestServiceTicket ticket)
+    {
+        return ticket != null && GetNeed(ticket.NeedType).CancelWaiting(ticket);
+    }
+
+    // Demand that is already waiting at the building (test helper).
     public void AddDemand(GuestNeedType type, int units)
     {
         if (!IsUnlocked(type))

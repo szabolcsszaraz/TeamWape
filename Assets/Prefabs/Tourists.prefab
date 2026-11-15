@@ -132,7 +132,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TouristNeeds
   minNeeds: 1
   maxNeeds: 3
-  alwaysNeedsRoom: 1
+  alwaysNeedsRoom: 0
   needs: 
 --- !u!195 &-1393154035796323755
 NavMeshAgent:
@@ -171,6 +171,9 @@ MonoBehaviour:
   walkSpeed: 2.5
   arriveDistance: 0.4
   navMeshSearchRadius: 2
+  stuckTimeout: 4
+  stuckSpeedThreshold: 0.05
+  crowdArriveDistance: 1.5
   state: 0
   currentDestination: {x: 0, y: 0, z: 0}
   testTarget: {fileID: 0}
@@ -186,6 +189,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe4da150456d6640bab894874395e76d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TouristServiceRoute
+  maxWaitForSeat: 60
+  leaveAtEnd: 1
   remainingNeeds: 
   currentTarget: {fileID: 0}
+  isInsideBuilding: 0
+  isLeaving: 0
   routeCompleted: 0

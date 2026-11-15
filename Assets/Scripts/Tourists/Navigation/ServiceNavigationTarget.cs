@@ -19,9 +19,15 @@ public class ServiceNavigationTarget : MonoBehaviour
     [Tooltip("Max distance to search for the NavMesh around the point.")]
     [SerializeField, Min(0.5f)] private float navMeshSearchRadius = 6f;
 
+    [Header("Debug")]
+    [Tooltip("Tourists currently hidden inside this building.")]
+    [SerializeField] private List<TouristServiceRoute> visitorsInside = new();
+
     private ServiceBuilding building;
 
     public ServiceBuilding Building => building;
+    public IReadOnlyList<TouristServiceRoute> VisitorsInside => visitorsInside;
+    public int VisitorCount => visitorsInside.Count;
     public GuestNeedType ServiceNeed => building.ServiceNeed;
 
     // Building to look at when standing at the interaction point.
@@ -64,6 +70,41 @@ public class ServiceNavigationTarget : MonoBehaviour
     private void OnDisable()
     {
         activeTargets.Remove(this);
+    }
+
+    public void AddVisitor(TouristServiceRoute visitor)
+    {
+        if (visitor != null && !visitorsInside.Contains(visitor))
+        {
+            visitorsInside.Add(visitor);
+        }
+    }
+
+    public void RemoveVisitor(TouristServiceRoute visitor)
+    {
+        visitorsInside.Remove(visitor);
+    }
+
+    // All targets serving the need, nearest first.
+    public static List<ServiceNavigationTarget> GetTargetsFor(
+        GuestNeedType need,
+        Vector3 fromPosition)
+    {
+        List<ServiceNavigationTarget> targets = new();
+
+        foreach (ServiceNavigationTarget target in activeTargets)
+        {
+            if (target != null && target.ServiceNeed == need)
+            {
+                targets.Add(target);
+            }
+        }
+
+        targets.Sort((a, b) =>
+            (a.InteractionPosition - fromPosition).sqrMagnitude.CompareTo(
+                (b.InteractionPosition - fromPosition).sqrMagnitude));
+
+        return targets;
     }
 
     public static ServiceNavigationTarget FindNearest(

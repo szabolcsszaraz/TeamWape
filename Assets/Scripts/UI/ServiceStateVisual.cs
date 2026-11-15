@@ -40,6 +40,11 @@ public class ServiceStateVisual : MonoBehaviour
     [SerializeField] private Color recoveringColor =
         new Color(0.29f, 0.62f, 0.87f);
 
+    [Header("Rendering")]
+    [Tooltip("Draw the icon after transparent objects such as the " +
+             "water, so the water shader cannot hide it.")]
+    [SerializeField] private int canvasSortingOrder = 100;
+
     [Header("Current State (Debug)")]
     [SerializeField]
     private VisualState currentState = VisualState.Normal;
@@ -59,7 +64,32 @@ public class ServiceStateVisual : MonoBehaviour
             stateIcon = GetComponentInChildren<Image>(true);
         }
 
+        ApplyCanvasSorting();
         RefreshVisual();
+    }
+
+    // Transparent objects (water, UI) are sorted by Order in Layer
+    // before distance, so a higher order keeps the icon on top.
+    private void ApplyCanvasSorting()
+    {
+        Canvas canvas = GetComponentInChildren<Canvas>(true);
+
+        if (canvas == null)
+        {
+            canvas = GetComponentInParent<Canvas>();
+        }
+
+        if (canvas == null)
+        {
+            return;
+        }
+
+        if (!canvas.isRootCanvas)
+        {
+            canvas.overrideSorting = true;
+        }
+
+        canvas.sortingOrder = canvasSortingOrder;
     }
 
     private void OnEnable()

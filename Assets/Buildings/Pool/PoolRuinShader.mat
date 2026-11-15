@@ -33,8 +33,8 @@ Material:
     - _GroundHeight: 0.3
     - _GroundMoss: 0
     - _GroundY: 0
-    - _MossAmount: 0.45
-    - _MossLight: 0.35
+    - _MossAmount: 0.005
+    - _MossLight: 0.289
     - _MossScale: 1.5
     - _MossWobble: 0.35
     - _OutlineUseAlbedo: 0.6

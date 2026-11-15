@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: BarOutline
-  m_Shader: {fileID: 4800000, guid: 2b97057929b635044bdc1dfb8649385f, type: 3}
+  m_Name: BarOutlineShader
+  m_Shader: {fileID: 4800000, guid: 0d06eaaf79f42de4c952b3e1f882ebe3, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -24,21 +24,21 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 28c6019b2eb3c0c4b8b8ef90e906eee2, type: 3}
+        m_Texture: {fileID: 2800000, guid: f4c723d41fa21f34ab7fb87016734a17, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AmbientStrength: 0.435
+    - _AmbientStrength: 0.35
     - _OutlineUseAlbedo: 0.6
-    - _OutlineWidth: 2
+    - _OutlineWidth: 5
     - _RimPower: 4
     - _Saturation: 1.2
-    - _ShadeSoft: 0.577
-    - _ShadeStep: 0.282
+    - _ShadeSoft: 0.15
+    - _ShadeStep: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _OutlineColor: {r: 0.21999997, g: 0.14999998, b: 0.11999995, a: 1}
+    - _OutlineColor: {r: 0.16037738, g: 0.06723747, b: 0.031016378, a: 1}
     - _RimColor: {r: 1, g: 0.95, b: 0.85, a: 0.25}
     - _ShadowColor: {r: 0.62, g: 0.6, b: 0.85, a: 1}
   m_BuildTextureStacks: []

@@ -149,6 +149,16 @@ public class BuildingSelectionUI : MonoBehaviour
             maxRayDistance,
             buildingRaycastMask))
         {
+            // Ruined buildings open the panel in repair mode.
+            BuildingRepair repair =
+                hit.collider.GetComponentInParent<BuildingRepair>();
+
+            if (repair != null && !repair.IsRepaired)
+            {
+                ShowRepairPanel(repair);
+                return;
+            }
+
             WorkerAssignment building =
                 hit.collider.GetComponentInParent<WorkerAssignment>();
 
@@ -192,6 +202,31 @@ public class BuildingSelectionUI : MonoBehaviour
         if (buildingWorkersUI != null)
         {
             buildingWorkersUI.SetBuilding(building);
+        }
+    }
+
+    private void ShowRepairPanel(BuildingRepair repair)
+    {
+        if (selectedWorker != null)
+        {
+            Debug.LogWarning(
+                "Cannot move a worker to a ruined building. " +
+                "Repair it first.",
+                this
+            );
+            return;
+        }
+
+        selectedBuilding = null;
+
+        if (buildingWorkersPanel != null)
+        {
+            buildingWorkersPanel.SetActive(true);
+        }
+
+        if (buildingWorkersUI != null)
+        {
+            buildingWorkersUI.SetRuinedBuilding(repair);
         }
     }
 

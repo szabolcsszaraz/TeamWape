@@ -8,7 +8,7 @@ public class TouristNeeds : MonoBehaviour
     [Header("Need Assignment")]
     [SerializeField, Min(1)] private int minNeeds = 1;
     [SerializeField, Min(1)] private int maxNeeds = 3;
-    [SerializeField] private bool alwaysNeedsRoom = true;
+    [SerializeField] private bool alwaysNeedsRoom = false;
 
     [Header("Assigned Needs")]
     [SerializeField]
@@ -32,7 +32,9 @@ public class TouristNeeds : MonoBehaviour
 
         foreach (GuestNeedType needType in needs)
         {
-            needsManager.AddDemand(needType, 1);
+            // Joins the building queue only when the tourist arrives
+            // there (see TouristServiceRoute).
+            needsManager.ReserveDemand(needType, 1);
         }
 
         Debug.Log(

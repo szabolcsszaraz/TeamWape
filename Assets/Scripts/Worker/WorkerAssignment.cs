@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[DefaultExecutionOrder(-50)]
 public class WorkerAssignment : MonoBehaviour
 {
     [Header("Worker Slots")]
@@ -148,6 +149,23 @@ public class WorkerAssignment : MonoBehaviour
             $"{name}: All workers removed.",
             this
         );
+    }
+
+    // Empty (None) entries in the Inspector list would count as a
+    // worker but give 0 speed, so the building never serves.
+    // Runs before ServiceBuilding reads the list (execution order).
+    private void Awake()
+    {
+        int removed = assignedWorkers.RemoveAll(worker => worker == null);
+
+        if (removed > 0)
+        {
+            Debug.LogWarning(
+                $"{name}: Removed {removed} empty worker slot(s) from " +
+                "Assigned Workers. Assign a WorkerData there instead.",
+                this
+            );
+        }
     }
 
     private void OnValidate()
