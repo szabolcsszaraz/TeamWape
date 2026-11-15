@@ -25,14 +25,14 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _Alpha: 1
+    - _Alpha: 0.81
     - _CausticScale: 1.5
     - _CausticSpeed: 0.6
     - _FoamWidth: 0
-    - _LineWidth: 0.09
+    - _LineWidth: 0.01
     - _WaveHeight: 0.03
     - _WaveScale: 1.5
-    - _WaveSpeed: 1
+    - _WaveSpeed: 0
     m_Colors:
     - _CausticColor: {r: 1, g: 1, b: 1, a: 0.8}
     - _DeepColor: {r: 0.09999997, g: 0.5, b: 0.8, a: 1}

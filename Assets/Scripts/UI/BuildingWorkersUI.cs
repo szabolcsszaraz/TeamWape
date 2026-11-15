@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BuildingWorkersUI : MonoBehaviour
 {
@@ -23,6 +24,20 @@ public class BuildingWorkersUI : MonoBehaviour
     [Header("Prefab")]
     [SerializeField] private GameObject workerListItemPrefab;
 
+    [Header("Repair / Upgrade UI")]
+    [Tooltip("Shown for ruined buildings (Repair) and upgradable " +
+             "buildings (Upgrade). Holds the action button.")]
+    [SerializeField] private GameObject repairSection;
+    [SerializeField] private Button repairButton;
+    [SerializeField] private TMP_Text repairButtonText;
+
+    // Set while the panel shows a ruined building.
+    private BuildingRepair ruinedBuilding;
+
+    // Upgrade component of the shown (working) building, if any.
+    private BuildingUpgrade buildingUpgrade;
+    private PlayerCoinsManager coinsManager;
+
     private WorkerData selectedWorker;
 
     private readonly List<WorkerListItemUI> displayedItems = new();
@@ -31,15 +46,117 @@ public class BuildingWorkersUI : MonoBehaviour
 
     public event Action<WorkerData> OnWorkerSelected;
 
+    private void Awake()
+    {
+        coinsManager = FindFirstObjectByType<PlayerCoinsManager>();
+
+        if (repairButton != null)
+        {
+            repairButton.onClick.AddListener(HandleRepairClicked);
+        }
+    }
+
     private void OnEnable()
     {
         SubscribeToBuildingEvents();
         RefreshUI();
+
+        if (coinsManager != null)
+        {
+            coinsManager.OnCoinsChanged += HandleCoinsChanged;
+        }
     }
 
     private void OnDisable()
     {
         UnsubscribeFromBuildingEvents();
+
+        if (coinsManager != null)
+        {
+            coinsManager.OnCoinsChanged -= HandleCoinsChanged;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (repairButton != null)
+        {
+            repairButton.onClick.RemoveListener(HandleRepairClicked);
+        }
+    }
+
+    // Shows a ruined building: status + Repair button, no workers.
+    public void SetRuinedBuilding(BuildingRepair repair)
+    {
+        SetBuilding(null);
+
+        ruinedBuilding = repair;
+        RefreshUI();
+    }
+
+    // One button: Repair for ruins, Upgrade for working buildings.
+    private void HandleRepairClicked()
+    {
+        if (ruinedBuilding != null)
+        {
+            BuildingRepair repaired = ruinedBuilding;
+
+            if (!repaired.TryRepair())
+            {
+                RefreshUI();
+                return;
+            }
+
+            // Switch the panel to the now working building.
+            SetBuilding(repaired.RepairedWorkerAssignment);
+            return;
+        }
+
+        if (buildingUpgrade != null)
+        {
+            buildingUpgrade.TryUpgrade();
+            RefreshUI();
+        }
+    }
+
+    private void HandleCoinsChanged(int coins)
+    {
+        RefreshRepairSection();
+    }
+
+    private void RefreshRepairSection()
+    {
+        bool showRepair = ruinedBuilding != null;
+        bool showUpgrade = !showRepair &&
+                           buildingUpgrade != null &&
+                           buildingUpgrade.CanUpgrade;
+
+        if (repairSection != null)
+            repairSection.SetActive(showRepair || showUpgrade);
+
+        if (showRepair)
+        {
+            if (repairButton != null)
+                repairButton.interactable = ruinedBuilding.CanAfford;
+
+            if (repairButtonText != null)
+            {
+                repairButtonText.text =
+                    $"Repair ({ruinedBuilding.RepairCost}$)";
+            }
+        }
+        else if (showUpgrade)
+        {
+            if (repairButton != null)
+                repairButton.interactable = buildingUpgrade.CanAfford;
+
+            if (repairButtonText != null)
+            {
+                repairButtonText.text =
+                    $"Upgrade to Lv {buildingUpgrade.CurrentLevel + 1} " +
+                    $"({buildingUpgrade.NextLevelCost}$)";
+            }
+        }
     }
 
     private void SubscribeToBuildingEvents()
@@ -129,7 +246,12 @@ public class BuildingWorkersUI : MonoBehaviour
             selectedWorker = null;
         }
 
+        ruinedBuilding = null;
         workerAssignment = newAssignment;
+
+        buildingUpgrade = workerAssignment != null
+            ? workerAssignment.GetComponentInParent<BuildingUpgrade>()
+            : null;
 
         serviceBuilding = workerAssignment != null
             ? workerAssignment.GetComponent<ServiceBuilding>()
@@ -187,6 +309,28 @@ public class BuildingWorkersUI : MonoBehaviour
             }
         }
 
+        RefreshRepairSection();
+
+        if (ruinedBuilding != null)
+        {
+            if (buildingNameText != null)
+                buildingNameText.text = ruinedBuilding.BuildingName;
+
+            if (workerCountText != null)
+                workerCountText.text = "-";
+
+            if (serviceStatusText != null)
+            {
+                serviceStatusText.text = "Status: Ruined";
+                serviceStatusText.color = new Color(0.55f, 0.58f, 0.61f);
+            }
+
+            if (serviceSpeedText != null)
+                serviceSpeedText.text = "Repair to open";
+
+            return;
+        }
+
         if (workerAssignment == null)
         {
             if (buildingNameText != null)
@@ -201,8 +345,12 @@ public class BuildingWorkersUI : MonoBehaviour
 
         if (buildingNameText != null)
         {
+            string levelText = buildingUpgrade != null
+                ? $" (Lv {buildingUpgrade.CurrentLevel})"
+                : "";
+
             buildingNameText.text =
-                $"{workerAssignment.gameObject.name} Workers";
+                $"{workerAssignment.gameObject.name}{levelText} Workers";
         }
 
         if (workerCountText != null)

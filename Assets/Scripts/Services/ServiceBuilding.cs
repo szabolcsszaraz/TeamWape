@@ -22,6 +22,11 @@ public class ServiceBuilding : MonoBehaviour
     [SerializeField, Min(0.1f)]
     private float serviceTime = 12f;
 
+    [Tooltip("Random spread of each service's time: 0.33 turns a " +
+             "7.5 s Service Time into 5-10 s.")]
+    [SerializeField, Range(0f, 0.9f)]
+    private float serviceTimeVariance = 0.33f;
+
     [Header("Quality")]
     [SerializeField, Range(1, 5)]
     private int qualityStars = 2;
@@ -75,6 +80,7 @@ public class ServiceBuilding : MonoBehaviour
     {
         public float RemainingTime;
         public float WaitTime;
+        public GuestServiceTicket Ticket;
     }
 
     private readonly List<ActiveService> activeServices = new();
@@ -443,7 +449,8 @@ public class ServiceBuilding : MonoBehaviour
 
             activeServices.RemoveAt(i);
 
-            if (!need.CompleteService())
+            // Also tells the tourist inside that it was served.
+            if (!need.CompleteService(service.Ticket))
                 continue;
 
             servedThisWave++;
@@ -468,12 +475,20 @@ public class ServiceBuilding : MonoBehaviour
     private void SeatWaitingUnits(GuestNeed need)
     {
         while (activeServices.Count < seats &&
-               need.TryStartService(Time.time, out float waitTime))
+               need.TryStartService(
+                   Time.time,
+                   out GuestServiceTicket ticket))
         {
+            float variance = UnityEngine.Random.Range(
+                1f - serviceTimeVariance,
+                1f + serviceTimeVariance
+            );
+
             activeServices.Add(new ActiveService
             {
-                RemainingTime = serviceTime,
-                WaitTime = waitTime
+                RemainingTime = serviceTime * variance,
+                WaitTime = ticket.WaitTime,
+                Ticket = ticket
             });
         }
     }
