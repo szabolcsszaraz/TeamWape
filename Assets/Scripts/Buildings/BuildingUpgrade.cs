@@ -11,16 +11,22 @@ public class BuildingUpgrade : MonoBehaviour
 {
     [Serializable]
     private class UpgradeLevel
-    {
-        [Tooltip("Model shown at this level.")]
-        public GameObject version;
+{
+    [Tooltip("Model shown at this level.")]
+    public GameObject version;
 
-        [Tooltip("Coins to reach this level (ignored for level 1).")]
-        [Min(0)] public int cost;
+    [Min(0)] public int cost;
+    [Min(0)] public int xpReward;
 
-        [Tooltip("XP for reaching this level (ignored for level 1).")]
-        [Min(0)] public int xpReward;
-    }
+    [Header("Building Statistics")]
+    [Min(1)] public int capacity = 3;
+
+    [Range(1, 5)]
+    public int qualityStars = 2;
+
+    [Min(0.1f)]
+    public float serviceTime = 12f;
+}
 
     [Header("Levels (first = starting level)")]
     [SerializeField] private List<UpgradeLevel> levels = new();
@@ -31,6 +37,7 @@ public class BuildingUpgrade : MonoBehaviour
     private PlayerCoinsManager coinsManager;
     private ResortProgressionManager progressionManager;
     private BuildingRepair buildingRepair;
+    private ServiceBuilding serviceBuilding;
 
     public int CurrentLevel => currentLevel;
     public int MaxLevel => levels.Count;
@@ -55,6 +62,13 @@ public class BuildingUpgrade : MonoBehaviour
         coinsManager = FindFirstObjectByType<PlayerCoinsManager>();
         progressionManager = FindFirstObjectByType<ResortProgressionManager>();
         buildingRepair = GetComponent<BuildingRepair>();
+        serviceBuilding = GetComponent<ServiceBuilding>();
+
+        if (serviceBuilding == null)
+        {
+            serviceBuilding =
+                GetComponentInChildren<ServiceBuilding>(true);
+        }
 
         currentLevel = Mathf.Clamp(currentLevel, 1, Mathf.Max(1, MaxLevel));
     }
@@ -65,6 +79,7 @@ public class BuildingUpgrade : MonoBehaviour
         if (buildingRepair == null || buildingRepair.IsRepaired)
         {
             ApplyVersion();
+            ApplyLevelStats();
         }
 
         if (buildingRepair != null)
@@ -109,6 +124,7 @@ public class BuildingUpgrade : MonoBehaviour
 
         currentLevel++;
         ApplyVersion();
+        ApplyLevelStats();
 
         if (progressionManager != null)
         {
@@ -146,4 +162,25 @@ public class BuildingUpgrade : MonoBehaviour
     {
         TryUpgrade();
     }
+
+    private void ApplyLevelStats()
+{
+    if (serviceBuilding == null || levels.Count == 0)
+        return;
+
+    UpgradeLevel level = levels[currentLevel - 1];
+
+    serviceBuilding.ApplyUpgradeStats(
+        level.capacity,
+        level.qualityStars,
+        level.serviceTime
+    );
+
+    Debug.Log(
+        $"{name}: Level {currentLevel}, " +
+        $"Capacity: {level.capacity}, " +
+        $"Quality: {level.qualityStars}, " +
+        $"Service time: {level.serviceTime}s"
+    );
+}
 }
