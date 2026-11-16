@@ -31,6 +31,10 @@ public class BuildingWorkersUI : MonoBehaviour
     [SerializeField] private Button repairButton;
     [SerializeField] private TMP_Text repairButtonText;
 
+    [Header("Building Upgrade Statistics")]
+    [SerializeField] private TMP_Text capacityText;
+    [SerializeField] private TMP_Text qualityText;
+
     // Set while the panel shows a ruined building.
     private BuildingRepair ruinedBuilding;
 
@@ -398,6 +402,20 @@ public class BuildingWorkersUI : MonoBehaviour
     // SCRUM-24: Update operational state and speed.
     private void RefreshServiceInformation()
     {
+        if (capacityText != null)
+        {
+             capacityText.text = serviceBuilding != null
+             ? $"Capacity: {serviceBuilding.Seats}"
+             : "Capacity: N/A";
+        }
+
+        if (qualityText != null)
+        {
+            qualityText.text = serviceBuilding != null
+             ? $"Quality: {serviceBuilding.QualityStars}/5"
+                : "Quality: N/A";
+        }
+        
         if (serviceBuilding == null)
         {
             if (serviceStatusText != null)

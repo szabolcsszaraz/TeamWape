@@ -123,6 +123,8 @@ public class ServiceBuilding : MonoBehaviour
 
     public event Action<ServiceBuilding, float> OnUnitServed;
 
+    public event Action<ServiceBuilding> OnBuildingStatsChanged;
+
     public event Action<ServiceBuilding, ServiceLoadState>
         OnServiceStateChanged;
 
@@ -548,4 +550,40 @@ public class ServiceBuilding : MonoBehaviour
             this
         );
     }
+
+    public void ApplyUpgradeStats(
+    int newCapacity,
+    int newQualityStars,
+    float newServiceTime)
+{
+    seats = Mathf.Max(1, newCapacity);
+
+    qualityStars = Mathf.Clamp(newQualityStars, 1, 5);
+
+    serviceTime = Mathf.Max(0.1f, newServiceTime);
+
+    RecalculateBuildingPerformance();
+
+    if (needsManager != null)
+    {
+        GuestNeed need = needsManager.GetNeed(serviceNeed);
+
+        if (need != null)
+        {
+            occupiedSeats = activeServices.Count;
+            CalculateServiceLoad(need);
+        }
+    }
+
+    UpdateCurrentServiceState();
+
+    OnBuildingStatsChanged?.Invoke(this);
+
+    Debug.Log(
+        $"{name}: Building statistics updated. " +
+        $"Capacity: {seats}, " +
+        $"Quality: {qualityStars}, " +
+        $"Service time: {serviceTime}s"
+    );
+}
 }
