@@ -49,6 +49,8 @@ public class BuildingUpgrade : MonoBehaviour
 
     public int NextLevelCost => CanUpgrade ? levels[currentLevel].cost : 0;
     public int NextLevelXP => CanUpgrade ? levels[currentLevel].xpReward : 0;
+    public int NextLevelCapacity =>
+        CanUpgrade ? levels[currentLevel].capacity : 0;
 
     public bool CanAfford =>
         CanUpgrade &&

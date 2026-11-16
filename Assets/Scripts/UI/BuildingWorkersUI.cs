@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -156,9 +155,16 @@ public class BuildingWorkersUI : MonoBehaviour
 
             if (repairButtonText != null)
             {
+                int currentCapacity = serviceBuilding != null
+                    ? serviceBuilding.Seats
+                    : 0;
+
+                int nextCapacity = buildingUpgrade.NextLevelCapacity;
+
                 repairButtonText.text =
-                    $"Upgrade to Lv {buildingUpgrade.CurrentLevel + 1} " +
-                    $"({buildingUpgrade.NextLevelCost}$)";
+                    $"Upgrade Lv. {buildingUpgrade.CurrentLevel + 1}\n" +
+                    $"Capacity: {currentCapacity} → {nextCapacity}\n" +
+                    $"{buildingUpgrade.NextLevelCost} Coins";
             }
         }
     }
@@ -404,9 +410,9 @@ public class BuildingWorkersUI : MonoBehaviour
     {
         if (capacityText != null)
         {
-             capacityText.text = serviceBuilding != null
-             ? $"Capacity: {serviceBuilding.Seats}"
-             : "Capacity: N/A";
+            capacityText.text = serviceBuilding != null
+            ? $"Capacity: {serviceBuilding.Seats}"
+            : "Capacity: N/A";
         }
 
         if (qualityText != null)
@@ -415,7 +421,7 @@ public class BuildingWorkersUI : MonoBehaviour
              ? $"Quality: {serviceBuilding.QualityStars}/5"
                 : "Quality: N/A";
         }
-        
+
         if (serviceBuilding == null)
         {
             if (serviceStatusText != null)
