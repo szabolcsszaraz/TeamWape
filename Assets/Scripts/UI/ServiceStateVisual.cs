@@ -41,8 +41,7 @@ public class ServiceStateVisual : MonoBehaviour
         new Color(0.29f, 0.62f, 0.87f);
 
     [Header("Rendering")]
-    [Tooltip("Draw the icon after transparent objects such as the " +
-             "water, so the water shader cannot hide it.")]
+    [Tooltip("Draw the icon after transparent objects such as water.")]
     [SerializeField] private int canvasSortingOrder = 100;
 
     [Header("Current State (Debug)")]
@@ -68,8 +67,6 @@ public class ServiceStateVisual : MonoBehaviour
         RefreshVisual();
     }
 
-    // Transparent objects (water, UI) are sorted by Order in Layer
-    // before distance, so a higher order keeps the icon on top.
     private void ApplyCanvasSorting()
     {
         Canvas canvas = GetComponentInChildren<Canvas>(true);
@@ -80,9 +77,7 @@ public class ServiceStateVisual : MonoBehaviour
         }
 
         if (canvas == null)
-        {
             return;
-        }
 
         if (!canvas.isRootCanvas)
         {
@@ -102,11 +97,20 @@ public class ServiceStateVisual : MonoBehaviour
 
         if (serviceBuilding != null)
         {
+            // Existing service state event.
             serviceBuilding.OnServiceStateChanged -=
                 HandleServiceStateChanged;
 
             serviceBuilding.OnServiceStateChanged +=
                 HandleServiceStateChanged;
+
+            // SCRUM-28:
+            // Listen for Energy Boost activation and expiration.
+            serviceBuilding.OnEnergyBoostStateChanged -=
+                HandleEnergyBoostStateChanged;
+
+            serviceBuilding.OnEnergyBoostStateChanged +=
+                HandleEnergyBoostStateChanged;
 
             SyncWithServiceBuilding();
         }
@@ -125,9 +129,16 @@ public class ServiceStateVisual : MonoBehaviour
         {
             serviceBuilding.OnServiceStateChanged -=
                 HandleServiceStateChanged;
+
+            // SCRUM-28:
+            // Remove boost event subscription.
+            serviceBuilding.OnEnergyBoostStateChanged -=
+                HandleEnergyBoostStateChanged;
         }
     }
 
+    // Called when the building becomes Normal,
+    // Overloaded or Inactive.
     private void HandleServiceStateChanged(
         ServiceBuilding building,
         ServiceLoadState newState)
@@ -135,7 +146,56 @@ public class ServiceStateVisual : MonoBehaviour
         if (building != serviceBuilding)
             return;
 
-        switch (newState)
+        // SCRUM-28:
+        // Always check the boost before choosing an icon.
+        SyncWithServiceBuilding();
+    }
+
+    // SCRUM-28:
+    // Called when Energy Boost starts or ends.
+    private void HandleEnergyBoostStateChanged(
+        ServiceBuilding building,
+        bool isActive)
+    {
+        if (building != serviceBuilding)
+            return;
+
+        SyncWithServiceBuilding();
+
+        Debug.Log(
+            $"{name}: Energy Boost visual " +
+            (isActive ? "activated." : "restored."),
+            this
+        );
+    }
+
+    // SCRUM-28:
+    // Determine the correct icon based on the
+    // building's actual operational state.
+    private void SyncWithServiceBuilding()
+    {
+        if (serviceBuilding == null)
+            return;
+
+        // Highest priority: building cannot operate.
+        if (!serviceBuilding.CanOperate ||
+            serviceBuilding.CurrentState == ServiceLoadState.Inactive)
+        {
+            SetState(VisualState.Inactive);
+            return;
+        }
+
+        // SCRUM-28:
+        // Show Boosted while Energy Boost is active.
+        if (serviceBuilding.IsEnergyBoostActive)
+        {
+            SetState(VisualState.Boosted);
+            return;
+        }
+
+        // Energy Boost is not active.
+        // Restore the building's actual state.
+        switch (serviceBuilding.CurrentState)
         {
             case ServiceLoadState.Normal:
                 SetState(VisualState.Normal);
@@ -151,20 +211,14 @@ public class ServiceStateVisual : MonoBehaviour
         }
     }
 
-    private void SyncWithServiceBuilding()
-    {
-        if (serviceBuilding == null)
-            return;
-
-        HandleServiceStateChanged(
-            serviceBuilding,
-            serviceBuilding.CurrentState
-        );
-    }
-
     public void SetState(VisualState newState)
     {
+        // Do not redraw when the state has not changed.
+        if (currentState == newState)
+            return;
+
         currentState = newState;
+
         RefreshVisual();
     }
 

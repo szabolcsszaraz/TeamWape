@@ -22,8 +22,7 @@ public class ServiceBuilding : MonoBehaviour
     [SerializeField, Min(0.1f)]
     private float serviceTime = 12f;
 
-    [Tooltip("Random spread of each service's time: 0.33 turns a " +
-             "7.5 s Service Time into 5-10 s.")]
+    [Tooltip("Random spread of each service's time.")]
     [SerializeField, Range(0f, 0.9f)]
     private float serviceTimeVariance = 0.33f;
 
@@ -49,6 +48,21 @@ public class ServiceBuilding : MonoBehaviour
     [Header("Queue (optional)")]
     [SerializeField]
     private ServiceQueue serviceQueue;
+
+    // SCRUM-28: Energy Boost configuration.
+    [Header("Energy Boost")]
+    [SerializeField, Min(0.1f)]
+    private float energyBoostDuration = 30f;
+
+    [SerializeField, Min(1f)]
+    private float energyBoostMultiplier = 1.5f;
+
+    [Header("Energy Boost Debug")]
+    [SerializeField]
+    private bool isEnergyBoostActive;
+
+    [SerializeField]
+    private float energyBoostRemainingTime;
 
     [Header("Debug")]
     [SerializeField] private int occupiedSeats;
@@ -99,6 +113,7 @@ public class ServiceBuilding : MonoBehaviour
     public bool HasWorker => hasWorker;
 
     public int AssignedWorkerCount => assignedWorkerCount;
+
     public bool IsMissingRequiredWorkers =>
         isMissingRequiredWorkers;
 
@@ -121,6 +136,16 @@ public class ServiceBuilding : MonoBehaviour
 
     public float Utilization => buildingPerformanceMultiplier;
 
+    // SCRUM-28: Energy Boost properties.
+    public bool IsEnergyBoostActive => isEnergyBoostActive;
+
+    public float EnergyBoostDuration => energyBoostDuration;
+
+    public float EnergyBoostMultiplier => energyBoostMultiplier;
+
+    public float EnergyBoostRemainingTime =>
+        energyBoostRemainingTime;
+
     public event Action<ServiceBuilding, float> OnUnitServed;
 
     public event Action<ServiceBuilding> OnBuildingStatsChanged;
@@ -130,6 +155,9 @@ public class ServiceBuilding : MonoBehaviour
 
     public event Action<ServiceBuilding, float>
         OnPerformanceChanged;
+
+    public event Action<ServiceBuilding, bool>
+        OnEnergyBoostStateChanged;
 
     private void Awake()
     {
@@ -148,6 +176,9 @@ public class ServiceBuilding : MonoBehaviour
                 this
             );
         }
+
+        isEnergyBoostActive = false;
+        energyBoostRemainingTime = 0f;
 
         RefreshWorkerRequirement();
     }
@@ -176,6 +207,8 @@ public class ServiceBuilding : MonoBehaviour
         }
 
         UnsubscribeFromWorkers();
+
+        StopEnergyBoost();
     }
 
     private void HandleWorkersChanged(WorkerAssignment assignment)
@@ -214,8 +247,6 @@ public class ServiceBuilding : MonoBehaviour
         }
     }
 
-    // SCRUM-24: Subscribe to changes in workers'
-    // individual performance levels.
     private void RefreshWorkerSubscriptions()
     {
         UnsubscribeFromWorkers();
@@ -263,21 +294,21 @@ public class ServiceBuilding : MonoBehaviour
         RecalculateBuildingPerformance();
     }
 
-    // SCRUM-24: Recalculate service speed based on
-    // assigned workers and their performance levels.
+    // SCRUM-28: Calculates worker speed and applies
+    // the temporary Energy Boost multiplier.
     private void RecalculateBuildingPerformance()
     {
         float previousMultiplier = buildingPerformanceMultiplier;
 
+        float baseWorkerMultiplier = 0f;
+
         if (!canOperate)
         {
-            buildingPerformanceMultiplier = 0f;
+            baseWorkerMultiplier = 0f;
         }
         else if (assignedWorkerCount == 0)
         {
-            // Buildings that do not require assigned workers
-            // retain their previous standalone behavior.
-            buildingPerformanceMultiplier =
+            baseWorkerMultiplier =
                 hasWorker ? 1f : noWorkerUtilization;
         }
         else
@@ -299,7 +330,7 @@ public class ServiceBuilding : MonoBehaviour
 
             if (validWorkerCount == 0)
             {
-                buildingPerformanceMultiplier = 0f;
+                baseWorkerMultiplier = 0f;
             }
             else
             {
@@ -307,10 +338,19 @@ public class ServiceBuilding : MonoBehaviour
                     Mathf.Max(0, validWorkerCount - 1) *
                     additionalWorkerBonus;
 
-                buildingPerformanceMultiplier =
+                baseWorkerMultiplier =
                     1f + workerCountBonus + performanceBonus;
             }
         }
+
+        // SCRUM-28 SUBTASK 2:
+        // Energy Boost multiplies existing worker speed.
+        float activeBoostMultiplier = isEnergyBoostActive
+            ? energyBoostMultiplier
+            : 1f;
+
+        buildingPerformanceMultiplier =
+            baseWorkerMultiplier * activeBoostMultiplier;
 
         effectiveServiceTime =
             buildingPerformanceMultiplier > 0f
@@ -324,6 +364,7 @@ public class ServiceBuilding : MonoBehaviour
             Debug.Log(
                 $"{name}: Performance recalculated. " +
                 $"Workers: {assignedWorkerCount}, " +
+                $"Energy Boost: {(isEnergyBoostActive ? "ON" : "OFF")}, " +
                 $"Speed: x{buildingPerformanceMultiplier:0.00}, " +
                 $"Service time: {effectiveServiceTime:0.00}s",
                 this
@@ -367,6 +408,8 @@ public class ServiceBuilding : MonoBehaviour
 
     private void Update()
     {
+        UpdateEnergyBoost();
+
         if (needsManager == null)
             return;
 
@@ -384,6 +427,95 @@ public class ServiceBuilding : MonoBehaviour
 
         CalculateServiceLoad(need);
         UpdateCurrentServiceState();
+    }
+
+    public bool TryActivateEnergyBoost()
+    {
+        if (!isActiveAndEnabled)
+        {
+            Debug.LogWarning(
+                $"{name}: Energy Boost cannot start " +
+                "because the building is disabled.",
+                this
+            );
+
+            return false;
+        }
+
+        if (!canOperate)
+        {
+            Debug.LogWarning(
+                $"{name}: Energy Boost cannot start " +
+                "because the building is inactive.",
+                this
+            );
+
+            return false;
+        }
+
+        if (isEnergyBoostActive)
+        {
+            Debug.LogWarning(
+                $"{name}: Energy Boost is already active.",
+                this
+            );
+
+            return false;
+        }
+
+        isEnergyBoostActive = true;
+        energyBoostRemainingTime = energyBoostDuration;
+
+        // SCRUM-28: Immediately apply boosted speed.
+        RecalculateBuildingPerformance();
+
+        OnEnergyBoostStateChanged?.Invoke(this, true);
+
+        Debug.Log(
+            $"{name}: Energy Boost activated! " +
+            $"Multiplier: x{energyBoostMultiplier:0.00}, " +
+            $"Duration: {energyBoostDuration:0.0}s",
+            this
+        );
+
+        return true;
+    }
+
+    private void UpdateEnergyBoost()
+    {
+        if (!isEnergyBoostActive)
+            return;
+
+        energyBoostRemainingTime -= Time.deltaTime;
+
+        if (energyBoostRemainingTime > 0f)
+            return;
+
+        StopEnergyBoost();
+    }
+
+    private void StopEnergyBoost()
+    {
+        if (!isEnergyBoostActive)
+        {
+            energyBoostRemainingTime = 0f;
+            return;
+        }
+
+        isEnergyBoostActive = false;
+        energyBoostRemainingTime = 0f;
+
+        // SCRUM-28: Restore current worker-based speed.
+        RecalculateBuildingPerformance();
+
+        OnEnergyBoostStateChanged?.Invoke(this, false);
+
+        Debug.Log(
+            $"{name}: Energy Boost finished. " +
+            $"Normal speed restored: " +
+            $"x{buildingPerformanceMultiplier:0.00}",
+            this
+        );
     }
 
     private void CalculateServiceLoad(GuestNeed need)
@@ -438,6 +570,7 @@ public class ServiceBuilding : MonoBehaviour
 
     private void UpdateActiveServices(GuestNeed need)
     {
+        // SCRUM-28: Utilization now includes Energy Boost.
         float progress = Time.deltaTime * Utilization;
 
         for (int i = activeServices.Count - 1; i >= 0; i--)
@@ -451,7 +584,6 @@ public class ServiceBuilding : MonoBehaviour
 
             activeServices.RemoveAt(i);
 
-            // Also tells the tourist inside that it was served.
             if (!need.CompleteService(service.Ticket))
                 continue;
 
@@ -551,39 +683,68 @@ public class ServiceBuilding : MonoBehaviour
         );
     }
 
-    public void ApplyUpgradeStats(
-    int newCapacity,
-    int newQualityStars,
-    float newServiceTime)
-{
-    seats = Mathf.Max(1, newCapacity);
-
-    qualityStars = Mathf.Clamp(newQualityStars, 1, 5);
-
-    serviceTime = Mathf.Max(0.1f, newServiceTime);
-
-    RecalculateBuildingPerformance();
-
-    if (needsManager != null)
+    [ContextMenu("Test / Activate Energy Boost")]
+    private void TestActivateEnergyBoost()
     {
-        GuestNeed need = needsManager.GetNeed(serviceNeed);
-
-        if (need != null)
+        if (!Application.isPlaying)
         {
-            occupiedSeats = activeServices.Count;
-            CalculateServiceLoad(need);
+            Debug.LogWarning(
+                "Energy Boost can only be tested in Play Mode.",
+                this
+            );
+
+            return;
         }
+
+        TryActivateEnergyBoost();
     }
 
-    UpdateCurrentServiceState();
+    public void ApplyUpgradeStats(
+        int newCapacity,
+        int newQualityStars,
+        float newServiceTime)
+    {
+        seats = Mathf.Max(1, newCapacity);
 
-    OnBuildingStatsChanged?.Invoke(this);
+        qualityStars = Mathf.Clamp(newQualityStars, 1, 5);
 
-    Debug.Log(
-        $"{name}: Building statistics updated. " +
-        $"Capacity: {seats}, " +
-        $"Quality: {qualityStars}, " +
-        $"Service time: {serviceTime}s"
-    );
-}
+        serviceTime = Mathf.Max(0.1f, newServiceTime);
+
+        RecalculateBuildingPerformance();
+
+        if (needsManager != null)
+        {
+            GuestNeed need = needsManager.GetNeed(serviceNeed);
+
+            if (need != null)
+            {
+                occupiedSeats = activeServices.Count;
+                CalculateServiceLoad(need);
+            }
+        }
+
+        UpdateCurrentServiceState();
+
+        OnBuildingStatsChanged?.Invoke(this);
+
+        Debug.Log(
+            $"{name}: Building statistics updated. " +
+            $"Capacity: {seats}, " +
+            $"Quality: {qualityStars}, " +
+            $"Service time: {serviceTime}s"
+        );
+    }
+
+    private void OnValidate()
+    {
+        energyBoostDuration = Mathf.Max(
+            0.1f,
+            energyBoostDuration
+        );
+
+        energyBoostMultiplier = Mathf.Max(
+            1f,
+            energyBoostMultiplier
+        );
+    }
 }

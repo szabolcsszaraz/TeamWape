@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -34,10 +35,16 @@ public class BuildingWorkersUI : MonoBehaviour
     [SerializeField] private TMP_Text capacityText;
     [SerializeField] private TMP_Text qualityText;
 
+    // SCRUM-28: Energy Boost UI references.
+    [Header("Energy Boost UI")]
+    [SerializeField] private GameObject energyBoostSection;
+    [SerializeField] private Button energyBoostButton;
+    [SerializeField] private TMP_Text energyBoostButtonText;
+
     // Set while the panel shows a ruined building.
     private BuildingRepair ruinedBuilding;
 
-    // Upgrade component of the shown (working) building, if any.
+    // Upgrade component of the shown building, if any.
     private BuildingUpgrade buildingUpgrade;
     private PlayerCoinsManager coinsManager;
 
@@ -56,6 +63,14 @@ public class BuildingWorkersUI : MonoBehaviour
         if (repairButton != null)
         {
             repairButton.onClick.AddListener(HandleRepairClicked);
+        }
+
+        // SCRUM-28: Register the Energy Boost button.
+        if (energyBoostButton != null)
+        {
+            energyBoostButton.onClick.AddListener(
+                HandleEnergyBoostClicked
+            );
         }
     }
 
@@ -84,7 +99,29 @@ public class BuildingWorkersUI : MonoBehaviour
     {
         if (repairButton != null)
         {
-            repairButton.onClick.RemoveListener(HandleRepairClicked);
+            repairButton.onClick.RemoveListener(
+                HandleRepairClicked
+            );
+        }
+
+        if (energyBoostButton != null)
+        {
+            energyBoostButton.onClick.RemoveListener(
+                HandleEnergyBoostClicked
+            );
+        }
+    }
+
+    // SCRUM-28: Update remaining boost time while
+    // the selected building's panel is visible.
+    private void Update()
+    {
+        if (serviceBuilding == null || ruinedBuilding != null)
+            return;
+
+        if (serviceBuilding.IsEnergyBoostActive)
+        {
+            RefreshEnergyBoostUI();
         }
     }
 
@@ -122,6 +159,40 @@ public class BuildingWorkersUI : MonoBehaviour
         }
     }
 
+    // SCRUM-28: Activate boost only for the selected building.
+    private void HandleEnergyBoostClicked()
+    {
+        if (ruinedBuilding != null || serviceBuilding == null)
+            return;
+
+        bool activated =
+            serviceBuilding.TryActivateEnergyBoost();
+
+        if (activated)
+        {
+            Debug.Log(
+                $"Energy Boost activated for selected building: " +
+                $"{serviceBuilding.gameObject.name}",
+                this
+            );
+        }
+
+        RefreshEnergyBoostUI();
+        RefreshServiceInformation();
+    }
+
+    // SCRUM-28: React to boost activation and expiration.
+    private void HandleEnergyBoostStateChanged(
+        ServiceBuilding building,
+        bool isActive)
+    {
+        if (building != serviceBuilding)
+            return;
+
+        RefreshEnergyBoostUI();
+        RefreshServiceInformation();
+    }
+
     private void HandleCoinsChanged(int coins)
     {
         RefreshRepairSection();
@@ -130,17 +201,23 @@ public class BuildingWorkersUI : MonoBehaviour
     private void RefreshRepairSection()
     {
         bool showRepair = ruinedBuilding != null;
+
         bool showUpgrade = !showRepair &&
                            buildingUpgrade != null &&
                            buildingUpgrade.CanUpgrade;
 
         if (repairSection != null)
+        {
             repairSection.SetActive(showRepair || showUpgrade);
+        }
 
         if (showRepair)
         {
             if (repairButton != null)
-                repairButton.interactable = ruinedBuilding.CanAfford;
+            {
+                repairButton.interactable =
+                    ruinedBuilding.CanAfford;
+            }
 
             if (repairButtonText != null)
             {
@@ -151,7 +228,10 @@ public class BuildingWorkersUI : MonoBehaviour
         else if (showUpgrade)
         {
             if (repairButton != null)
-                repairButton.interactable = buildingUpgrade.CanAfford;
+            {
+                repairButton.interactable =
+                    buildingUpgrade.CanAfford;
+            }
 
             if (repairButtonText != null)
             {
@@ -159,7 +239,8 @@ public class BuildingWorkersUI : MonoBehaviour
                     ? serviceBuilding.Seats
                     : 0;
 
-                int nextCapacity = buildingUpgrade.NextLevelCapacity;
+                int nextCapacity =
+                    buildingUpgrade.NextLevelCapacity;
 
                 repairButtonText.text =
                     $"Upgrade Lv. {buildingUpgrade.CurrentLevel + 1}\n" +
@@ -169,12 +250,86 @@ public class BuildingWorkersUI : MonoBehaviour
         }
     }
 
+    // SCRUM-28: Update button visibility, availability
+    // and remaining boost time.
+    private void RefreshEnergyBoostUI()
+    {
+        bool hasValidBuilding =
+            ruinedBuilding == null &&
+            workerAssignment != null &&
+            serviceBuilding != null;
+
+        if (energyBoostSection != null)
+        {
+            energyBoostSection.SetActive(hasValidBuilding);
+        }
+
+        if (!hasValidBuilding)
+        {
+            if (energyBoostButton != null)
+            {
+                energyBoostButton.interactable = false;
+            }
+
+            if (energyBoostButtonText != null)
+            {
+                energyBoostButtonText.text =
+                    "Energy Boost Unavailable";
+            }
+
+            return;
+        }
+
+        bool isBoosted =
+            serviceBuilding.IsEnergyBoostActive;
+
+        bool canActivate =
+            serviceBuilding.isActiveAndEnabled &&
+            serviceBuilding.CanOperate &&
+            !isBoosted;
+
+        if (energyBoostButton != null)
+        {
+            energyBoostButton.interactable = canActivate;
+        }
+
+        if (energyBoostButtonText == null)
+            return;
+
+        if (isBoosted)
+        {
+            float remaining =
+                Mathf.Max(
+                    0f,
+                    serviceBuilding.EnergyBoostRemainingTime
+                );
+
+            energyBoostButtonText.text =
+                $"Energy Boost Active ({remaining:0.0}s)";
+        }
+        else if (!serviceBuilding.CanOperate)
+        {
+            energyBoostButtonText.text =
+                "Energy Boost Unavailable";
+        }
+        else
+        {
+            energyBoostButtonText.text =
+                $"Activate Energy Boost " +
+                $"(x{serviceBuilding.EnergyBoostMultiplier:0.00}, " +
+                $"{serviceBuilding.EnergyBoostDuration:0}s)";
+        }
+    }
+
     private void SubscribeToBuildingEvents()
     {
         if (workerAssignment != null)
         {
-            workerAssignment.OnWorkersChanged -= HandleWorkersChanged;
-            workerAssignment.OnWorkersChanged += HandleWorkersChanged;
+            workerAssignment.OnWorkersChanged -=
+                HandleWorkersChanged;
+
+            workerAssignment.OnWorkersChanged +=
+                HandleWorkersChanged;
         }
 
         if (serviceBuilding != null)
@@ -190,6 +345,13 @@ public class BuildingWorkersUI : MonoBehaviour
 
             serviceBuilding.OnPerformanceChanged +=
                 HandlePerformanceChanged;
+
+            // SCRUM-28: Subscribe to Energy Boost changes.
+            serviceBuilding.OnEnergyBoostStateChanged -=
+                HandleEnergyBoostStateChanged;
+
+            serviceBuilding.OnEnergyBoostStateChanged +=
+                HandleEnergyBoostStateChanged;
         }
     }
 
@@ -197,7 +359,8 @@ public class BuildingWorkersUI : MonoBehaviour
     {
         if (workerAssignment != null)
         {
-            workerAssignment.OnWorkersChanged -= HandleWorkersChanged;
+            workerAssignment.OnWorkersChanged -=
+                HandleWorkersChanged;
         }
 
         if (serviceBuilding != null)
@@ -207,10 +370,15 @@ public class BuildingWorkersUI : MonoBehaviour
 
             serviceBuilding.OnPerformanceChanged -=
                 HandlePerformanceChanged;
+
+            // SCRUM-28: Unsubscribe from the old building.
+            serviceBuilding.OnEnergyBoostStateChanged -=
+                HandleEnergyBoostStateChanged;
         }
     }
 
-    private void HandleWorkersChanged(WorkerAssignment assignment)
+    private void HandleWorkersChanged(
+        WorkerAssignment assignment)
     {
         if (assignment != workerAssignment)
             return;
@@ -232,6 +400,7 @@ public class BuildingWorkersUI : MonoBehaviour
             return;
 
         RefreshServiceInformation();
+        RefreshEnergyBoostUI();
     }
 
     private void HandlePerformanceChanged(
@@ -242,6 +411,7 @@ public class BuildingWorkersUI : MonoBehaviour
             return;
 
         RefreshServiceInformation();
+        RefreshEnergyBoostUI();
     }
 
     public void SetBuilding(WorkerAssignment newAssignment)
@@ -324,32 +494,48 @@ public class BuildingWorkersUI : MonoBehaviour
         if (ruinedBuilding != null)
         {
             if (buildingNameText != null)
-                buildingNameText.text = ruinedBuilding.BuildingName;
+            {
+                buildingNameText.text =
+                    ruinedBuilding.BuildingName;
+            }
 
             if (workerCountText != null)
+            {
                 workerCountText.text = "-";
+            }
 
             if (serviceStatusText != null)
             {
                 serviceStatusText.text = "Status: Ruined";
-                serviceStatusText.color = new Color(0.55f, 0.58f, 0.61f);
+
+                serviceStatusText.color =
+                    new Color(0.55f, 0.58f, 0.61f);
             }
 
             if (serviceSpeedText != null)
+            {
                 serviceSpeedText.text = "Repair to open";
+            }
 
+            RefreshEnergyBoostUI();
             return;
         }
 
         if (workerAssignment == null)
         {
             if (buildingNameText != null)
-                buildingNameText.text = "No Building Selected";
+            {
+                buildingNameText.text =
+                    "No Building Selected";
+            }
 
             if (workerCountText != null)
+            {
                 workerCountText.text = "-";
+            }
 
             RefreshServiceInformation();
+            RefreshEnergyBoostUI();
             return;
         }
 
@@ -360,21 +546,25 @@ public class BuildingWorkersUI : MonoBehaviour
                 : "";
 
             buildingNameText.text =
-                $"{workerAssignment.gameObject.name}{levelText} Workers";
+                $"{workerAssignment.gameObject.name}" +
+                $"{levelText} Workers";
         }
 
         if (workerCountText != null)
         {
             workerCountText.text =
-                $"{workerAssignment.AssignedWorkerCount}/{workerAssignment.MaxWorkerSlots}";
+                $"{workerAssignment.AssignedWorkerCount}/" +
+                $"{workerAssignment.MaxWorkerSlots}";
         }
 
         RefreshServiceInformation();
+        RefreshEnergyBoostUI();
 
         if (workersList == null || workerListItemPrefab == null)
             return;
 
-        foreach (WorkerData worker in workerAssignment.AssignedWorkers)
+        foreach (WorkerData worker in
+                 workerAssignment.AssignedWorkers)
         {
             if (worker == null)
                 continue;
@@ -390,7 +580,8 @@ public class BuildingWorkersUI : MonoBehaviour
             if (item == null)
             {
                 Debug.LogError(
-                    "WorkerListItem prefab is missing WorkerListItemUI!",
+                    "WorkerListItem prefab is missing " +
+                    "WorkerListItemUI!",
                     itemObject
                 );
 
@@ -411,24 +602,28 @@ public class BuildingWorkersUI : MonoBehaviour
         if (capacityText != null)
         {
             capacityText.text = serviceBuilding != null
-            ? $"Capacity: {serviceBuilding.Seats}"
-            : "Capacity: N/A";
+                ? $"Capacity: {serviceBuilding.Seats}"
+                : "Capacity: N/A";
         }
 
         if (qualityText != null)
         {
             qualityText.text = serviceBuilding != null
-             ? $"Quality: {serviceBuilding.QualityStars}/5"
+                ? $"Quality: {serviceBuilding.QualityStars}/5"
                 : "Quality: N/A";
         }
 
         if (serviceBuilding == null)
         {
             if (serviceStatusText != null)
+            {
                 serviceStatusText.text = "Status: N/A";
+            }
 
             if (serviceSpeedText != null)
+            {
                 serviceSpeedText.text = "Speed: N/A";
+            }
 
             return;
         }
@@ -464,7 +659,8 @@ public class BuildingWorkersUI : MonoBehaviour
         {
             if (!serviceBuilding.CanOperate)
             {
-                serviceSpeedText.text = "Speed: 0.00x";
+                serviceSpeedText.text =
+                    "Speed: 0.00x";
             }
             else
             {
