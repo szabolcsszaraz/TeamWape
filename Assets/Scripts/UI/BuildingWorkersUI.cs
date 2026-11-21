@@ -40,6 +40,30 @@ public class BuildingWorkersUI : MonoBehaviour
     [SerializeField] private Button energyBoostButton;
     [SerializeField] private TMP_Text energyBoostButtonText;
 
+    [Header("Energy Boost Timer UI")]
+    [SerializeField] private GameObject energyBoostTimerPanel;
+    [SerializeField] private TMP_Text energyBoostTimerText;
+    [SerializeField] private Image energyBoostTimerFill;
+
+    // SCRUM-29: Timer progress bar colors.
+    [Header("Energy Boost Timer Colors")]
+    [SerializeField] private Color timerHighColor =
+        new Color(0.20f, 0.75f, 0.40f);
+
+    [SerializeField] private Color timerMediumColor =
+        new Color(0.90f, 0.72f, 0.18f);
+
+    [SerializeField] private Color timerLowColor =
+        new Color(0.90f, 0.30f, 0.30f);
+
+    // SCRUM-29: Configurable color thresholds.
+    [Header("Energy Boost Timer Color Thresholds")]
+    [SerializeField, Range(0f, 1f)]
+    private float lowTimeThreshold = 0.33f;
+
+    [SerializeField, Range(0f, 1f)]
+    private float highTimeThreshold = 0.66f;
+
     private BuildingRepair ruinedBuilding;
     private BuildingUpgrade buildingUpgrade;
     private PlayerCoinsManager coinsManager;
@@ -124,9 +148,18 @@ public class BuildingWorkersUI : MonoBehaviour
         }
     }
 
-    // SCRUM-27:
-    // Subscribe to game day changes so the Energy Boost
-    // button becomes available when a new day begins.
+    private void OnValidate()
+    {
+        lowTimeThreshold = Mathf.Clamp01(lowTimeThreshold);
+        highTimeThreshold = Mathf.Clamp01(highTimeThreshold);
+
+        if (highTimeThreshold < lowTimeThreshold)
+        {
+            highTimeThreshold = lowTimeThreshold;
+        }
+    }
+
+    // SCRUM-27: Subscribe to game day changes.
     private void SubscribeToDayEvents()
     {
         if (dayStateManager == null)
@@ -155,9 +188,6 @@ public class BuildingWorkersUI : MonoBehaviour
         }
     }
 
-    // SCRUM-27:
-    // Update the selected building's Energy Boost button
-    // automatically when a new game day starts.
     private void HandleDayChanged(int newDay)
     {
         Debug.Log(
@@ -207,7 +237,6 @@ public class BuildingWorkersUI : MonoBehaviour
 
         // SCRUM-27:
         // The building itself enforces the daily limit.
-        // This extra check provides immediate UI feedback.
         if (serviceBuilding.HasUsedEnergyBoostToday)
         {
             Debug.LogWarning(
@@ -304,9 +333,8 @@ public class BuildingWorkersUI : MonoBehaviour
         }
     }
 
-    // SCRUM-27:
-    // Check whether the building already used its
-    // Energy Boost during the current game day.
+    // SCRUM-27 and SCRUM-29:
+    // Update boost availability and timer display.
     private void RefreshEnergyBoostUI()
     {
         bool hasValidBuilding =
@@ -332,14 +360,13 @@ public class BuildingWorkersUI : MonoBehaviour
                     "Energy Boost Unavailable";
             }
 
+            RefreshEnergyBoostTimerUI();
             return;
         }
 
         bool isBoosted =
             serviceBuilding.IsEnergyBoostActive;
 
-        // SCRUM-27:
-        // Track whether the boost has already been used.
         bool usedToday =
             serviceBuilding.HasUsedEnergyBoostToday;
 
@@ -362,42 +389,119 @@ public class BuildingWorkersUI : MonoBehaviour
             energyBoostButton.interactable = canActivate;
         }
 
-        if (energyBoostButtonText == null)
+        if (energyBoostButtonText != null)
+        {
+            if (isBoosted)
+            {
+                float remaining =
+                    Mathf.Max(
+                        0f,
+                        serviceBuilding.EnergyBoostRemainingTime
+                    );
+
+                energyBoostButtonText.text =
+                    $"Energy Boost Active ({remaining:0.0}s)";
+            }
+            else if (usedToday)
+            {
+                energyBoostButtonText.text =
+                    "Energy Boost Used Today";
+            }
+            else if (!serviceBuilding.isActiveAndEnabled ||
+                     !serviceBuilding.CanOperate ||
+                     !hasValidDay)
+            {
+                energyBoostButtonText.text =
+                    "Energy Boost Unavailable";
+            }
+            else
+            {
+                energyBoostButtonText.text =
+                    $"Activate Energy Boost " +
+                    $"(x{serviceBuilding.EnergyBoostMultiplier:0.00}, " +
+                    $"{serviceBuilding.EnergyBoostDuration:0}s)";
+            }
+        }
+
+        RefreshEnergyBoostTimerUI();
+    }
+
+    // SCRUM-29:
+    // Display the timer and update the progress bar color.
+    private void RefreshEnergyBoostTimerUI()
+    {
+        bool shouldShowTimer =
+            ruinedBuilding == null &&
+            serviceBuilding != null &&
+            serviceBuilding.IsEnergyBoostActive;
+
+        if (energyBoostTimerPanel != null)
+        {
+            energyBoostTimerPanel.SetActive(shouldShowTimer);
+        }
+
+        if (!shouldShowTimer)
+        {
+            if (energyBoostTimerText != null)
+            {
+                energyBoostTimerText.text = "00:00";
+            }
+
+            if (energyBoostTimerFill != null)
+            {
+                energyBoostTimerFill.fillAmount = 0f;
+                energyBoostTimerFill.color = timerHighColor;
+            }
+
             return;
+        }
 
-        // Priority 1: Currently active boost.
-        if (isBoosted)
-        {
-            float remaining =
-                Mathf.Max(
-                    0f,
-                    serviceBuilding.EnergyBoostRemainingTime
-                );
+        float remaining = Mathf.Max(
+            0f,
+            serviceBuilding.EnergyBoostRemainingTime
+        );
 
-            energyBoostButtonText.text =
-                $"Energy Boost Active ({remaining:0.0}s)";
-        }
-        // Priority 2: Already used during this game day.
-        else if (usedToday)
+        float duration = Mathf.Max(
+            0.1f,
+            serviceBuilding.EnergyBoostDuration
+        );
+
+        int remainingSeconds =
+            Mathf.CeilToInt(remaining);
+
+        int minutes = remainingSeconds / 60;
+        int seconds = remainingSeconds % 60;
+
+        if (energyBoostTimerText != null)
         {
-            energyBoostButtonText.text =
-                "Energy Boost Used Today";
+            energyBoostTimerText.text =
+                $"{minutes:00}:{seconds:00}";
         }
-        // Priority 3: The building cannot operate.
-        else if (!serviceBuilding.isActiveAndEnabled ||
-                 !serviceBuilding.CanOperate ||
-                 !hasValidDay)
+
+        float progress = Mathf.Clamp01(
+            remaining / duration
+        );
+
+        if (energyBoostTimerFill != null)
         {
-            energyBoostButtonText.text =
-                "Energy Boost Unavailable";
-        }
-        // Priority 4: Boost is available.
-        else
-        {
-            energyBoostButtonText.text =
-                $"Activate Energy Boost " +
-                $"(x{serviceBuilding.EnergyBoostMultiplier:0.00}, " +
-                $"{serviceBuilding.EnergyBoostDuration:0}s)";
+            energyBoostTimerFill.fillAmount = progress;
+
+            // SCRUM-29:
+            // Green at the beginning,
+            // yellow in the middle,
+            // red near the end.
+            if (progress > highTimeThreshold)
+            {
+                energyBoostTimerFill.color = timerHighColor;
+            }
+            else if (progress > lowTimeThreshold)
+            {
+                energyBoostTimerFill.color = timerMediumColor;
+            }
+            else
+            {
+                energyBoostTimerFill.color = timerLowColor;
+            }
         }
     }
 
