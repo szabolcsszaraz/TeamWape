@@ -35,18 +35,15 @@ public class BuildingWorkersUI : MonoBehaviour
     [SerializeField] private TMP_Text capacityText;
     [SerializeField] private TMP_Text qualityText;
 
-    // SCRUM-28: Energy Boost UI references.
     [Header("Energy Boost UI")]
     [SerializeField] private GameObject energyBoostSection;
     [SerializeField] private Button energyBoostButton;
     [SerializeField] private TMP_Text energyBoostButtonText;
 
-    // Set while the panel shows a ruined building.
     private BuildingRepair ruinedBuilding;
-
-    // Upgrade component of the shown building, if any.
     private BuildingUpgrade buildingUpgrade;
     private PlayerCoinsManager coinsManager;
+    private DayStateManager dayStateManager;
 
     private WorkerData selectedWorker;
 
@@ -60,12 +57,13 @@ public class BuildingWorkersUI : MonoBehaviour
     {
         coinsManager = FindFirstObjectByType<PlayerCoinsManager>();
 
+        dayStateManager = DayStateManager.Instance;
+
         if (repairButton != null)
         {
             repairButton.onClick.AddListener(HandleRepairClicked);
         }
 
-        // SCRUM-28: Register the Energy Boost button.
         if (energyBoostButton != null)
         {
             energyBoostButton.onClick.AddListener(
@@ -77,6 +75,8 @@ public class BuildingWorkersUI : MonoBehaviour
     private void OnEnable()
     {
         SubscribeToBuildingEvents();
+        SubscribeToDayEvents();
+
         RefreshUI();
 
         if (coinsManager != null)
@@ -88,6 +88,7 @@ public class BuildingWorkersUI : MonoBehaviour
     private void OnDisable()
     {
         UnsubscribeFromBuildingEvents();
+        UnsubscribeFromDayEvents();
 
         if (coinsManager != null)
         {
@@ -112,8 +113,6 @@ public class BuildingWorkersUI : MonoBehaviour
         }
     }
 
-    // SCRUM-28: Update remaining boost time while
-    // the selected building's panel is visible.
     private void Update()
     {
         if (serviceBuilding == null || ruinedBuilding != null)
@@ -125,7 +124,51 @@ public class BuildingWorkersUI : MonoBehaviour
         }
     }
 
-    // Shows a ruined building: status + Repair button, no workers.
+    // SCRUM-27:
+    // Subscribe to game day changes so the Energy Boost
+    // button becomes available when a new day begins.
+    private void SubscribeToDayEvents()
+    {
+        if (dayStateManager == null)
+        {
+            dayStateManager = DayStateManager.Instance;
+        }
+
+        if (dayStateManager == null)
+        {
+            dayStateManager =
+                FindFirstObjectByType<DayStateManager>();
+        }
+
+        if (dayStateManager != null)
+        {
+            dayStateManager.OnDayChanged -= HandleDayChanged;
+            dayStateManager.OnDayChanged += HandleDayChanged;
+        }
+    }
+
+    private void UnsubscribeFromDayEvents()
+    {
+        if (dayStateManager != null)
+        {
+            dayStateManager.OnDayChanged -= HandleDayChanged;
+        }
+    }
+
+    // SCRUM-27:
+    // Update the selected building's Energy Boost button
+    // automatically when a new game day starts.
+    private void HandleDayChanged(int newDay)
+    {
+        Debug.Log(
+            $"BuildingWorkersUI: Day {newDay} started. " +
+            "Refreshing Energy Boost availability.",
+            this
+        );
+
+        RefreshEnergyBoostUI();
+    }
+
     public void SetRuinedBuilding(BuildingRepair repair)
     {
         SetBuilding(null);
@@ -134,7 +177,6 @@ public class BuildingWorkersUI : MonoBehaviour
         RefreshUI();
     }
 
-    // One button: Repair for ruins, Upgrade for working buildings.
     private void HandleRepairClicked()
     {
         if (ruinedBuilding != null)
@@ -147,7 +189,6 @@ public class BuildingWorkersUI : MonoBehaviour
                 return;
             }
 
-            // Switch the panel to the now working building.
             SetBuilding(repaired.RepairedWorkerAssignment);
             return;
         }
@@ -159,11 +200,25 @@ public class BuildingWorkersUI : MonoBehaviour
         }
     }
 
-    // SCRUM-28: Activate boost only for the selected building.
     private void HandleEnergyBoostClicked()
     {
         if (ruinedBuilding != null || serviceBuilding == null)
             return;
+
+        // SCRUM-27:
+        // The building itself enforces the daily limit.
+        // This extra check provides immediate UI feedback.
+        if (serviceBuilding.HasUsedEnergyBoostToday)
+        {
+            Debug.LogWarning(
+                $"{serviceBuilding.name}: Energy Boost " +
+                "has already been used today.",
+                this
+            );
+
+            RefreshEnergyBoostUI();
+            return;
+        }
 
         bool activated =
             serviceBuilding.TryActivateEnergyBoost();
@@ -181,7 +236,6 @@ public class BuildingWorkersUI : MonoBehaviour
         RefreshServiceInformation();
     }
 
-    // SCRUM-28: React to boost activation and expiration.
     private void HandleEnergyBoostStateChanged(
         ServiceBuilding building,
         bool isActive)
@@ -250,8 +304,9 @@ public class BuildingWorkersUI : MonoBehaviour
         }
     }
 
-    // SCRUM-28: Update button visibility, availability
-    // and remaining boost time.
+    // SCRUM-27:
+    // Check whether the building already used its
+    // Energy Boost during the current game day.
     private void RefreshEnergyBoostUI()
     {
         bool hasValidBuilding =
@@ -283,10 +338,24 @@ public class BuildingWorkersUI : MonoBehaviour
         bool isBoosted =
             serviceBuilding.IsEnergyBoostActive;
 
+        // SCRUM-27:
+        // Track whether the boost has already been used.
+        bool usedToday =
+            serviceBuilding.HasUsedEnergyBoostToday;
+
+        DayStateManager currentDayManager =
+            DayStateManager.Instance;
+
+        bool hasValidDay =
+            currentDayManager != null &&
+            currentDayManager.CurrentDay > 0;
+
         bool canActivate =
             serviceBuilding.isActiveAndEnabled &&
             serviceBuilding.CanOperate &&
-            !isBoosted;
+            hasValidDay &&
+            !isBoosted &&
+            !usedToday;
 
         if (energyBoostButton != null)
         {
@@ -296,6 +365,7 @@ public class BuildingWorkersUI : MonoBehaviour
         if (energyBoostButtonText == null)
             return;
 
+        // Priority 1: Currently active boost.
         if (isBoosted)
         {
             float remaining =
@@ -307,11 +377,21 @@ public class BuildingWorkersUI : MonoBehaviour
             energyBoostButtonText.text =
                 $"Energy Boost Active ({remaining:0.0}s)";
         }
-        else if (!serviceBuilding.CanOperate)
+        // Priority 2: Already used during this game day.
+        else if (usedToday)
+        {
+            energyBoostButtonText.text =
+                "Energy Boost Used Today";
+        }
+        // Priority 3: The building cannot operate.
+        else if (!serviceBuilding.isActiveAndEnabled ||
+                 !serviceBuilding.CanOperate ||
+                 !hasValidDay)
         {
             energyBoostButtonText.text =
                 "Energy Boost Unavailable";
         }
+        // Priority 4: Boost is available.
         else
         {
             energyBoostButtonText.text =
@@ -346,7 +426,6 @@ public class BuildingWorkersUI : MonoBehaviour
             serviceBuilding.OnPerformanceChanged +=
                 HandlePerformanceChanged;
 
-            // SCRUM-28: Subscribe to Energy Boost changes.
             serviceBuilding.OnEnergyBoostStateChanged -=
                 HandleEnergyBoostStateChanged;
 
@@ -371,7 +450,6 @@ public class BuildingWorkersUI : MonoBehaviour
             serviceBuilding.OnPerformanceChanged -=
                 HandlePerformanceChanged;
 
-            // SCRUM-28: Unsubscribe from the old building.
             serviceBuilding.OnEnergyBoostStateChanged -=
                 HandleEnergyBoostStateChanged;
         }
@@ -596,7 +674,6 @@ public class BuildingWorkersUI : MonoBehaviour
         UpdateSelectionVisuals();
     }
 
-    // SCRUM-24: Update operational state and speed.
     private void RefreshServiceInformation()
     {
         if (capacityText != null)

@@ -49,7 +49,6 @@ public class ServiceBuilding : MonoBehaviour
     [SerializeField]
     private ServiceQueue serviceQueue;
 
-    // SCRUM-28: Energy Boost configuration.
     [Header("Energy Boost")]
     [SerializeField, Min(0.1f)]
     private float energyBoostDuration = 30f;
@@ -63,6 +62,11 @@ public class ServiceBuilding : MonoBehaviour
 
     [SerializeField]
     private float energyBoostRemainingTime;
+
+    // SCRUM-27: Track the last day Energy Boost was used.
+    [Header("Daily Energy Boost Usage")]
+    [SerializeField]
+    private int lastEnergyBoostUsedDay = -1;
 
     [Header("Debug")]
     [SerializeField] private int occupiedSeats;
@@ -136,15 +140,31 @@ public class ServiceBuilding : MonoBehaviour
 
     public float Utilization => buildingPerformanceMultiplier;
 
-    // SCRUM-28: Energy Boost properties.
     public bool IsEnergyBoostActive => isEnergyBoostActive;
-
     public float EnergyBoostDuration => energyBoostDuration;
-
     public float EnergyBoostMultiplier => energyBoostMultiplier;
 
     public float EnergyBoostRemainingTime =>
         energyBoostRemainingTime;
+
+    // SCRUM-27: Daily usage information.
+    public int LastEnergyBoostUsedDay =>
+        lastEnergyBoostUsedDay;
+
+    public bool HasUsedEnergyBoostToday
+    {
+        get
+        {
+            DayStateManager dayManager =
+                DayStateManager.Instance;
+
+            if (dayManager == null || dayManager.CurrentDay < 1)
+                return false;
+
+            return lastEnergyBoostUsedDay ==
+                   dayManager.CurrentDay;
+        }
+    }
 
     public event Action<ServiceBuilding, float> OnUnitServed;
 
@@ -179,6 +199,9 @@ public class ServiceBuilding : MonoBehaviour
 
         isEnergyBoostActive = false;
         energyBoostRemainingTime = 0f;
+
+        // No boost has been used in this game session.
+        lastEnergyBoostUsedDay = -1;
 
         RefreshWorkerRequirement();
     }
@@ -294,12 +317,9 @@ public class ServiceBuilding : MonoBehaviour
         RecalculateBuildingPerformance();
     }
 
-    // SCRUM-28: Calculates worker speed and applies
-    // the temporary Energy Boost multiplier.
     private void RecalculateBuildingPerformance()
     {
         float previousMultiplier = buildingPerformanceMultiplier;
-
         float baseWorkerMultiplier = 0f;
 
         if (!canOperate)
@@ -343,8 +363,6 @@ public class ServiceBuilding : MonoBehaviour
             }
         }
 
-        // SCRUM-28 SUBTASK 2:
-        // Energy Boost multiplies existing worker speed.
         float activeBoostMultiplier = isEnergyBoostActive
             ? energyBoostMultiplier
             : 1f;
@@ -463,10 +481,46 @@ public class ServiceBuilding : MonoBehaviour
             return false;
         }
 
+        DayStateManager dayManager =
+            DayStateManager.Instance;
+
+        if (dayManager == null || dayManager.CurrentDay < 1)
+        {
+            Debug.LogWarning(
+                $"{name}: Cannot activate Energy Boost. " +
+                "A valid game day is not available.",
+                this
+            );
+
+            return false;
+        }
+
+        // SCRUM-27 SUBTASK 2:
+        // Reject a second activation on the same game day.
+        if (HasUsedEnergyBoostToday)
+        {
+            Debug.LogWarning(
+                $"{name}: Energy Boost already used on " +
+                $"Day {dayManager.CurrentDay}. " +
+                "Available again on the next game day.",
+                this
+            );
+
+            return false;
+        }
+
+        // SCRUM-27: Record the successful activation day.
+        lastEnergyBoostUsedDay = dayManager.CurrentDay;
+
+        Debug.Log(
+            $"{name}: Energy Boost usage recorded for " +
+            $"Day {lastEnergyBoostUsedDay}.",
+            this
+        );
+
         isEnergyBoostActive = true;
         energyBoostRemainingTime = energyBoostDuration;
 
-        // SCRUM-28: Immediately apply boosted speed.
         RecalculateBuildingPerformance();
 
         OnEnergyBoostStateChanged?.Invoke(this, true);
@@ -505,7 +559,6 @@ public class ServiceBuilding : MonoBehaviour
         isEnergyBoostActive = false;
         energyBoostRemainingTime = 0f;
 
-        // SCRUM-28: Restore current worker-based speed.
         RecalculateBuildingPerformance();
 
         OnEnergyBoostStateChanged?.Invoke(this, false);
@@ -570,7 +623,6 @@ public class ServiceBuilding : MonoBehaviour
 
     private void UpdateActiveServices(GuestNeed need)
     {
-        // SCRUM-28: Utilization now includes Energy Boost.
         float progress = Time.deltaTime * Utilization;
 
         for (int i = activeServices.Count - 1; i >= 0; i--)
