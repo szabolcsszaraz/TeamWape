@@ -1390,6 +1390,7 @@ MonoBehaviour:
   energyBoostMultiplier: 1.5
   isEnergyBoostActive: 0
   energyBoostRemainingTime: 0
+  lastEnergyBoostUsedDay: -1
   occupiedSeats: 0
   servedThisWave: 0
   waitingRequests: 0
@@ -2589,10 +2590,11 @@ MonoBehaviour:
   noWorkerUtilization: 0.33
   additionalWorkerBonus: 0.5
   serviceQueue: {fileID: 2127506319}
-  energyBoostDuration: 30
+  energyBoostDuration: 10
   energyBoostMultiplier: 1.5
   isEnergyBoostActive: 0
   energyBoostRemainingTime: 0
+  lastEnergyBoostUsedDay: -1
   occupiedSeats: 0
   servedThisWave: 0
   waitingRequests: 0
@@ -5296,6 +5298,7 @@ MonoBehaviour:
   energyBoostMultiplier: 1.5
   isEnergyBoostActive: 0
   energyBoostRemainingTime: 0
+  lastEnergyBoostUsedDay: -1
   occupiedSeats: 0
   servedThisWave: 0
   waitingRequests: 0
@@ -9929,6 +9932,7 @@ MonoBehaviour:
   energyBoostMultiplier: 1.5
   isEnergyBoostActive: 0
   energyBoostRemainingTime: 0
+  lastEnergyBoostUsedDay: -1
   occupiedSeats: 0
   servedThisWave: 0
   waitingRequests: 0
@@ -10402,6 +10406,7 @@ MonoBehaviour:
   energyBoostMultiplier: 1.5
   isEnergyBoostActive: 0
   energyBoostRemainingTime: 0
+  lastEnergyBoostUsedDay: -1
   occupiedSeats: 0
   servedThisWave: 0
   waitingRequests: 0
