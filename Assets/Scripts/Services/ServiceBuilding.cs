@@ -56,6 +56,11 @@ public class ServiceBuilding : MonoBehaviour
     [SerializeField, Min(1f)]
     private float energyBoostMultiplier = 1.5f;
 
+    [Header("Energy Boost Gem Cost")]
+    [Tooltip("How many seconds of Energy Boost duration one Gem pays for.")]
+    [SerializeField, Min(0.1f)]
+    private float energyBoostSecondsPerGem = 10f;
+
     [Header("Energy Boost Debug")]
     [SerializeField]
     private bool isEnergyBoostActive;
@@ -143,6 +148,26 @@ public class ServiceBuilding : MonoBehaviour
     public bool IsEnergyBoostActive => isEnergyBoostActive;
     public float EnergyBoostDuration => energyBoostDuration;
     public float EnergyBoostMultiplier => energyBoostMultiplier;
+
+    public int EnergyBoostGemCost
+    {
+        get
+        {
+            double cost = Math.Ceiling(
+                (double)energyBoostDuration /
+                Math.Max(0.1f, energyBoostSecondsPerGem)
+            );
+            return cost >= int.MaxValue ? int.MaxValue : (int)cost;
+        }
+    }
+
+    public bool CanActivateEnergyBoost =>
+        isActiveAndEnabled &&
+        canOperate &&
+        !isEnergyBoostActive &&
+        DayStateManager.Instance != null &&
+        DayStateManager.Instance.CurrentDay > 0 &&
+        !HasUsedEnergyBoostToday;
 
     public float EnergyBoostRemainingTime =>
         energyBoostRemainingTime;
@@ -447,7 +472,69 @@ public class ServiceBuilding : MonoBehaviour
         UpdateCurrentServiceState();
     }
 
+    // Compatibility entry point: do not allow free activation.
+    // Update BuildingWorkersUI to call the paid method after confirmation.
     public bool TryActivateEnergyBoost()
+    {
+        Debug.LogWarning(
+            $"{name}: Free Energy Boost activation is disabled. " +
+            "Use TryActivateEnergyBoostWithGems instead.",
+            this
+        );
+        return false;
+    }
+
+    // The only gameplay entry point for Energy Boost activation.
+    // Validates eligibility and balance BEFORE spending Gems.
+    public bool TryActivateEnergyBoostWithGems(PlayerGemsManager gemsManager)
+    {
+        if (!CanActivateEnergyBoost)
+        {
+            Debug.LogWarning(
+                $"{name}: Energy Boost is unavailable or already used today.",
+                this
+            );
+            return false;
+        }
+
+        if (gemsManager == null)
+        {
+            Debug.LogError($"{name}: PlayerGemsManager missing!", this);
+            return false;
+        }
+
+        int cost = EnergyBoostGemCost;
+        if (!gemsManager.HasEnoughGems(cost))
+        {
+            Debug.LogWarning(
+                $"{name}: Insufficient Gems for Energy Boost " +
+                $"({gemsManager.CurrentGems}/{cost}).",
+                this
+            );
+            return false;
+        }
+
+        if (!gemsManager.TrySpendGems(cost))
+            return false;
+
+        // No normal failure path remains after validated payment.
+        bool activated = ActivateEnergyBoostAfterPayment();
+        if (!activated)
+        {
+            // Defensive fallback in case eligibility changed unexpectedly.
+            gemsManager.AddGems(cost);
+            Debug.LogError(
+                $"{name}: Energy Boost failed after payment; refunded {cost} Gems.",
+                this
+            );
+            return false;
+        }
+
+        Debug.Log($"{name}: Energy Boost purchased for {cost} Gems.", this);
+        return true;
+    }
+
+    private bool ActivateEnergyBoostAfterPayment()
     {
         if (!isActiveAndEnabled)
         {
@@ -797,6 +884,11 @@ public class ServiceBuilding : MonoBehaviour
         energyBoostMultiplier = Mathf.Max(
             1f,
             energyBoostMultiplier
+        );
+
+        energyBoostSecondsPerGem = Mathf.Max(
+            0.1f,
+            energyBoostSecondsPerGem
         );
     }
 }

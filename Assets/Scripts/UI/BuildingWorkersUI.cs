@@ -25,8 +25,6 @@ public class BuildingWorkersUI : MonoBehaviour
     [SerializeField] private GameObject workerListItemPrefab;
 
     [Header("Repair / Upgrade UI")]
-    [Tooltip("Shown for ruined buildings (Repair) and upgradable " +
-             "buildings (Upgrade). Holds the action button.")]
     [SerializeField] private GameObject repairSection;
     [SerializeField] private Button repairButton;
     [SerializeField] private TMP_Text repairButtonText;
@@ -34,6 +32,26 @@ public class BuildingWorkersUI : MonoBehaviour
     [Header("Building Upgrade Statistics")]
     [SerializeField] private TMP_Text capacityText;
     [SerializeField] private TMP_Text qualityText;
+
+    [Header("Building Upgrade Timer UI")]
+    [SerializeField] private GameObject upgradeTimerSection;
+    [SerializeField] private TMP_Text upgradeTimerTitle;
+    [SerializeField] private TMP_Text upgradeTimerText;
+    [SerializeField] private Image upgradeProgressFill;
+
+    [Header("Skip Upgrade UI")]
+    [SerializeField] private Button skipUpgradeButton;
+    [SerializeField] private TMP_Text skipUpgradeButtonText;
+
+    // SCRUM-21: Confirmation dialog references.
+    [Header("Skip Upgrade Confirmation UI")]
+    [SerializeField] private GameObject skipUpgradeConfirmPanel;
+    [SerializeField] private TMP_Text confirmTitleText;
+    [SerializeField] private TMP_Text confirmDescriptionText;
+    [SerializeField] private TMP_Text confirmCostText;
+    [SerializeField] private TMP_Text confirmBalanceText;
+    [SerializeField] private Button cancelButton;
+    [SerializeField] private Button confirmButton;
 
     [Header("Energy Boost UI")]
     [SerializeField] private GameObject energyBoostSection;
@@ -45,7 +63,6 @@ public class BuildingWorkersUI : MonoBehaviour
     [SerializeField] private TMP_Text energyBoostTimerText;
     [SerializeField] private Image energyBoostTimerFill;
 
-    // SCRUM-29: Timer progress bar colors.
     [Header("Energy Boost Timer Colors")]
     [SerializeField] private Color timerHighColor =
         new Color(0.20f, 0.75f, 0.40f);
@@ -56,7 +73,6 @@ public class BuildingWorkersUI : MonoBehaviour
     [SerializeField] private Color timerLowColor =
         new Color(0.90f, 0.30f, 0.30f);
 
-    // SCRUM-29: Configurable color thresholds.
     [Header("Energy Boost Timer Color Thresholds")]
     [SerializeField, Range(0f, 1f)]
     private float lowTimeThreshold = 0.33f;
@@ -67,7 +83,19 @@ public class BuildingWorkersUI : MonoBehaviour
     private BuildingRepair ruinedBuilding;
     private BuildingUpgrade buildingUpgrade;
     private PlayerCoinsManager coinsManager;
+    private PlayerGemsManager gemsManager;
     private DayStateManager dayStateManager;
+
+    // The building being confirmed is tracked separately
+    // so switching to another building cannot spend Gems
+    // on the wrong upgrade.
+    private BuildingUpgrade pendingSkipUpgrade;
+
+    // Timed Repair uses the same timer and confirmation dialog.
+    private BuildingRepair pendingSkipRepair;
+
+    // Energy Boost uses the same confirmation dialog as Skip Upgrade.
+    private ServiceBuilding pendingEnergyBoost;
 
     private WorkerData selectedWorker;
 
@@ -79,13 +107,19 @@ public class BuildingWorkersUI : MonoBehaviour
 
     private void Awake()
     {
-        coinsManager = FindFirstObjectByType<PlayerCoinsManager>();
+        coinsManager =
+            FindFirstObjectByType<PlayerCoinsManager>();
+
+        gemsManager =
+            FindFirstObjectByType<PlayerGemsManager>();
 
         dayStateManager = DayStateManager.Instance;
 
         if (repairButton != null)
         {
-            repairButton.onClick.AddListener(HandleRepairClicked);
+            repairButton.onClick.AddListener(
+                HandleRepairClicked
+            );
         }
 
         if (energyBoostButton != null)
@@ -94,29 +128,91 @@ public class BuildingWorkersUI : MonoBehaviour
                 HandleEnergyBoostClicked
             );
         }
+
+        if (skipUpgradeButton != null)
+        {
+            skipUpgradeButton.onClick.AddListener(
+                HandleSkipUpgradeClicked
+            );
+        }
+
+        if (cancelButton != null)
+        {
+            cancelButton.onClick.AddListener(
+                HandleCancelSkipClicked
+            );
+        }
+
+        if (confirmButton != null)
+        {
+            confirmButton.onClick.AddListener(
+                HandleConfirmSkipClicked
+            );
+        }
+
+        // Hide the dialog at startup.
+        CloseSkipConfirmation();
     }
 
     private void OnEnable()
     {
         SubscribeToBuildingEvents();
+        SubscribeToUpgradeEvents();
+        SubscribeToRepairEvents();
         SubscribeToDayEvents();
 
-        RefreshUI();
+        if (coinsManager == null)
+        {
+            coinsManager =
+                FindFirstObjectByType<PlayerCoinsManager>();
+        }
 
         if (coinsManager != null)
         {
+            coinsManager.OnCoinsChanged -= HandleCoinsChanged;
             coinsManager.OnCoinsChanged += HandleCoinsChanged;
         }
+
+        if (gemsManager == null)
+        {
+            gemsManager =
+                FindFirstObjectByType<PlayerGemsManager>();
+        }
+
+        if (gemsManager != null)
+        {
+            gemsManager.OnGemsChanged -= HandleGemsChanged;
+            gemsManager.OnGemsChanged += HandleGemsChanged;
+        }
+        else
+        {
+            Debug.LogWarning(
+                "BuildingWorkersUI: PlayerGemsManager not found. " +
+                "Skip Upgrade will remain unavailable.",
+                this
+            );
+        }
+
+        RefreshUI();
     }
 
     private void OnDisable()
     {
+        CloseSkipConfirmation();
+
         UnsubscribeFromBuildingEvents();
+        UnsubscribeFromUpgradeEvents();
+        UnsubscribeFromRepairEvents();
         UnsubscribeFromDayEvents();
 
         if (coinsManager != null)
         {
             coinsManager.OnCoinsChanged -= HandleCoinsChanged;
+        }
+
+        if (gemsManager != null)
+        {
+            gemsManager.OnGemsChanged -= HandleGemsChanged;
         }
     }
 
@@ -135,14 +231,47 @@ public class BuildingWorkersUI : MonoBehaviour
                 HandleEnergyBoostClicked
             );
         }
+
+        if (skipUpgradeButton != null)
+        {
+            skipUpgradeButton.onClick.RemoveListener(
+                HandleSkipUpgradeClicked
+            );
+        }
+
+        if (cancelButton != null)
+        {
+            cancelButton.onClick.RemoveListener(
+                HandleCancelSkipClicked
+            );
+        }
+
+        if (confirmButton != null)
+        {
+            confirmButton.onClick.RemoveListener(
+                HandleConfirmSkipClicked
+            );
+        }
     }
 
     private void Update()
     {
-        if (serviceBuilding == null || ruinedBuilding != null)
-            return;
+        if ((buildingUpgrade != null && buildingUpgrade.IsUpgrading) ||
+            (ruinedBuilding != null && ruinedBuilding.IsRepairing))
+        {
+            RefreshUpgradeTimerUI();
+        }
 
-        if (serviceBuilding.IsEnergyBoostActive)
+        if (pendingSkipUpgrade != null ||
+            pendingSkipRepair != null ||
+            pendingEnergyBoost != null)
+        {
+            RefreshSkipConfirmation();
+        }
+
+        if (serviceBuilding != null &&
+            ruinedBuilding == null &&
+            serviceBuilding.IsEnergyBoostActive)
         {
             RefreshEnergyBoostUI();
         }
@@ -159,7 +288,10 @@ public class BuildingWorkersUI : MonoBehaviour
         }
     }
 
-    // SCRUM-27: Subscribe to game day changes.
+    // --------------------------------------------------
+    // DAY EVENTS
+    // --------------------------------------------------
+
     private void SubscribeToDayEvents()
     {
         if (dayStateManager == null)
@@ -199,11 +331,22 @@ public class BuildingWorkersUI : MonoBehaviour
         RefreshEnergyBoostUI();
     }
 
+    // --------------------------------------------------
+    // REPAIR / UPGRADE ACTIONS
+    // --------------------------------------------------
+
     public void SetRuinedBuilding(BuildingRepair repair)
     {
+        CloseSkipConfirmation();
         SetBuilding(null);
 
         ruinedBuilding = repair;
+
+        if (isActiveAndEnabled)
+        {
+            SubscribeToRepairEvents();
+        }
+
         RefreshUI();
     }
 
@@ -211,58 +354,674 @@ public class BuildingWorkersUI : MonoBehaviour
     {
         if (ruinedBuilding != null)
         {
-            BuildingRepair repaired = ruinedBuilding;
+            if (ruinedBuilding.IsRepairing)
+            {
+                RefreshRepairSection();
+                return;
+            }
 
-            if (!repaired.TryRepair())
+            BuildingRepair repair = ruinedBuilding;
+            if (!repair.TryRepair())
             {
                 RefreshUI();
                 return;
             }
 
-            SetBuilding(repaired.RepairedWorkerAssignment);
+            // A successful TryRepair starts the timer, not the model swap.
+            // A zero-duration repair can complete in the same call.
+            if (repair.IsRepaired)
+            {
+                HandleRepairCompleted(repair);
+            }
+            else
+            {
+                RefreshUI();
+            }
             return;
         }
 
         if (buildingUpgrade != null)
         {
-            buildingUpgrade.TryUpgrade();
-            RefreshUI();
+            bool started = buildingUpgrade.TryUpgrade();
+
+            if (started)
+            {
+                Debug.Log(
+                    $"{buildingUpgrade.name}: Timed upgrade started.",
+                    this
+                );
+            }
+
+            RefreshRepairSection();
+            RefreshUpgradeTimerUI();
         }
     }
 
-    private void HandleEnergyBoostClicked()
+    private void HandleCoinsChanged(int coins)
     {
-        if (ruinedBuilding != null || serviceBuilding == null)
-            return;
+        RefreshRepairSection();
+    }
 
-        // SCRUM-27:
-        // The building itself enforces the daily limit.
-        if (serviceBuilding.HasUsedEnergyBoostToday)
+    private void HandleGemsChanged(int newBalance)
+    {
+        RefreshUpgradeTimerUI();
+
+        if (pendingSkipUpgrade != null ||
+            pendingSkipRepair != null ||
+            pendingEnergyBoost != null)
         {
-            Debug.LogWarning(
-                $"{serviceBuilding.name}: Energy Boost " +
-                "has already been used today.",
+            RefreshSkipConfirmation();
+        }
+    }
+
+    // --------------------------------------------------
+    // SCRUM-21: SKIP UPGRADE CONFIRMATION
+    // --------------------------------------------------
+
+    private void HandleSkipUpgradeClicked()
+    {
+        // The same button skips either a timed Repair or an Upgrade.
+        if (ruinedBuilding != null)
+        {
+            OpenSkipRepairConfirmation();
+            return;
+        }
+
+        if (buildingUpgrade == null ||
+            !buildingUpgrade.IsUpgrading ||
+            gemsManager == null)
+        {
+            return;
+        }
+
+        int gemCost = buildingUpgrade.SkipUpgradeGemCost;
+        if (gemCost <= 0 ||
+            !gemsManager.HasEnoughGems(gemCost))
+        {
+            RefreshUpgradeTimerUI();
+            return;
+        }
+
+        CloseSkipConfirmation();
+        pendingSkipUpgrade = buildingUpgrade;
+        OpenSharedConfirmation();
+    }
+
+    private void OpenSkipRepairConfirmation()
+    {
+        if (ruinedBuilding == null ||
+            !ruinedBuilding.IsRepairing ||
+            gemsManager == null)
+        {
+            return;
+        }
+
+        int gemCost = ruinedBuilding.SkipRepairGemCost;
+        if (gemCost <= 0 ||
+            !gemsManager.HasEnoughGems(gemCost))
+        {
+            RefreshUpgradeTimerUI();
+            return;
+        }
+
+        CloseSkipConfirmation();
+        pendingSkipRepair = ruinedBuilding;
+        OpenSharedConfirmation();
+    }
+
+    private void OpenSharedConfirmation()
+    {
+        if (skipUpgradeConfirmPanel == null)
+        {
+            Debug.LogError(
+                "BuildingWorkersUI: Shared confirmation panel is missing!",
                 this
             );
+            CloseSkipConfirmation();
+            return;
+        }
 
+        skipUpgradeConfirmPanel.SetActive(true);
+        skipUpgradeConfirmPanel.transform.SetAsLastSibling();
+        RefreshSkipConfirmation();
+    }
+
+    // Reuse the existing confirmation panel for paid Energy Boost.
+    private void OpenEnergyBoostConfirmation()
+    {
+        if (ruinedBuilding != null ||
+            serviceBuilding == null ||
+            gemsManager == null ||
+            !serviceBuilding.CanActivateEnergyBoost)
+        {
             RefreshEnergyBoostUI();
             return;
         }
 
-        bool activated =
-            serviceBuilding.TryActivateEnergyBoost();
-
-        if (activated)
+        int gemCost = serviceBuilding.EnergyBoostGemCost;
+        if (gemCost <= 0 || !gemsManager.HasEnoughGems(gemCost))
         {
-            Debug.Log(
-                $"Energy Boost activated for selected building: " +
-                $"{serviceBuilding.gameObject.name}",
-                this
-            );
+            RefreshEnergyBoostUI();
+            return;
         }
 
-        RefreshEnergyBoostUI();
-        RefreshServiceInformation();
+        CloseSkipConfirmation();
+        pendingEnergyBoost = serviceBuilding;
+        OpenSharedConfirmation();
+    }
+
+    private void HandleCancelSkipClicked()
+    {
+        CloseSkipConfirmation();
+    }
+
+    private void HandleConfirmSkipClicked()
+    {
+        // The same Confirm button can purchase Energy Boost
+        // or immediately complete an ongoing building upgrade.
+        if (pendingEnergyBoost != null)
+        {
+            if (pendingEnergyBoost != serviceBuilding ||
+                ruinedBuilding != null ||
+                gemsManager == null ||
+                !pendingEnergyBoost.CanActivateEnergyBoost)
+            {
+                CloseSkipConfirmation();
+                RefreshEnergyBoostUI();
+                return;
+            }
+
+            int gemCost = pendingEnergyBoost.EnergyBoostGemCost;
+            if (gemCost <= 0 || !gemsManager.HasEnoughGems(gemCost))
+            {
+                RefreshSkipConfirmation();
+                return;
+            }
+
+            ServiceBuilding selectedBoost = pendingEnergyBoost;
+            bool activated = selectedBoost.TryActivateEnergyBoostWithGems(
+                gemsManager
+            );
+
+            CloseSkipConfirmation();
+            RefreshEnergyBoostUI();
+            RefreshServiceInformation();
+
+            if (activated)
+            {
+                Debug.Log(
+                    $"BuildingWorkersUI: Purchased Energy Boost for " +
+                    $"{selectedBoost.name} ({gemCost} Gems).",
+                    this
+                );
+            }
+            return;
+        }
+
+        if (pendingSkipRepair != null)
+        {
+            BuildingRepair repair = pendingSkipRepair;
+
+            if (repair != ruinedBuilding ||
+                !repair.IsRepairing ||
+                gemsManager == null)
+            {
+                CloseSkipConfirmation();
+                return;
+            }
+
+            int cost = repair.SkipRepairGemCost;
+            if (cost <= 0)
+            {
+                CloseSkipConfirmation();
+                return;
+            }
+
+            if (!gemsManager.HasEnoughGems(cost))
+            {
+                RefreshSkipConfirmation();
+                RefreshUpgradeTimerUI();
+                return;
+            }
+
+            bool repairCompleted = repair.TrySkipRepairWithGems(gemsManager);
+
+            // OnRepairCompleted may already have switched the panel.
+            CloseSkipConfirmation();
+            if (repairCompleted && ruinedBuilding == repair && repair.IsRepaired)
+            {
+                HandleRepairCompleted(repair);
+            }
+
+            RefreshUI();
+            return;
+        }
+
+        if (pendingSkipUpgrade == null ||
+            pendingSkipUpgrade != buildingUpgrade ||
+            !pendingSkipUpgrade.IsUpgrading ||
+            gemsManager == null)
+        {
+            CloseSkipConfirmation();
+            return;
+        }
+
+        int currentCost = pendingSkipUpgrade.SkipUpgradeGemCost;
+        if (currentCost <= 0)
+        {
+            CloseSkipConfirmation();
+            return;
+        }
+
+        if (!gemsManager.HasEnoughGems(currentCost))
+        {
+            Debug.LogWarning(
+                "Not enough Gems to confirm Skip Upgrade.", this
+            );
+            RefreshSkipConfirmation();
+            RefreshUpgradeTimerUI();
+            return;
+        }
+
+        bool completed = pendingSkipUpgrade.TrySkipUpgradeWithGems(
+            gemsManager
+        );
+
+        CloseSkipConfirmation();
+        if (completed)
+        {
+            Debug.Log(
+                "BuildingWorkersUI: Skip Upgrade completed.", this
+            );
+        }
+        RefreshUI();
+    }
+
+    private void RefreshSkipConfirmation()
+    {
+        // Paid Energy Boost confirmation mode.
+        if (pendingEnergyBoost != null)
+        {
+            if (pendingEnergyBoost != serviceBuilding ||
+                ruinedBuilding != null ||
+                !pendingEnergyBoost.CanActivateEnergyBoost)
+            {
+                CloseSkipConfirmation();
+                return;
+            }
+
+            int cost = pendingEnergyBoost.EnergyBoostGemCost;
+            int balance = gemsManager != null
+                ? gemsManager.CurrentGems : 0;
+
+            if (confirmTitleText != null)
+                confirmTitleText.text = "Activate Energy Boost?";
+
+            if (confirmDescriptionText != null)
+            {
+                confirmDescriptionText.text =
+                    $"Boost service speed x" +
+                    $"{pendingEnergyBoost.EnergyBoostMultiplier:0.00} for " +
+                    $"{pendingEnergyBoost.EnergyBoostDuration:0} seconds?";
+            }
+
+            if (confirmCostText != null)
+                confirmCostText.text = $"Cost: {cost} " +
+                    (cost == 1 ? "Gem" : "Gems");
+
+            if (confirmBalanceText != null)
+                confirmBalanceText.text = $"Your Gems: {balance}";
+
+            if (confirmButton != null)
+                confirmButton.interactable = cost > 0 &&
+                    gemsManager != null && gemsManager.HasEnoughGems(cost);
+            return;
+        }
+
+        // Repair uses the same confirmation panel with different text.
+        if (pendingSkipRepair != null)
+        {
+            if (pendingSkipRepair != ruinedBuilding ||
+                !pendingSkipRepair.IsRepairing)
+            {
+                CloseSkipConfirmation();
+                return;
+            }
+
+            int cost = pendingSkipRepair.SkipRepairGemCost;
+            int balance = gemsManager != null
+                ? gemsManager.CurrentGems : 0;
+
+            if (confirmTitleText != null)
+                confirmTitleText.text = "Skip Building Repair?";
+
+            if (confirmDescriptionText != null)
+                confirmDescriptionText.text =
+                    $"Complete the repair of {pendingSkipRepair.BuildingName} immediately?";
+
+            if (confirmCostText != null)
+                confirmCostText.text = $"Cost: {cost} " +
+                    (cost == 1 ? "Gem" : "Gems");
+
+            if (confirmBalanceText != null)
+                confirmBalanceText.text = $"Your Gems: {balance}";
+
+            if (confirmButton != null)
+                confirmButton.interactable = cost > 0 &&
+                    gemsManager != null && gemsManager.HasEnoughGems(cost);
+            return;
+        }
+
+        // Existing Skip Upgrade confirmation mode.
+        if (pendingSkipUpgrade == null ||
+            pendingSkipUpgrade != buildingUpgrade ||
+            !pendingSkipUpgrade.IsUpgrading ||
+            ruinedBuilding != null)
+        {
+            CloseSkipConfirmation();
+            return;
+        }
+
+        int gemCost = pendingSkipUpgrade.SkipUpgradeGemCost;
+        int currentBalance = gemsManager != null
+            ? gemsManager.CurrentGems : 0;
+
+        bool canConfirm = gemsManager != null &&
+            gemCost > 0 && gemsManager.HasEnoughGems(gemCost);
+
+        if (confirmTitleText != null)
+            confirmTitleText.text = "Skip Building Upgrade?";
+
+        if (confirmDescriptionText != null)
+            confirmDescriptionText.text =
+                $"Complete the upgrade to Level " +
+                $"{pendingSkipUpgrade.UpgradingToLevel} immediately?";
+
+        if (confirmCostText != null)
+            confirmCostText.text = $"Cost: {gemCost} " +
+                (gemCost == 1 ? "Gem" : "Gems");
+
+        if (confirmBalanceText != null)
+            confirmBalanceText.text = $"Your Gems: {currentBalance}";
+
+        if (confirmButton != null)
+            confirmButton.interactable = canConfirm;
+    }
+
+    private void CloseSkipConfirmation()
+    {
+        pendingSkipUpgrade = null;
+        pendingSkipRepair = null;
+        pendingEnergyBoost = null;
+
+        if (skipUpgradeConfirmPanel != null)
+            skipUpgradeConfirmPanel.SetActive(false);
+    }
+
+    // --------------------------------------------------
+    // BUILDING UPGRADE EVENTS
+    // --------------------------------------------------
+
+    private void SubscribeToUpgradeEvents()
+    {
+        if (buildingUpgrade == null)
+            return;
+
+        buildingUpgrade.OnUpgradeStarted -=
+            HandleUpgradeStarted;
+        buildingUpgrade.OnUpgradeStarted +=
+            HandleUpgradeStarted;
+
+        buildingUpgrade.OnUpgradeCompleted -=
+            HandleUpgradeCompleted;
+        buildingUpgrade.OnUpgradeCompleted +=
+            HandleUpgradeCompleted;
+    }
+
+    private void UnsubscribeFromUpgradeEvents()
+    {
+        if (buildingUpgrade == null)
+            return;
+
+        buildingUpgrade.OnUpgradeStarted -=
+            HandleUpgradeStarted;
+
+        buildingUpgrade.OnUpgradeCompleted -=
+            HandleUpgradeCompleted;
+    }
+
+    private void HandleUpgradeStarted(
+        BuildingUpgrade upgrade)
+    {
+        if (upgrade != buildingUpgrade)
+            return;
+
+        RefreshRepairSection();
+        RefreshUpgradeTimerUI();
+    }
+
+    private void HandleUpgradeCompleted(
+        BuildingUpgrade upgrade)
+    {
+        if (upgrade != buildingUpgrade)
+            return;
+
+        if (pendingSkipUpgrade == upgrade)
+        {
+            CloseSkipConfirmation();
+        }
+
+        RefreshUI();
+    }
+
+    // --------------------------------------------------
+    // BUILDING REPAIR EVENTS
+    // --------------------------------------------------
+
+    private void SubscribeToRepairEvents()
+    {
+        if (ruinedBuilding == null)
+            return;
+
+        ruinedBuilding.OnRepairStarted -= HandleRepairStarted;
+        ruinedBuilding.OnRepairStarted += HandleRepairStarted;
+        ruinedBuilding.OnRepairCompleted -= HandleRepairCompleted;
+        ruinedBuilding.OnRepairCompleted += HandleRepairCompleted;
+    }
+
+    private void UnsubscribeFromRepairEvents()
+    {
+        if (ruinedBuilding == null)
+            return;
+
+        ruinedBuilding.OnRepairStarted -= HandleRepairStarted;
+        ruinedBuilding.OnRepairCompleted -= HandleRepairCompleted;
+    }
+
+    private void HandleRepairStarted(BuildingRepair repair)
+    {
+        if (repair != ruinedBuilding)
+            return;
+
+        RefreshRepairSection();
+    }
+
+    private void HandleRepairCompleted(BuildingRepair repair)
+    {
+        if (repair != ruinedBuilding || !repair.IsRepaired)
+            return;
+
+        // The repair event fires after OnRepaired, so models are ready.
+        CloseSkipConfirmation();
+        SetBuilding(repair.RepairedWorkerAssignment);
+    }
+
+    // --------------------------------------------------
+    // REPAIR / UPGRADE PANEL VISIBILITY
+    // --------------------------------------------------
+
+    private void RefreshRepairSection()
+    {
+        bool hasRuinedBuilding = ruinedBuilding != null &&
+            !ruinedBuilding.IsRepaired;
+
+        bool isRepairing = hasRuinedBuilding &&
+            ruinedBuilding.IsRepairing;
+
+        bool showRepairButton = hasRuinedBuilding && !isRepairing;
+
+        bool isUpgrading = !hasRuinedBuilding &&
+            buildingUpgrade != null &&
+            buildingUpgrade.IsUpgrading;
+
+        bool showUpgradeButton = !hasRuinedBuilding &&
+            !isUpgrading &&
+            buildingUpgrade != null &&
+            buildingUpgrade.CanUpgrade;
+
+        bool showTimer = isRepairing || isUpgrading;
+
+        if (repairSection != null)
+            repairSection.SetActive(
+                showRepairButton || showUpgradeButton || showTimer
+            );
+
+        if (repairButton != null)
+            repairButton.gameObject.SetActive(
+                showRepairButton || showUpgradeButton
+            );
+
+        if (upgradeTimerSection != null)
+            upgradeTimerSection.SetActive(showTimer);
+
+        if (showRepairButton)
+        {
+            if (repairButton != null)
+                repairButton.interactable = ruinedBuilding.CanAfford;
+
+            if (repairButtonText != null)
+                repairButtonText.text =
+                    $"Repair ({ruinedBuilding.RepairCost}$)";
+        }
+        else if (showUpgradeButton)
+        {
+            if (repairButton != null)
+                repairButton.interactable = buildingUpgrade.CanAfford;
+
+            if (repairButtonText != null)
+            {
+                int currentCapacity = serviceBuilding != null
+                    ? serviceBuilding.Seats : 0;
+
+                repairButtonText.text =
+                    $"Upgrade Lv. {buildingUpgrade.CurrentLevel + 1}\n" +
+                    $"Capacity: {currentCapacity} → " +
+                    $"{buildingUpgrade.NextLevelCapacity}\n" +
+                    $"{buildingUpgrade.NextLevelCost} Coins";
+            }
+        }
+
+        RefreshUpgradeTimerUI();
+    }
+
+    // --------------------------------------------------
+    // UPGRADE TIMER AND SKIP COST
+    // --------------------------------------------------
+
+    // Shared timer: the same serialized references work for Repair and Upgrade.
+    private void RefreshUpgradeTimerUI()
+    {
+        bool isRepairing = ruinedBuilding != null &&
+            ruinedBuilding.IsRepairing;
+
+        bool isUpgrading = !isRepairing &&
+            ruinedBuilding == null &&
+            buildingUpgrade != null &&
+            buildingUpgrade.IsUpgrading;
+
+        bool shouldShow = isRepairing || isUpgrading;
+
+        if (upgradeTimerSection != null)
+            upgradeTimerSection.SetActive(shouldShow);
+
+        if (!shouldShow)
+        {
+            if (upgradeTimerText != null)
+                upgradeTimerText.text = "Remaining 00:00";
+
+            if (upgradeProgressFill != null)
+                upgradeProgressFill.fillAmount = 0f;
+
+            if (skipUpgradeButton != null)
+            {
+                skipUpgradeButton.interactable = false;
+                skipUpgradeButton.gameObject.SetActive(false);
+            }
+            return;
+        }
+
+        float remaining;
+        float progress;
+        int gemCost;
+        string actionLabel;
+
+        if (isRepairing)
+        {
+            if (upgradeTimerTitle != null)
+                upgradeTimerTitle.text = "Repairing Building";
+
+            remaining = ruinedBuilding.RepairRemainingTime;
+            progress = ruinedBuilding.RepairProgress;
+            gemCost = ruinedBuilding.SkipRepairGemCost;
+            actionLabel = "Skip Repair";
+        }
+        else
+        {
+            if (upgradeTimerTitle != null)
+                upgradeTimerTitle.text =
+                    $"Upgrading to Level {buildingUpgrade.UpgradingToLevel}";
+
+            remaining = buildingUpgrade.UpgradeRemainingTime;
+            progress = buildingUpgrade.UpgradeProgress;
+            gemCost = buildingUpgrade.SkipUpgradeGemCost;
+            actionLabel = "Skip Upgrade";
+        }
+
+        int totalSeconds = Mathf.CeilToInt(Mathf.Max(0f, remaining));
+        int minutes = totalSeconds / 60;
+        int seconds = totalSeconds % 60;
+
+        if (upgradeTimerText != null)
+            upgradeTimerText.text =
+                $"Remaining {minutes:00}:{seconds:00}";
+
+        if (upgradeProgressFill != null)
+            upgradeProgressFill.fillAmount = progress;
+
+        if (skipUpgradeButtonText != null)
+            skipUpgradeButtonText.text =
+                $"{actionLabel} - {gemCost} " +
+                (gemCost == 1 ? "Gem" : "Gems");
+
+        if (skipUpgradeButton != null)
+        {
+            skipUpgradeButton.gameObject.SetActive(true);
+            skipUpgradeButton.interactable =
+                gemsManager != null &&
+                gemCost > 0 &&
+                gemsManager.HasEnoughGems(gemCost);
+        }
+    }
+
+    // --------------------------------------------------
+    // ENERGY BOOST
+    // --------------------------------------------------
+
+    private void HandleEnergyBoostClicked()
+    {
+        // No free activation: opening the shared confirmation
+        // is the only action performed by this button.
+        OpenEnergyBoostConfirmation();
     }
 
     private void HandleEnergyBoostStateChanged(
@@ -276,65 +1035,6 @@ public class BuildingWorkersUI : MonoBehaviour
         RefreshServiceInformation();
     }
 
-    private void HandleCoinsChanged(int coins)
-    {
-        RefreshRepairSection();
-    }
-
-    private void RefreshRepairSection()
-    {
-        bool showRepair = ruinedBuilding != null;
-
-        bool showUpgrade = !showRepair &&
-                           buildingUpgrade != null &&
-                           buildingUpgrade.CanUpgrade;
-
-        if (repairSection != null)
-        {
-            repairSection.SetActive(showRepair || showUpgrade);
-        }
-
-        if (showRepair)
-        {
-            if (repairButton != null)
-            {
-                repairButton.interactable =
-                    ruinedBuilding.CanAfford;
-            }
-
-            if (repairButtonText != null)
-            {
-                repairButtonText.text =
-                    $"Repair ({ruinedBuilding.RepairCost}$)";
-            }
-        }
-        else if (showUpgrade)
-        {
-            if (repairButton != null)
-            {
-                repairButton.interactable =
-                    buildingUpgrade.CanAfford;
-            }
-
-            if (repairButtonText != null)
-            {
-                int currentCapacity = serviceBuilding != null
-                    ? serviceBuilding.Seats
-                    : 0;
-
-                int nextCapacity =
-                    buildingUpgrade.NextLevelCapacity;
-
-                repairButtonText.text =
-                    $"Upgrade Lv. {buildingUpgrade.CurrentLevel + 1}\n" +
-                    $"Capacity: {currentCapacity} → {nextCapacity}\n" +
-                    $"{buildingUpgrade.NextLevelCost} Coins";
-            }
-        }
-    }
-
-    // SCRUM-27 and SCRUM-29:
-    // Update boost availability and timer display.
     private void RefreshEnergyBoostUI()
     {
         bool hasValidBuilding =
@@ -378,11 +1078,9 @@ public class BuildingWorkersUI : MonoBehaviour
             currentDayManager.CurrentDay > 0;
 
         bool canActivate =
-            serviceBuilding.isActiveAndEnabled &&
-            serviceBuilding.CanOperate &&
-            hasValidDay &&
-            !isBoosted &&
-            !usedToday;
+            serviceBuilding.CanActivateEnergyBoost &&
+            gemsManager != null &&
+            gemsManager.HasEnoughGems(serviceBuilding.EnergyBoostGemCost);
 
         if (energyBoostButton != null)
         {
@@ -393,11 +1091,10 @@ public class BuildingWorkersUI : MonoBehaviour
         {
             if (isBoosted)
             {
-                float remaining =
-                    Mathf.Max(
-                        0f,
-                        serviceBuilding.EnergyBoostRemainingTime
-                    );
+                float remaining = Mathf.Max(
+                    0f,
+                    serviceBuilding.EnergyBoostRemainingTime
+                );
 
                 energyBoostButtonText.text =
                     $"Energy Boost Active ({remaining:0.0}s)";
@@ -416,18 +1113,18 @@ public class BuildingWorkersUI : MonoBehaviour
             }
             else
             {
+                int cost = serviceBuilding.EnergyBoostGemCost;
                 energyBoostButtonText.text =
-                    $"Activate Energy Boost " +
+                    $"Energy Boost " +
                     $"(x{serviceBuilding.EnergyBoostMultiplier:0.00}, " +
-                    $"{serviceBuilding.EnergyBoostDuration:0}s)";
+                    $"{serviceBuilding.EnergyBoostDuration:0}s) - " +
+                    $"{cost} {(cost == 1 ? "Gem" : "Gems")}";
             }
         }
 
         RefreshEnergyBoostTimerUI();
     }
 
-    // SCRUM-29:
-    // Display the timer and update the progress bar color.
     private void RefreshEnergyBoostTimerUI()
     {
         bool shouldShowTimer =
@@ -437,7 +1134,9 @@ public class BuildingWorkersUI : MonoBehaviour
 
         if (energyBoostTimerPanel != null)
         {
-            energyBoostTimerPanel.SetActive(shouldShowTimer);
+            energyBoostTimerPanel.SetActive(
+                shouldShowTimer
+            );
         }
 
         if (!shouldShowTimer)
@@ -466,9 +1165,7 @@ public class BuildingWorkersUI : MonoBehaviour
             serviceBuilding.EnergyBoostDuration
         );
 
-        int remainingSeconds =
-            Mathf.CeilToInt(remaining);
-
+        int remainingSeconds = Mathf.CeilToInt(remaining);
         int minutes = remainingSeconds / 60;
         int seconds = remainingSeconds % 60;
 
@@ -486,24 +1183,27 @@ public class BuildingWorkersUI : MonoBehaviour
         {
             energyBoostTimerFill.fillAmount = progress;
 
-            // SCRUM-29:
-            // Green at the beginning,
-            // yellow in the middle,
-            // red near the end.
             if (progress > highTimeThreshold)
             {
-                energyBoostTimerFill.color = timerHighColor;
+                energyBoostTimerFill.color =
+                    timerHighColor;
             }
             else if (progress > lowTimeThreshold)
             {
-                energyBoostTimerFill.color = timerMediumColor;
+                energyBoostTimerFill.color =
+                    timerMediumColor;
             }
             else
             {
-                energyBoostTimerFill.color = timerLowColor;
+                energyBoostTimerFill.color =
+                    timerLowColor;
             }
         }
     }
+
+    // --------------------------------------------------
+    // BUILDING EVENTS
+    // --------------------------------------------------
 
     private void SubscribeToBuildingEvents()
     {
@@ -596,11 +1296,19 @@ public class BuildingWorkersUI : MonoBehaviour
         RefreshEnergyBoostUI();
     }
 
+    // --------------------------------------------------
+    // BUILDING SELECTION
+    // --------------------------------------------------
+
     public void SetBuilding(WorkerAssignment newAssignment)
     {
+        CloseSkipConfirmation();
+
         if (isActiveAndEnabled)
         {
             UnsubscribeFromBuildingEvents();
+            UnsubscribeFromUpgradeEvents();
+            UnsubscribeFromRepairEvents();
         }
 
         if (workerAssignment != newAssignment)
@@ -622,6 +1330,7 @@ public class BuildingWorkersUI : MonoBehaviour
         if (isActiveAndEnabled)
         {
             SubscribeToBuildingEvents();
+            SubscribeToUpgradeEvents();
         }
 
         RefreshUI();
@@ -651,9 +1360,15 @@ public class BuildingWorkersUI : MonoBehaviour
             if (item == null)
                 continue;
 
-            item.SetSelected(item.Worker == selectedWorker);
+            item.SetSelected(
+                item.Worker == selectedWorker
+            );
         }
     }
+
+    // --------------------------------------------------
+    // MAIN PANEL REFRESH
+    // --------------------------------------------------
 
     private void RefreshUI()
     {
@@ -688,7 +1403,8 @@ public class BuildingWorkersUI : MonoBehaviour
 
             if (serviceStatusText != null)
             {
-                serviceStatusText.text = "Status: Ruined";
+                serviceStatusText.text = ruinedBuilding.IsRepairing
+                    ? "Status: Repairing" : "Status: Ruined";
 
                 serviceStatusText.color =
                     new Color(0.55f, 0.58f, 0.61f);
@@ -696,7 +1412,8 @@ public class BuildingWorkersUI : MonoBehaviour
 
             if (serviceSpeedText != null)
             {
-                serviceSpeedText.text = "Repair to open";
+                serviceSpeedText.text = ruinedBuilding.IsRepairing
+                    ? "Repair in progress" : "Repair to open";
             }
 
             RefreshEnergyBoostUI();
@@ -742,8 +1459,11 @@ public class BuildingWorkersUI : MonoBehaviour
         RefreshServiceInformation();
         RefreshEnergyBoostUI();
 
-        if (workersList == null || workerListItemPrefab == null)
+        if (workersList == null ||
+            workerListItemPrefab == null)
+        {
             return;
+        }
 
         foreach (WorkerData worker in
                  workerAssignment.AssignedWorkers)
@@ -777,6 +1497,10 @@ public class BuildingWorkersUI : MonoBehaviour
 
         UpdateSelectionVisuals();
     }
+
+    // --------------------------------------------------
+    // BUILDING STATISTICS
+    // --------------------------------------------------
 
     private void RefreshServiceInformation()
     {
@@ -840,8 +1564,7 @@ public class BuildingWorkersUI : MonoBehaviour
         {
             if (!serviceBuilding.CanOperate)
             {
-                serviceSpeedText.text =
-                    "Speed: 0.00x";
+                serviceSpeedText.text = "Speed: 0.00x";
             }
             else
             {
