@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,62 +10,43 @@ public class BuildingUpgrade : MonoBehaviour
         [Tooltip("Model shown at this level.")]
         public GameObject version;
 
-        [Min(0)]
-        public int cost;
-
-        [Min(0)]
-        public int xpReward;
+        [Min(0)] public int cost;
+        [Min(0)] public int xpReward;
 
         [Header("Building Statistics")]
-        [Min(1)]
-        public int capacity = 3;
-
-        [Range(1, 5)]
-        public int qualityStars = 2;
-
-        [Min(0.1f)]
-        public float serviceTime = 12f;
+        [Min(1)] public int capacity = 3;
+        [Range(1, 5)] public int qualityStars = 2;
+        [Min(0.1f)] public float serviceTime = 12f;
 
         [Header("Upgrade Timer")]
         [Tooltip("Seconds required to upgrade TO this level.")]
-        [Min(0f)]
-        public float upgradeDuration = 30f;
+        [Min(0f)] public float upgradeDuration = 30f;
     }
 
     [Header("Levels (first = starting level)")]
-    [SerializeField]
-    private List<UpgradeLevel> levels = new();
+    [SerializeField] private List<UpgradeLevel> levels = new();
 
     [Header("State")]
-    [SerializeField, Min(1)]
-    private int currentLevel = 1;
+    [SerializeField, Min(1)] private int currentLevel = 1;
 
     [Header("Upgrade Timer State (Runtime)")]
-    [SerializeField]
-    private bool isUpgrading;
-
-    [SerializeField, Min(0f)]
-    private float upgradeRemainingTime;
-
-    [SerializeField, Min(0f)]
-    private float upgradeTotalDuration;
-
-    [SerializeField, Min(0)]
-    private int pendingUpgradeXP;
+    [SerializeField] private bool isUpgrading;
+    [SerializeField, Min(0f)] private float upgradeRemainingTime;
+    [SerializeField, Min(0f)] private float upgradeTotalDuration;
+    [SerializeField, Min(0)] private int pendingUpgradeXP;
 
     [Header("Gem Skip Settings")]
     [Tooltip("How many seconds of upgrade time one Gem covers.")]
-    [SerializeField, Min(0.1f)]
-    private float secondsPerGem = 10f;
+    [SerializeField, Min(0.1f)] private float secondsPerGem = 10f;
 
     private PlayerCoinsManager coinsManager;
     private ResortProgressionManager progressionManager;
     private BuildingRepair buildingRepair;
     private ServiceBuilding serviceBuilding;
+    private BuildingLevelRequirements levelRequirements;
 
     public int CurrentLevel => currentLevel;
     public int MaxLevel => levels.Count;
-
     public bool IsUpgrading => isUpgrading;
 
     public float UpgradeRemainingTime =>
@@ -92,17 +72,24 @@ public class BuildingUpgrade : MonoBehaviour
     }
 
     public int UpgradingToLevel =>
-        isUpgrading
-            ? Mathf.Min(currentLevel + 1, MaxLevel)
-            : currentLevel;
+        isUpgrading ? Mathf.Min(currentLevel + 1, MaxLevel) : currentLevel;
 
     public int SkipUpgradeGemCost =>
-        isUpgrading
-            ? CalculateGemCost(UpgradeRemainingTime)
-            : 0;
+        isUpgrading ? CalculateGemCost(UpgradeRemainingTime) : 0;
 
     public float SecondsPerGem => secondsPerGem;
 
+    public int MinimumRequiredResortLevel =>
+        levelRequirements != null
+            ? levelRequirements.GetMinimumUpgradeResortLevel(currentLevel + 1)
+            : 1;
+
+    public bool MeetsResortLevelRequirement =>
+        MinimumRequiredResortLevel <= 1 ||
+        (progressionManager != null &&
+         progressionManager.CurrentLevel >= MinimumRequiredResortLevel);
+
+    // The action panel uses this to keep an existing upgrade visible.
     public bool CanUpgrade =>
         !isUpgrading &&
         currentLevel < MaxLevel &&
@@ -122,6 +109,7 @@ public class BuildingUpgrade : MonoBehaviour
 
     public bool CanAfford =>
         CanUpgrade &&
+        MeetsResortLevelRequirement &&
         coinsManager != null &&
         coinsManager.CurrentCoins >= NextLevelCost;
 
@@ -132,31 +120,20 @@ public class BuildingUpgrade : MonoBehaviour
 
     private void Awake()
     {
-        coinsManager =
-            FindFirstObjectByType<PlayerCoinsManager>();
-
-        progressionManager =
-            FindFirstObjectByType<ResortProgressionManager>();
+        coinsManager = FindFirstObjectByType<PlayerCoinsManager>();
+        progressionManager = FindFirstObjectByType<ResortProgressionManager>();
 
         buildingRepair = GetComponent<BuildingRepair>();
         serviceBuilding = GetComponent<ServiceBuilding>();
+        levelRequirements = GetComponent<BuildingLevelRequirements>();
 
         if (serviceBuilding == null)
-        {
-            serviceBuilding =
-                GetComponentInChildren<ServiceBuilding>(true);
-        }
+            serviceBuilding = GetComponentInChildren<ServiceBuilding>(true);
 
-        currentLevel = Mathf.Clamp(
-            currentLevel,
-            1,
-            Mathf.Max(1, MaxLevel)
-        );
-
+        currentLevel = Mathf.Clamp(currentLevel, 1, Mathf.Max(1, MaxLevel));
         secondsPerGem = Mathf.Max(0.1f, secondsPerGem);
 
-        // Timed upgrades are runtime-only for now.
-        // Save/Load support will be implemented separately.
+        // Timed upgrades are runtime-only.
         isUpgrading = false;
         upgradeRemainingTime = 0f;
         upgradeTotalDuration = 0f;
@@ -177,9 +154,7 @@ public class BuildingUpgrade : MonoBehaviour
         }
 
         if (buildingRepair != null)
-        {
             buildingRepair.OnRepaired += HandleRepaired;
-        }
     }
 
     private void Update()
@@ -195,17 +170,13 @@ public class BuildingUpgrade : MonoBehaviour
         OnUpgradeTimerChanged?.Invoke(this);
 
         if (upgradeRemainingTime <= 0f)
-        {
             CompleteUpgrade();
-        }
     }
 
     private void OnDestroy()
     {
         if (buildingRepair != null)
-        {
             buildingRepair.OnRepaired -= HandleRepaired;
-        }
     }
 
     public int CalculateGemCost(float secondsToSkip)
@@ -224,21 +195,24 @@ public class BuildingUpgrade : MonoBehaviour
 
     public bool TryUpgrade()
     {
-        if (!CanUpgrade)
+        if (!MeetsResortLevelRequirement)
         {
-            Debug.Log(
-                $"{name}: Upgrade unavailable or already in progress.",
+            Debug.LogWarning(
+                $"{name}: Upgrade requires Resort Level {MinimumRequiredResortLevel}.",
                 this
             );
             return false;
         }
 
+        if (!CanUpgrade)
+        {
+            Debug.Log($"{name}: Upgrade unavailable or already in progress.", this);
+            return false;
+        }
+
         if (coinsManager == null)
         {
-            Debug.LogError(
-                $"{name}: PlayerCoinsManager not found!",
-                this
-            );
+            Debug.LogError($"{name}: PlayerCoinsManager not found!", this);
             return false;
         }
 
@@ -274,39 +248,26 @@ public class BuildingUpgrade : MonoBehaviour
         OnUpgradeTimerChanged?.Invoke(this);
 
         if (upgradeRemainingTime <= 0f)
-        {
             CompleteUpgrade();
-        }
 
         return true;
     }
 
-    // SCRUM-21:
-    // Safely spend Gems and complete an ongoing upgrade.
-    //
-    // The cost is recalculated when this method is called,
-    // so an old cost shown in the UI cannot be used.
-    public bool TrySkipUpgradeWithGems(
-        PlayerGemsManager gemsManager)
+    public bool TrySkipUpgradeWithGems(PlayerGemsManager gemsManager)
     {
         if (!isUpgrading || !isActiveAndEnabled)
         {
-            Debug.LogWarning(
-                $"{name}: Cannot skip - no active upgrade.",
-                this
-            );
+            Debug.LogWarning($"{name}: Cannot skip - no active upgrade.", this);
             return false;
         }
 
         if (gemsManager == null)
         {
-            Debug.LogError(
-                $"{name}: Cannot skip - PlayerGemsManager missing.",
-                this
-            );
+            Debug.LogError($"{name}: Cannot skip - PlayerGemsManager missing.", this);
             return false;
         }
 
+        // Recalculate the price instead of using a price displayed earlier.
         int gemCost = SkipUpgradeGemCost;
 
         if (gemCost <= 0)
@@ -321,8 +282,7 @@ public class BuildingUpgrade : MonoBehaviour
         if (!gemsManager.HasEnoughGems(gemCost))
         {
             Debug.LogWarning(
-                $"{name}: Not enough Gems. " +
-                $"Available: {gemsManager.CurrentGems}, " +
+                $"{name}: Not enough Gems. Available: {gemsManager.CurrentGems}, " +
                 $"required: {gemCost}.",
                 this
             );
@@ -330,20 +290,17 @@ public class BuildingUpgrade : MonoBehaviour
         }
 
         if (!gemsManager.TrySpendGems(gemCost))
-        {
             return false;
-        }
 
         Debug.Log(
-            $"{name}: Skipping the remaining " +
-            $"{upgradeRemainingTime:0.0}s for {gemCost} Gems.",
+            $"{name}: Skipping the remaining {upgradeRemainingTime:0.0}s " +
+            $"for {gemCost} Gems.",
             this
         );
 
         upgradeRemainingTime = 0f;
         OnUpgradeTimerChanged?.Invoke(this);
 
-        // Finish in the same call after successful payment.
         CompleteUpgrade();
         return true;
     }
@@ -361,18 +318,14 @@ public class BuildingUpgrade : MonoBehaviour
         pendingUpgradeXP = 0;
 
         currentLevel++;
-
         ApplyVersion();
         ApplyLevelStats();
 
         if (progressionManager != null)
-        {
             progressionManager.AddXP(completedXP);
-        }
 
         Debug.Log(
-            $"{name}: Upgrade completed! " +
-            $"New level: {currentLevel}. +{completedXP} XP.",
+            $"{name}: Upgrade completed! New level: {currentLevel}. +{completedXP} XP.",
             this
         );
 
@@ -391,11 +344,7 @@ public class BuildingUpgrade : MonoBehaviour
         for (int i = 0; i < levels.Count; i++)
         {
             if (levels[i].version != null)
-            {
-                levels[i].version.SetActive(
-                    i == currentLevel - 1
-                );
-            }
+                levels[i].version.SetActive(i == currentLevel - 1);
         }
     }
 
@@ -432,16 +381,12 @@ public class BuildingUpgrade : MonoBehaviour
     {
         if (!isUpgrading)
         {
-            Debug.Log(
-                $"{name}: No upgrade is currently running.",
-                this
-            );
+            Debug.Log($"{name}: No upgrade is currently running.", this);
             return;
         }
 
         Debug.Log(
-            $"{name}: Remaining upgrade time: " +
-            $"{UpgradeRemainingTime:0.0}s. " +
+            $"{name}: Remaining upgrade time: {UpgradeRemainingTime:0.0}s. " +
             $"Skip cost: {SkipUpgradeGemCost} Gems.",
             this
         );
