@@ -5,6 +5,8 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class ResortUnlockNotificationUI : MonoBehaviour
 {
+    private const string IslandAvailableMessage = "Second island available for purchase";
+
     [Header("Unlock Sources")]
     [SerializeField] private ResortUnlockManager unlockManager;
     [SerializeField] private BuildingRepair poolRepair;
@@ -18,6 +20,7 @@ public class ResortUnlockNotificationUI : MonoBehaviour
 
     private readonly List<string> visibleMessages = new();
 
+    private ResortArea secondIslandArea;
     private bool poolUnlockNotified;
     private bool hotelUnlockNotified;
     private bool islandUnlockNotified;
@@ -41,16 +44,31 @@ public class ResortUnlockNotificationUI : MonoBehaviour
             return;
         }
 
+        secondIslandArea = secondIsland.GetComponent<ResortArea>();
+
+        if (secondIslandArea == null)
+        {
+            Debug.LogError(
+                "ResortUnlockNotificationUI: The second island needs a ResortArea component.",
+                this
+            );
+            enabled = false;
+            return;
+        }
+
         notificationPanel.SetActive(false);
 
         // Content available at the start does not need an unlock message.
         poolUnlockNotified = poolRepair.CanRepair;
         hotelUnlockNotified =
             hotelUpgrade.CanUpgrade && hotelUpgrade.MeetsResortLevelRequirement;
-        islandUnlockNotified = secondIsland.RequirementsMet;
+        islandUnlockNotified =
+            secondIsland.RequirementsMet ||
+            secondIslandArea.CurrentState == AreaState.Unlocked;
 
         unlockManager.OnUnlockProgressChanged += ScheduleUnlockCheck;
         secondIsland.OnRequirementsChanged += ScheduleUnlockCheck;
+        secondIslandArea.OnStateChanged += HandleSecondIslandStateChanged;
     }
 
     private void Update()
@@ -95,12 +113,33 @@ public class ResortUnlockNotificationUI : MonoBehaviour
         if (!islandUnlockNotified && secondIsland.RequirementsMet)
         {
             islandUnlockNotified = true;
-            visibleMessages.Add("Second island available for purchase");
+            visibleMessages.Add(IslandAvailableMessage);
         }
 
         if (visibleMessages.Count == previousMessageCount)
             return;
 
+        ShowMessages();
+    }
+
+    private void HandleSecondIslandStateChanged(AreaState state)
+    {
+        if (state != AreaState.Unlocked)
+            return;
+
+        islandUnlockNotified = true;
+
+        if (Time.unscaledTime >= hideAt)
+            visibleMessages.Clear();
+
+        visibleMessages.Remove(IslandAvailableMessage);
+        visibleMessages.Add("Second island unlocked");
+
+        ShowMessages();
+    }
+
+    private void ShowMessages()
+    {
         messageText.text = string.Join("\n", visibleMessages);
         hideAt = Time.unscaledTime + displayDuration;
         notificationPanel.SetActive(true);
@@ -113,5 +152,8 @@ public class ResortUnlockNotificationUI : MonoBehaviour
 
         if (secondIsland != null)
             secondIsland.OnRequirementsChanged -= ScheduleUnlockCheck;
+
+        if (secondIslandArea != null)
+            secondIslandArea.OnStateChanged -= HandleSecondIslandStateChanged;
     }
 }

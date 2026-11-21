@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [DisallowMultipleComponent]
-[RequireComponent(typeof(ResortAreaRequirements))]
+[RequireComponent(typeof(ResortAreaRequirements), typeof(ResortArea))]
 public class ResortAreaPurchase : MonoBehaviour
 {
     [Header("Purchase")]
@@ -24,12 +24,14 @@ public class ResortAreaPurchase : MonoBehaviour
     [SerializeField] private TMP_Text buyButtonText;
 
     private ResortAreaRequirements requirements;
-    private bool isPurchased;
+    private ResortArea area;
+    private bool hasStarted;
     private bool purchaseInProgress;
 
     private void Awake()
     {
         requirements = GetComponent<ResortAreaRequirements>();
+        area = GetComponent<ResortArea>();
     }
 
     private void OnEnable()
@@ -49,21 +51,31 @@ public class ResortAreaPurchase : MonoBehaviour
             return;
         }
 
-        requirements.OnRequirementsChanged += RefreshPanel;
+        requirements.OnRequirementsChanged += RefreshPurchaseState;
         coinsManager.OnCoinsChanged += HandleCoinsChanged;
         buyButton.onClick.AddListener(HandleBuyClicked);
 
         requirementsText.text = BuildRequirementsText();
         buyButtonText.text = $"Buy for {purchaseCost} Coins";
 
+        if (hasStarted)
+        {
+            ApplyAreaState();
+            RefreshPurchaseState();
+        }
+    }
+
+    private void Start()
+    {
+        hasStarted = true;
         ApplyAreaState();
-        RefreshPanel();
+        RefreshPurchaseState();
     }
 
     private void OnDisable()
     {
         if (requirements != null)
-            requirements.OnRequirementsChanged -= RefreshPanel;
+            requirements.OnRequirementsChanged -= RefreshPurchaseState;
 
         if (coinsManager != null)
             coinsManager.OnCoinsChanged -= HandleCoinsChanged;
@@ -74,13 +86,30 @@ public class ResortAreaPurchase : MonoBehaviour
 
     private void HandleCoinsChanged(int balance)
     {
+        RefreshPurchaseState();
+    }
+
+    private void RefreshPurchaseState()
+    {
+        if (!hasStarted || purchaseInProgress)
+            return;
+
+        area.UpdatePurchaseState(
+            requirements.RequirementsMet,
+            coinsManager.CurrentCoins >= purchaseCost
+        );
+
         RefreshPanel();
     }
 
     private void HandleBuyClicked()
     {
-        if (isPurchased || purchaseInProgress || !requirements.RequirementsMet)
+        if (!hasStarted ||
+            purchaseInProgress ||
+            area.CurrentState != AreaState.Purchasable)
+        {
             return;
+        }
 
         purchaseInProgress = true;
 
@@ -88,40 +117,42 @@ public class ResortAreaPurchase : MonoBehaviour
         {
             if (coinsManager.TrySpendCoins(purchaseCost))
             {
-                isPurchased = true;
+                area.MarkPurchased();
                 ApplyAreaState();
             }
         }
         finally
         {
             purchaseInProgress = false;
-            RefreshPanel();
+            RefreshPurchaseState();
         }
     }
 
     private void ApplyAreaState()
     {
-        if (areaTerrainCollider != null)
-            areaTerrainCollider.enabled = isPurchased;
+        bool isUnlocked = area.CurrentState == AreaState.Unlocked;
 
-        unlockedContent.SetActive(isPurchased);
+        if (areaTerrainCollider != null)
+            areaTerrainCollider.enabled = isUnlocked;
+
+        unlockedContent.SetActive(isUnlocked);
     }
 
     private void RefreshPanel()
     {
-        purchasePanel.SetActive(!isPurchased);
+        AreaState state = area.CurrentState;
 
-        if (isPurchased)
+        purchasePanel.SetActive(state != AreaState.Unlocked);
+
+        if (state == AreaState.Unlocked)
             return;
 
-        bool canBuyArea = requirements.RequirementsMet;
-
-        requirementsText.gameObject.SetActive(!canBuyArea);
-        buyButton.gameObject.SetActive(canBuyArea);
-        buyButton.interactable =
-            canBuyArea &&
-            !purchaseInProgress &&
-            coinsManager.CurrentCoins >= purchaseCost;
+        requirementsText.gameObject.SetActive(state == AreaState.Locked);
+        buyButton.gameObject.SetActive(
+            state == AreaState.Available ||
+            state == AreaState.Purchasable
+        );
+        buyButton.interactable = state == AreaState.Purchasable;
     }
 
     private string BuildRequirementsText()
