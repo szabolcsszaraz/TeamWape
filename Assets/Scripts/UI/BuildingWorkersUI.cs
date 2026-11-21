@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -28,6 +27,7 @@ public class BuildingWorkersUI : MonoBehaviour
     [SerializeField] private GameObject repairSection;
     [SerializeField] private Button repairButton;
     [SerializeField] private TMP_Text repairButtonText;
+    [SerializeField] private ResortUnlockManager unlockManager;
 
     [Header("Building Upgrade Statistics")]
     [SerializeField] private TMP_Text capacityText;
@@ -161,6 +161,11 @@ public class BuildingWorkersUI : MonoBehaviour
         SubscribeToRepairEvents();
         SubscribeToDayEvents();
 
+        if (unlockManager != null)
+        {
+            unlockManager.OnUnlockProgressChanged += RefreshRepairSection;
+        }
+
         if (coinsManager == null)
         {
             coinsManager =
@@ -204,6 +209,11 @@ public class BuildingWorkersUI : MonoBehaviour
         UnsubscribeFromUpgradeEvents();
         UnsubscribeFromRepairEvents();
         UnsubscribeFromDayEvents();
+
+        if (unlockManager != null)
+        {
+            unlockManager.OnUnlockProgressChanged -= RefreshRepairSection;
+        }
 
         if (coinsManager != null)
         {
@@ -900,8 +910,13 @@ public class BuildingWorkersUI : MonoBehaviour
                 repairButton.interactable = ruinedBuilding.CanAfford;
 
             if (repairButtonText != null)
-                repairButtonText.text =
-                    $"Repair ({ruinedBuilding.RepairCost}$)";
+            {
+                string repairLabel = $"Repair ({ruinedBuilding.RepairCost}$)";
+                repairButtonText.text = ruinedBuilding.MeetsResortLevelRequirement
+                    ? repairLabel
+                    : $"{repairLabel}\n" +
+                      $"Requires Resort Level {ruinedBuilding.MinimumRequiredResortLevel}";
+            }
         }
         else if (showUpgradeButton)
         {
@@ -910,14 +925,28 @@ public class BuildingWorkersUI : MonoBehaviour
 
             if (repairButtonText != null)
             {
-                int currentCapacity = serviceBuilding != null
-                    ? serviceBuilding.Seats : 0;
+                string upgradeLabel =
+                    $"Upgrade Lv. {buildingUpgrade.CurrentLevel + 1}";
+                string costLabel = $"{buildingUpgrade.NextLevelCost} Coins";
 
-                repairButtonText.text =
-                    $"Upgrade Lv. {buildingUpgrade.CurrentLevel + 1}\n" +
-                    $"Capacity: {currentCapacity} → " +
-                    $"{buildingUpgrade.NextLevelCapacity}\n" +
-                    $"{buildingUpgrade.NextLevelCost} Coins";
+                if (buildingUpgrade.MeetsResortLevelRequirement)
+                {
+                    int currentCapacity = serviceBuilding != null
+                        ? serviceBuilding.Seats : 0;
+
+                    repairButtonText.text =
+                        $"{upgradeLabel}\n" +
+                        $"Capacity: {currentCapacity} → " +
+                        $"{buildingUpgrade.NextLevelCapacity}\n" +
+                        costLabel;
+                }
+                else
+                {
+                    repairButtonText.text =
+                        $"{upgradeLabel}\n" +
+                        $"Requires Resort Level {buildingUpgrade.MinimumRequiredResortLevel}\n" +
+                        costLabel;
+                }
             }
         }
 
