@@ -9,6 +9,8 @@ public class ResortAreaPurchase : MonoBehaviour
 {
     [Header("Purchase")]
     [SerializeField] private PlayerCoinsManager coinsManager;
+
+    // SCRUM-324: Coin cost of unlocking this area.
     [SerializeField, Min(0)] private int purchaseCost = 1500;
 
     [Header("Area")]
@@ -23,15 +25,40 @@ public class ResortAreaPurchase : MonoBehaviour
     [SerializeField] private Button buyButton;
     [SerializeField] private TMP_Text buyButtonText;
 
+    [Header("Insufficient Coins (SCRUM-43)")]
+    [Tooltip("Optional. Shows the missing Coins. If empty, the Requirements Text is reused.")]
+    [SerializeField] private TMP_Text insufficientCoinsText;
+
+    [SerializeField] private Color missingCoinsColor =
+        new Color(0.91f, 0.35f, 0.33f);
+
     private ResortAreaRequirements requirements;
     private ResortArea area;
     private bool hasStarted;
     private bool purchaseInProgress;
+    private bool showFailedAttempt;
+    private Color requirementsTextColor = Color.white;
+
+    public int PurchaseCost => purchaseCost;
+
+    // SCRUM-326: Coins still needed to unlock this area.
+    public int MissingCoins =>
+        coinsManager != null ? coinsManager.GetMissingCoins(purchaseCost) : purchaseCost;
+
+    // SCRUM-325
+    public bool HasEnoughCoins =>
+        coinsManager != null && coinsManager.HasEnoughCoins(purchaseCost);
+
+    private TMP_Text MessageText =>
+        insufficientCoinsText != null ? insufficientCoinsText : requirementsText;
 
     private void Awake()
     {
         requirements = GetComponent<ResortAreaRequirements>();
         area = GetComponent<ResortArea>();
+
+        if (requirementsText != null)
+            requirementsTextColor = requirementsText.color;
     }
 
     private void OnEnable()
@@ -55,7 +82,6 @@ public class ResortAreaPurchase : MonoBehaviour
         coinsManager.OnCoinsChanged += HandleCoinsChanged;
         buyButton.onClick.AddListener(HandleBuyClicked);
 
-        requirementsText.text = BuildRequirementsText();
         buyButtonText.text = $"Buy for {purchaseCost} Coins";
 
         if (hasStarted)
@@ -86,6 +112,8 @@ public class ResortAreaPurchase : MonoBehaviour
 
     private void HandleCoinsChanged(int balance)
     {
+        // The "not enough" warning only lasts until the balance changes.
+        showFailedAttempt = false;
         RefreshPurchaseState();
     }
 
@@ -96,7 +124,7 @@ public class ResortAreaPurchase : MonoBehaviour
 
         area.UpdatePurchaseState(
             requirements.RequirementsMet,
-            coinsManager.CurrentCoins >= purchaseCost
+            HasEnoughCoins
         );
 
         RefreshPanel();
@@ -104,17 +132,33 @@ public class ResortAreaPurchase : MonoBehaviour
 
     private void HandleBuyClicked()
     {
-        if (!hasStarted ||
-            purchaseInProgress ||
-            area.CurrentState != AreaState.Purchasable)
+        if (!hasStarted || purchaseInProgress)
+            return;
+
+        // SCRUM-43: The player tried to buy without enough Coins.
+        if (area.CurrentState == AreaState.Available)
         {
+            showFailedAttempt = true;
+
+            Debug.Log(
+                $"{name}: Not enough Coins to unlock. " +
+                $"Cost: {purchaseCost}, Balance: {coinsManager.CurrentCoins}, " +
+                $"Missing: {MissingCoins}.",
+                this
+            );
+
+            RefreshPanel();
             return;
         }
+
+        if (area.CurrentState != AreaState.Purchasable)
+            return;
 
         purchaseInProgress = true;
 
         try
         {
+            // TrySpendCoins checks the balance again before paying.
             if (coinsManager.TrySpendCoins(purchaseCost))
             {
                 area.MarkPurchased();
@@ -147,12 +191,52 @@ public class ResortAreaPurchase : MonoBehaviour
         if (state == AreaState.Unlocked)
             return;
 
+        bool lacksCoins = state == AreaState.Available;
+
+        // Requirements text: the unlock requirements while Locked.
+        requirementsText.text = BuildRequirementsText();
+        requirementsText.color = requirementsTextColor;
         requirementsText.gameObject.SetActive(state == AreaState.Locked);
+
+        // SCRUM-327 / SCRUM-328: Show the missing Coins.
+        if (insufficientCoinsText != null)
+            insufficientCoinsText.gameObject.SetActive(false);
+
+        if (lacksCoins)
+        {
+            TMP_Text message = MessageText;
+            message.text = BuildInsufficientCoinsText();
+            message.color = missingCoinsColor;
+            message.gameObject.SetActive(true);
+        }
+
         buyButton.gameObject.SetActive(
             state == AreaState.Available ||
             state == AreaState.Purchasable
         );
-        buyButton.interactable = state == AreaState.Purchasable;
+
+        // Clickable while Available so the attempt can show the message.
+        buyButton.interactable =
+            state == AreaState.Available ||
+            state == AreaState.Purchasable;
+    }
+
+    // SCRUM-327: Insufficient Coins message.
+    private string BuildInsufficientCoinsText()
+    {
+        int missing = MissingCoins;
+
+        if (showFailedAttempt)
+        {
+            return
+                "Not enough Coins!\n" +
+                $"You need {missing} more Coins\n" +
+                $"({coinsManager.CurrentCoins} / {purchaseCost})";
+        }
+
+        return
+            $"You need {missing} more Coins\n" +
+            $"({coinsManager.CurrentCoins} / {purchaseCost})";
     }
 
     private string BuildRequirementsText()
@@ -169,5 +253,22 @@ public class ResortAreaPurchase : MonoBehaviour
             lines.Add($"Resort Rating {requirements.MinimumRatingStars:0.##}/5");
 
         return string.Join("\n", lines);
+    }
+
+    [ContextMenu("Test / Log Coin Check")]
+    private void TestLogCoinCheck()
+    {
+        if (coinsManager == null)
+        {
+            Debug.LogWarning($"{name}: No Coins Manager assigned.", this);
+            return;
+        }
+
+        Debug.Log(
+            $"{name}: Cost {purchaseCost}, Balance {coinsManager.CurrentCoins}, " +
+            $"Enough: {HasEnoughCoins}, Missing: {MissingCoins}, " +
+            $"State: {(area != null ? area.CurrentState.ToString() : "?")}",
+            this
+        );
     }
 }

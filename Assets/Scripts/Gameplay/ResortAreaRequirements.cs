@@ -17,6 +17,9 @@ public class ResortAreaRequirements : MonoBehaviour
     [Header("Runtime State")]
     [SerializeField] private bool requirementsMet;
 
+    // TEST ONLY: lets the purchase flow be tested without playing waves.
+    private bool debugIgnoreRequirements;
+
     public int MinimumCompletedWaves => minimumCompletedWaves;
     public int MinimumResortLevel => minimumResortLevel;
     public float MinimumRatingStars => minimumRatingStars;
@@ -53,6 +56,7 @@ public class ResortAreaRequirements : MonoBehaviour
     private void RefreshRequirements()
     {
         SetRequirementsMet(
+            debugIgnoreRequirements ||
             unlockManager.LastCompletedWave >= minimumCompletedWaves &&
             unlockManager.CurrentResortLevel >= minimumResortLevel &&
             unlockManager.MeetsRatingRequirement(minimumRatingStars)
@@ -66,5 +70,23 @@ public class ResortAreaRequirements : MonoBehaviour
 
         requirementsMet = value;
         OnRequirementsChanged?.Invoke();
+    }
+
+    [ContextMenu("Test / Toggle Ignore Requirements")]
+    private void TestToggleIgnoreRequirements()
+    {
+        if (!Application.isPlaying || unlockManager == null)
+        {
+            Debug.LogWarning($"{name}: Enter Play Mode first.", this);
+            return;
+        }
+
+        debugIgnoreRequirements = !debugIgnoreRequirements;
+        RefreshRequirements();
+
+        Debug.Log(
+            $"{name}: [TEST] Ignore requirements = {debugIgnoreRequirements}",
+            this
+        );
     }
 }

@@ -111,6 +111,7 @@ public class ServiceBuilding : MonoBehaviour
     private readonly HashSet<WorkerData> observedWorkers = new();
 
     private GuestNeedsManager needsManager;
+    private BuildingRepair buildingRepair;
     private WorkerAssignment workerAssignment;
 
     public GuestNeedType ServiceNeed => serviceNeed;
@@ -435,7 +436,25 @@ public class ServiceBuilding : MonoBehaviour
             return;
         }
 
-        needsManager.UnlockNeed(serviceNeed);
+        // A ruined building does not offer its need until it is repaired
+        // (e.g. no Relax guests until the Pool is repaired).
+        buildingRepair = GetComponentInParent<BuildingRepair>();
+
+        if (buildingRepair != null && !buildingRepair.IsRepaired)
+        {
+            buildingRepair.OnRepaired += HandleBuildingRepaired;
+
+            Debug.Log(
+                $"{name}: {serviceNeed.ToDisplayName()} need stays locked " +
+                "until the building is repaired.",
+                this
+            );
+        }
+        else
+        {
+            needsManager.UnlockNeed(serviceNeed);
+        }
+
         needsManager.OnNeedsReset += HandleNeedsReset;
 
         UpdateCurrentServiceState();
@@ -797,11 +816,30 @@ public class ServiceBuilding : MonoBehaviour
         UpdateCurrentServiceState();
     }
 
+    private void HandleBuildingRepaired(BuildingRepair repair)
+    {
+        repair.OnRepaired -= HandleBuildingRepaired;
+
+        if (needsManager != null)
+        {
+            needsManager.UnlockNeed(serviceNeed);
+        }
+    }
+
+    // False while the building is still a ruin.
+    public bool IsOpenForGuests =>
+        buildingRepair == null || buildingRepair.IsRepaired;
+
     private void OnDestroy()
     {
         if (needsManager != null)
         {
             needsManager.OnNeedsReset -= HandleNeedsReset;
+        }
+
+        if (buildingRepair != null)
+        {
+            buildingRepair.OnRepaired -= HandleBuildingRepaired;
         }
 
         UnsubscribeFromWorkers();

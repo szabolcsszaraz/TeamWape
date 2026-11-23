@@ -93,6 +93,18 @@ public class PlayerCoinsManager : MonoBehaviour
         OnCoinsChanged?.Invoke(currentCoins);
     }
 
+    // SCRUM-325: Check whether the player can pay an amount.
+    public bool HasEnoughCoins(int amount)
+    {
+        return amount >= 0 && currentCoins >= amount;
+    }
+
+    // SCRUM-326: How many more Coins are needed for an amount.
+    public int GetMissingCoins(int amount)
+    {
+        return Mathf.Max(0, amount - currentCoins);
+    }
+
     public bool TrySpendCoins(int amount)
     {
         if (amount < 0 || currentCoins < amount)

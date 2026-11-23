@@ -912,10 +912,19 @@ public class BuildingWorkersUI : MonoBehaviour
             if (repairButtonText != null)
             {
                 string repairLabel = $"Repair ({ruinedBuilding.RepairCost}$)";
-                repairButtonText.text = ruinedBuilding.MeetsResortLevelRequirement
-                    ? repairLabel
-                    : $"{repairLabel}\n" +
-                      $"Requires Resort Level {ruinedBuilding.MinimumRequiredResortLevel}";
+
+                if (!ruinedBuilding.MeetsResortLevelRequirement)
+                {
+                    repairButtonText.text =
+                        $"{repairLabel}\n" +
+                        $"Requires Resort Level {ruinedBuilding.MinimumRequiredResortLevel}";
+                }
+                else
+                {
+                    repairButtonText.text =
+                        repairLabel +
+                        BuildMissingCoinsLine(ruinedBuilding.RepairCost);
+                }
             }
         }
         else if (showUpgradeButton)
@@ -938,7 +947,8 @@ public class BuildingWorkersUI : MonoBehaviour
                         $"{upgradeLabel}\n" +
                         $"Capacity: {currentCapacity} → " +
                         $"{buildingUpgrade.NextLevelCapacity}\n" +
-                        costLabel;
+                        costLabel +
+                        BuildMissingCoinsLine(buildingUpgrade.NextLevelCost);
                 }
                 else
                 {
@@ -951,6 +961,20 @@ public class BuildingWorkersUI : MonoBehaviour
         }
 
         RefreshUpgradeTimerUI();
+    }
+
+    // SCRUM-43: Extra button line with the Coins still needed.
+    // Empty when the player can afford the cost.
+    private string BuildMissingCoinsLine(int cost)
+    {
+        if (coinsManager == null)
+            return string.Empty;
+
+        int missing = coinsManager.GetMissingCoins(cost);
+
+        return missing > 0
+            ? $"\n<color=#E85A54>Need {missing} more Coins</color>"
+            : string.Empty;
     }
 
     // --------------------------------------------------

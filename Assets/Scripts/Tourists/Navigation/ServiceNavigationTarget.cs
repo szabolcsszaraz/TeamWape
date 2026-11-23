@@ -94,7 +94,8 @@ public class ServiceNavigationTarget : MonoBehaviour
 
         foreach (ServiceNavigationTarget target in activeTargets)
         {
-            if (target != null && target.ServiceNeed == need)
+            if (target != null && target.ServiceNeed == need &&
+                target.building.IsOpenForGuests)
             {
                 targets.Add(target);
             }
@@ -116,7 +117,8 @@ public class ServiceNavigationTarget : MonoBehaviour
 
         foreach (ServiceNavigationTarget target in activeTargets)
         {
-            if (target == null || target.ServiceNeed != need)
+            if (target == null || target.ServiceNeed != need ||
+                !target.building.IsOpenForGuests)
             {
                 continue;
             }
