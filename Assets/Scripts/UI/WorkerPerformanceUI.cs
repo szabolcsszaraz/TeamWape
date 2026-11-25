@@ -8,14 +8,26 @@ public class WorkerPerformanceUI : MonoBehaviour
     [Header("Worker")]
     [SerializeField] private WorkerData worker;
 
+    [Header("Upgrade Cost")]
+    [SerializeField] private PlayerCoinsManager coinsManager;
+    [SerializeField, Min(1)] private int upgradeCoinCost = 100;
+
     [Header("UI References")]
     [SerializeField] private TMP_Text workerNameText;
     [SerializeField] private TMP_Text performanceLevelText;
     [SerializeField] private TMP_Text performanceMultiplierText;
     [SerializeField] private Button upgradeButton;
+    [SerializeField] private TMP_Text upgradeButtonText;
+
+    private int UpgradeCoinCost => Mathf.Max(1, upgradeCoinCost);
 
     private void OnEnable()
     {
+        if (coinsManager != null)
+        {
+            coinsManager.OnCoinsChanged += HandleCoinsChanged;
+        }
+
         if (worker != null)
         {
             worker.OnPerformanceLevelChanged += HandleLevelChanged;
@@ -31,6 +43,11 @@ public class WorkerPerformanceUI : MonoBehaviour
 
     private void OnDisable()
     {
+        if (coinsManager != null)
+        {
+            coinsManager.OnCoinsChanged -= HandleCoinsChanged;
+        }
+
         if (worker != null)
         {
             worker.OnPerformanceLevelChanged -= HandleLevelChanged;
@@ -69,12 +86,30 @@ public class WorkerPerformanceUI : MonoBehaviour
 
     public void UpgradeWorker()
     {
-        if (worker == null)
+        WorkerData workerToUpgrade = worker;
+        PlayerCoinsManager wallet = coinsManager;
+        int cost = UpgradeCoinCost;
+
+        if (workerToUpgrade == null || wallet == null || !workerToUpgrade.CanUpgrade())
         {
             return;
         }
 
-        worker.UpgradePerformance();
+        if (!wallet.TrySpendCoins(cost))
+        {
+            RefreshUpgradeButton();
+            return;
+        }
+
+        if (workerToUpgrade == null || !workerToUpgrade.UpgradePerformance())
+        {
+            wallet.AddCoins(cost);
+        }
+    }
+
+    private void HandleCoinsChanged(int currentCoins)
+    {
+        RefreshUpgradeButton();
     }
 
     private void RefreshUI()
@@ -90,8 +125,7 @@ public class WorkerPerformanceUI : MonoBehaviour
             if (performanceMultiplierText != null)
                 performanceMultiplierText.text = "Performance: -";
 
-            if (upgradeButton != null)
-                upgradeButton.interactable = false;
+            RefreshUpgradeButton();
 
             return;
         }
@@ -114,9 +148,25 @@ public class WorkerPerformanceUI : MonoBehaviour
                 $"Performance: {worker.PerformanceMultiplier * 100f:0}%";
         }
 
+        RefreshUpgradeButton();
+    }
+
+    private void RefreshUpgradeButton()
+    {
+        int cost = UpgradeCoinCost;
+        bool canUpgrade = worker != null && worker.CanUpgrade();
+
         if (upgradeButton != null)
         {
-            upgradeButton.interactable = worker.CanUpgrade();
+            upgradeButton.interactable =
+                canUpgrade && coinsManager != null && coinsManager.HasEnoughCoins(cost);
+        }
+
+        if (upgradeButtonText != null)
+        {
+            upgradeButtonText.text = worker != null && worker.IsMaxLevel
+                ? "Max Level"
+                : $"Upgrade ({cost} Coins)";
         }
     }
 }

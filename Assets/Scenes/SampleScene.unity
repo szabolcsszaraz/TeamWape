@@ -2144,7 +2144,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WorkerAssignment
   maxWorkerSlots: 3
   assignedWorkers:
-  - {fileID: 1279271587}
+  - {fileID: 1875874432}
   testWorker: {fileID: 0}
 --- !u!114 &369504713
 MonoBehaviour:
@@ -6691,7 +6691,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorkerData
   workerName: Worker 2
-  performanceLevel: 5
+  performanceLevel: 1
 --- !u!4 &887640795
 Transform:
   m_ObjectHideFlags: 0
@@ -7821,11 +7821,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2cc8e2922b3c9e44bb071ceaabd1dff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorkerPerformanceUI
-  worker: {fileID: 1279271587}
+  worker: {fileID: 0}
+  coinsManager: {fileID: 2133705478}
+  upgradeCoinCost: 100
   workerNameText: {fileID: 1171554240}
   performanceLevelText: {fileID: 1769150325}
   performanceMultiplierText: {fileID: 1921789973}
   upgradeButton: {fileID: 1064790731}
+  upgradeButtonText: {fileID: 1413416591}
 --- !u!1 &1112461358
 GameObject:
   m_ObjectHideFlags: 0
@@ -9533,7 +9536,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorkerData
   workerName: Worker
-  performanceLevel: 5
+  performanceLevel: 1
 --- !u!4 &1279271588
 Transform:
   m_ObjectHideFlags: 0
@@ -13116,7 +13119,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WorkerAssignment
   maxWorkerSlots: 3
   assignedWorkers:
-  - {fileID: 1279271587}
+  - {fileID: 887640794}
   testWorker: {fileID: 0}
 --- !u!114 &1650458303
 MonoBehaviour:
@@ -13377,7 +13380,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2102555050}
   m_HandleRect: {fileID: 2102555049}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -13713,8 +13716,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorkerAssignment
   maxWorkerSlots: 3
-  assignedWorkers:
-  - {fileID: 1279271587}
+  assignedWorkers: []
   testWorker: {fileID: 0}
 --- !u!114 &1750949479
 MonoBehaviour:
@@ -14702,7 +14704,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorkerData
   workerName: Worker 3
-  performanceLevel: 5
+  performanceLevel: 1
 --- !u!4 &1875874433
 Transform:
   m_ObjectHideFlags: 0
@@ -16573,6 +16575,7 @@ MonoBehaviour:
   worldCamera: {fileID: 330585545}
   buildingWorkersPanel: {fileID: 1512380982}
   buildingWorkersUI: {fileID: 1512380986}
+  workerPerformanceUI: {fileID: 1097950451}
   buildingRaycastMask:
     serializedVersion: 2
     m_Bits: 4294967295
