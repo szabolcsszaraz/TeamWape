@@ -104,6 +104,7 @@ public class BuildingWorkersUI : MonoBehaviour
     public WorkerData SelectedWorker => selectedWorker;
 
     public event Action<WorkerData> OnWorkerSelected;
+    public event Action<WorkerData> OnWorkerDetailsRequested;
 
     private void Awake()
     {
@@ -1389,6 +1390,13 @@ public class BuildingWorkersUI : MonoBehaviour
         RefreshUI();
     }
 
+    private void HandleWorkerDetailsClicked(WorkerData worker)
+    {
+        selectedWorker = null;
+        UpdateSelectionVisuals();
+        OnWorkerDetailsRequested?.Invoke(worker);
+    }
+
     private void HandleMoveClicked(WorkerData worker)
     {
         if (worker == null)
@@ -1544,7 +1552,7 @@ public class BuildingWorkersUI : MonoBehaviour
                 continue;
             }
 
-            item.Setup(worker, HandleMoveClicked);
+            item.Setup(worker, HandleMoveClicked, HandleWorkerDetailsClicked);
             displayedItems.Add(item);
         }
 

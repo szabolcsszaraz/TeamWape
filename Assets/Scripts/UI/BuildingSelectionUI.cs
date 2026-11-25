@@ -13,6 +13,7 @@ public class BuildingSelectionUI : MonoBehaviour
     [SerializeField] private Camera worldCamera;
     [SerializeField] private GameObject buildingWorkersPanel;
     [SerializeField] private BuildingWorkersUI buildingWorkersUI;
+    [SerializeField] private WorkerPerformanceUI workerPerformanceUI;
 
     [Header("Selection")]
     [SerializeField] private LayerMask buildingRaycastMask = ~0;
@@ -43,12 +44,15 @@ public class BuildingSelectionUI : MonoBehaviour
         {
             buildingWorkersUI.OnWorkerSelected +=
                 HandleWorkerSelected;
+            buildingWorkersUI.OnWorkerDetailsRequested += ShowWorkerPerformance;
         }
 
         if (buildingWorkersPanel != null)
         {
             buildingWorkersPanel.SetActive(false);
         }
+
+        HideWorkerPerformance();
     }
 
     private void OnDestroy()
@@ -57,6 +61,7 @@ public class BuildingSelectionUI : MonoBehaviour
         {
             buildingWorkersUI.OnWorkerSelected -=
                 HandleWorkerSelected;
+            buildingWorkersUI.OnWorkerDetailsRequested -= ShowWorkerPerformance;
         }
     }
 
@@ -192,6 +197,7 @@ public class BuildingSelectionUI : MonoBehaviour
 
     private void ShowBuildingPanel(WorkerAssignment building)
     {
+        HideWorkerPerformance();
         selectedBuilding = building;
 
         if (buildingWorkersPanel != null)
@@ -217,6 +223,7 @@ public class BuildingSelectionUI : MonoBehaviour
             return;
         }
 
+        HideWorkerPerformance();
         selectedBuilding = null;
 
         if (buildingWorkersPanel != null)
@@ -227,6 +234,27 @@ public class BuildingSelectionUI : MonoBehaviour
         if (buildingWorkersUI != null)
         {
             buildingWorkersUI.SetRuinedBuilding(repair);
+        }
+    }
+
+    private void ShowWorkerPerformance(WorkerData worker)
+    {
+        if (worker == null || workerPerformanceUI == null || buildingWorkersPanel == null)
+        {
+            return;
+        }
+
+        CancelTransfer();
+        workerPerformanceUI.SetWorker(worker);
+        buildingWorkersPanel.SetActive(false);
+        workerPerformanceUI.gameObject.SetActive(true);
+    }
+
+    private void HideWorkerPerformance()
+    {
+        if (workerPerformanceUI != null)
+        {
+            workerPerformanceUI.gameObject.SetActive(false);
         }
     }
 
@@ -392,6 +420,7 @@ public class BuildingSelectionUI : MonoBehaviour
 
     public void ClosePanel()
     {
+        HideWorkerPerformance();
         CancelTransfer();
 
         selectedBuilding = null;
