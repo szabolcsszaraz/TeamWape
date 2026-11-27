@@ -914,7 +914,15 @@ public class BuildingWorkersUI : MonoBehaviour
             {
                 string repairLabel = $"Repair ({ruinedBuilding.RepairCost}$)";
 
-                if (!ruinedBuilding.MeetsResortLevelRequirement)
+                if (!ruinedBuilding.MeetsWaveRequirement)
+                {
+                    repairButtonText.text =
+                        $"{repairLabel}\n" +
+                        $"Unlocks after wave {ruinedBuilding.MinimumRequiredCompletedWaves} " +
+                        $"({ruinedBuilding.CompletedWaves}/" +
+                        $"{ruinedBuilding.MinimumRequiredCompletedWaves})";
+                }
+                else if (!ruinedBuilding.MeetsResortLevelRequirement)
                 {
                     repairButtonText.text =
                         $"{repairLabel}\n" +

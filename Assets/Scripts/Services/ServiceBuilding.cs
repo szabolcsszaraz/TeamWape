@@ -112,6 +112,7 @@ public class ServiceBuilding : MonoBehaviour
 
     private GuestNeedsManager needsManager;
     private BuildingRepair buildingRepair;
+    private ResortUnlockManager earlyUnlockManager;
     private WorkerAssignment workerAssignment;
 
     public GuestNeedType ServiceNeed => serviceNeed;
@@ -444,11 +445,34 @@ public class ServiceBuilding : MonoBehaviour
         {
             buildingRepair.OnRepaired += HandleBuildingRepaired;
 
-            Debug.Log(
-                $"{name}: {serviceNeed.ToDisplayName()} need stays locked " +
-                "until the building is repaired.",
-                this
-            );
+            BuildingLevelRequirements requirements =
+                buildingRepair.GetComponent<BuildingLevelRequirements>();
+
+            if (requirements != null && requirements.UnlockNeedBeforeRepair)
+            {
+                // e.g. Ocean View demand starts at wave 6 so the player
+                // is pushed to repair the Bungalow.
+                earlyUnlockManager = FindFirstObjectByType<ResortUnlockManager>();
+
+                if (earlyUnlockManager != null)
+                    earlyUnlockManager.OnUnlockProgressChanged += CheckEarlyNeedUnlock;
+
+                Debug.Log(
+                    $"{name}: {serviceNeed.ToDisplayName()} need unlocks when the " +
+                    "repair becomes available.",
+                    this
+                );
+
+                CheckEarlyNeedUnlock();
+            }
+            else
+            {
+                Debug.Log(
+                    $"{name}: {serviceNeed.ToDisplayName()} need stays locked " +
+                    "until the building is repaired.",
+                    this
+                );
+            }
         }
         else
         {
@@ -819,11 +843,35 @@ public class ServiceBuilding : MonoBehaviour
     private void HandleBuildingRepaired(BuildingRepair repair)
     {
         repair.OnRepaired -= HandleBuildingRepaired;
+        StopEarlyNeedUnlock();
 
         if (needsManager != null)
         {
             needsManager.UnlockNeed(serviceNeed);
         }
+    }
+
+    private void CheckEarlyNeedUnlock()
+    {
+        if (buildingRepair == null || needsManager == null)
+            return;
+
+        if (!buildingRepair.MeetsWaveRequirement ||
+            !buildingRepair.MeetsResortLevelRequirement)
+        {
+            return;
+        }
+
+        StopEarlyNeedUnlock();
+        needsManager.UnlockNeed(serviceNeed);
+    }
+
+    private void StopEarlyNeedUnlock()
+    {
+        if (earlyUnlockManager != null)
+            earlyUnlockManager.OnUnlockProgressChanged -= CheckEarlyNeedUnlock;
+
+        earlyUnlockManager = null;
     }
 
     // False while the building is still a ruin.
@@ -841,6 +889,8 @@ public class ServiceBuilding : MonoBehaviour
         {
             buildingRepair.OnRepaired -= HandleBuildingRepaired;
         }
+
+        StopEarlyNeedUnlock();
 
         UnsubscribeFromWorkers();
     }
