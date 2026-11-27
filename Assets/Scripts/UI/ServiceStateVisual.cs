@@ -123,6 +123,16 @@ public class ServiceStateVisual : MonoBehaviour
         }
     }
 
+    // OnEnable can run before the ServiceBuilding's Awake has counted
+    // its workers (Unity does not order Awake/OnEnable between objects).
+    // The icon then shows Inactive, and because the building's state
+    // stays "Normal" no change event ever fixes it. Start runs after
+    // every Awake/OnEnable, so sync once more here.
+    private void Start()
+    {
+        SyncWithServiceBuilding();
+    }
+
     private void OnDisable()
     {
         if (serviceBuilding != null)

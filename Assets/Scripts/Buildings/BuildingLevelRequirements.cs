@@ -12,8 +12,23 @@ public class BuildingLevelRequirements : MonoBehaviour
     [SerializeField]
     private List<int> minimumUpgradeResortLevels = new();
 
+    [Tooltip("Completed waves required to start repairing this building. 0 = no wave requirement.")]
+    [SerializeField, Min(0)]
+    private int minimumRepairCompletedWaves;
+
+    [Tooltip("Guests start wanting this building's service as soon as its repair " +
+             "unlocks (e.g. wave 6), even while it is still a ruin. " +
+             "Off = the service unlocks only when the repair is finished.")]
+    [SerializeField]
+    private bool unlockNeedBeforeRepair;
+
+    public bool UnlockNeedBeforeRepair => unlockNeedBeforeRepair;
+
     public int MinimumRepairResortLevel =>
         Mathf.Max(1, minimumRepairResortLevel);
+
+    public int MinimumRepairCompletedWaves =>
+        Mathf.Max(0, minimumRepairCompletedWaves);
 
     public int GetMinimumUpgradeResortLevel(int targetBuildingLevel)
     {

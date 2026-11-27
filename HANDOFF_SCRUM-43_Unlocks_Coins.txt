@@ -1,0 +1,158 @@
+RESORT EMPIRE / TEAMWAPE - DEVELOPER HANDOFF
+SCRUM-43 (missing Coins), wave-based building unlocks, Ocean View, state icon fix
+Date: 2026-11-27
+Branch: feature/SCRUM-43/38/39-Pool-and-coins  (not committed by the AI - the developer commits)
+Engine: Unity 6 (6000.6.7f1), URP, Android landscape, C#, no namespaces, new Input System (activeInputHandler = Input System)
+
+Read this together with the earlier handoffs (guest needs / navigation / buildings,
+SCRUM-21 Gems + timed repair/upgrade + paid Energy Boost, SCRUM-12 progression unlocks).
+Everything below was implemented and confirmed working by the developer in the Unity Editor,
+except where it says "NOT YET VERIFIED".
+
+======================================================================
+1. SCRUM-43 - SHOW MISSING COINS
+======================================================================
+Story: "If the player attempts to unlock an area without having enough Coins, the system
+must display the number of additional Coins required."
+Subtasks seen: SCRUM-324 Define area unlock Coin cost, 325 Check player Coin balance,
+326 Calculate missing Coin amount, 327 Create insufficient Coins message,
+328 Display required additional Coins. (3 more subtasks exist in Jira, not shown to the AI.)
+
+1.1 PlayerCoinsManager.cs (Assets/Scripts/Managers) - added, nothing removed
+    public bool HasEnoughCoins(int amount)   // SCRUM-325
+    public int  GetMissingCoins(int amount)  // SCRUM-326, max(0, amount - currentCoins)
+
+1.2 ResortAreaPurchase.cs (Assets/Scripts/Gameplay) - second island purchase
+    - PurchaseCost, MissingCoins, HasEnoughCoins properties (SCRUM-324/325/326).
+    - Buy button is now clickable in the Available state (requirements met, not enough Coins).
+      Clicking shows "Not enough Coins! / You need X more Coins / (balance / cost)" (SCRUM-327).
+    - While Available the panel always shows "You need X more Coins (balance / cost)" in red,
+      updated live on OnCoinsChanged (SCRUM-328). The click warning clears when the balance changes.
+    - New optional field "Insufficient Coins Text" (TMP_Text). If empty, RequirementsText is reused.
+    - Purchase still goes through TrySpendCoins, so it can never buy without enough Coins.
+    - Context menu: Test / Log Coin Check.
+    NOTE: the developer said "let's not do the second island yet". The code is in place
+    and harmless; island work is paused.
+
+1.3 Worker panel buttons (BuildingWorkersUI.cs) - the part the developer actually wanted
+    Repair and Upgrade buttons stay NON-interactable when the player is short on Coins,
+    but now add a red line with the missing amount:
+        Repair (100$)
+        Need 40 more Coins
+    Helper: private string BuildMissingCoinsLine(int cost) (uses GetMissingCoins, TMP <color>).
+    Updates live through the existing HandleCoinsChanged -> RefreshRepairSection.
+    Priority of the repair button text: wave lock > resort level lock > missing coins.
+    The Upgrade button can now be 4 lines - enable Auto Size or enlarge it if it overflows.
+
+======================================================================
+2. TEST-ONLY FEATURES (REMOVE BEFORE RELEASE)
+======================================================================
+2.1 Assets/Scripts/Dev/DevCoinsCheat.cs
+    P = +500 Coins, O = -500 Coins (never below 0). Editor / Development Build only
+    (#if UNITY_EDITOR || DEVELOPMENT_BUILD). Installs itself on the PlayerCoinsManager
+    GameObject via [RuntimeInitializeOnLoadMethod(AfterSceneLoad)] - no scene setup.
+    Amount editable on the component during Play Mode. To remove: delete the file.
+
+2.2 ResortAreaRequirements.cs - context menu "Test / Toggle Ignore Requirements"
+    (non-serialized debugIgnoreRequirements flag) to test the island purchase without
+    playing waves. Remove the flag + menu when done.
+
+2.3 Existing teammate cheat: Numpad 6 = +100 Gems (PlayerGemsManager, Cheat Gems Amount).
+
+======================================================================
+3. WAVE-BASED BUILDING UNLOCKS (replaces resort-level gating for repairs)
+======================================================================
+Design decision: buildings unlock by COMPLETED WAVES, not resort level.
+    Pool     -> repair unlocks after wave 3 (serves Relax)
+    Bungalow -> repair unlocks after wave 6 (serves Ocean View, new building added by the developer)
+
+3.1 BuildingLevelRequirements.cs (Assets/Scripts/Buildings) - new serialized fields
+    int  minimumRepairCompletedWaves   (0 = no wave requirement)  -> MinimumRepairCompletedWaves
+    bool unlockNeedBeforeRepair                                     -> UnlockNeedBeforeRepair
+    Existing minimumRepairResortLevel / minimumUpgradeResortLevels are unchanged and still
+    work together with the wave requirement (both must be met).
+
+3.2 BuildingRepair.cs - added
+    MinimumRequiredCompletedWaves, CompletedWaves, MeetsWaveRequirement.
+    CompletedWaves = ResortUnlockManager.LastCompletedWave (same counter as the island;
+    it comes from ServicePerformanceTracker.LastWaveResult.waveNumber).
+    CanRepair now also requires MeetsWaveRequirement. TryRepair logs
+    "Repair unlocks after wave X (done/X completed)" when blocked.
+
+3.3 BuildingWorkersUI.cs - locked repair button shows
+        Repair (100$)
+        Unlocks after wave 3 (1/3)
+    Refreshes through the existing unlockManager.OnUnlockProgressChanged subscription.
+
+3.4 Scene setup (SampleScene) - done by the developer in the Inspector
+    Pool:     Building Level Requirements -> Min Repair Resort Level 1, Min Repair Completed Waves 3,
+              Unlock Need Before Repair OFF.
+    Bungalow: Building Level Requirements added -> Min Repair Completed Waves 6,
+              Unlock Need Before Repair ON. ServiceBuilding Service Need = OceanView.
+    ResortUnlockNotificationUI only knows Pool / Hotel / second island - the Bungalow has
+    no "repair unlocked" popup yet.
+
+======================================================================
+4. GUEST NEEDS ARE GATED BY BUILDING REPAIR
+======================================================================
+Problem: the Pool's ServiceBuilding sits on the always-active Pool parent, so its Start()
+unlocked the Relax need at game start although the pool was a ruin.
+
+ServiceBuilding.cs changes:
+    - Start(): finds BuildingRepair with GetComponentInParent. If the building is NOT repaired,
+      the need is NOT unlocked; it subscribes to BuildingRepair.OnRepaired and unlocks then.
+    - If BuildingLevelRequirements.UnlockNeedBeforeRepair is ON, it also listens to
+      ResortUnlockManager.OnUnlockProgressChanged and unlocks the need as soon as the repair
+      becomes available (MeetsWaveRequirement && MeetsResortLevelRequirement), even while ruined.
+      Purpose: Ocean View demand starts at wave 6 to push the player to repair the Bungalow.
+    - New: public bool IsOpenForGuests  (false while ruined).
+    - Cleans up both subscriptions in OnDestroy.
+
+ServiceNavigationTarget.cs: GetTargetsFor / FindNearest skip buildings where
+    IsOpenForGuests is false, so tourists never walk into a ruin.
+
+TouristServiceRoute.cs: when no open building serves a need it logs (not warns)
+    "No open building serves Ocean View (missing or not repaired). Skipping." and the unit is
+    abandoned (counts against satisfaction). This is intended behaviour before the Bungalow
+    is repaired.
+
+Resulting behaviour:
+    waves 1-2 : no Relax, no Ocean View
+    wave 3+   : Pool repair available; Relax unlocks only when the repair FINISHES
+    wave 6+   : Bungalow repair available; Ocean View unlocks IMMEDIATELY (guests want it,
+                go unserved until the Bungalow is repaired)
+
+======================================================================
+5. BUG FIX - BEACH BAR ICON SHOWED INACTIVE AT START
+======================================================================
+Cause: Awake/OnEnable order between GameObjects is undefined. The BeachBar's
+ServiceStateVisual.OnEnable ran before ServiceBuilding.Awake counted its worker, saw
+CanOperate == false and showed Inactive. The building's CurrentState stayed Normal, so
+OnServiceStateChanged never fired to correct it. Moving the worker out and back forced
+a real state change, which is why that "fixed" it.
+Fix: ServiceStateVisual.Start() calls SyncWithServiceBuilding() once more (Start runs
+after all Awake/OnEnable). Nothing else changed in that script.
+
+======================================================================
+6. KNOWN ISSUES / NOT YET DONE
+======================================================================
+- SCENE DATA: one WorkerData "TestWorker" is assigned to FOUR buildings at once
+  (Hotel, BeachBar, Pool, Bungalow) in Assigned Workers. Moving it can remove it from a
+  different building than expected. Give each building its own worker or clear the lists.
+- Bungalow has no unlock notification (ResortUnlockNotificationUI is hardcoded).
+- Second island work is paused (SCRUM-43 code there is finished but on hold).
+- Timed repair/upgrade still runtime-only (no save/load).
+- NOT YET VERIFIED in Unity after the latest edits: the BeachBar icon fix and the
+  Bungalow/Ocean View early unlock (code done, developer still to test).
+
+======================================================================
+7. RULES TO KEEP
+======================================================================
+- Do not edit .unity scenes while Unity has them open; give Inspector steps instead.
+- No git from the AI (no commits, branches, PRs) - the developer does that.
+- Keep serialized field names; reuse the existing worker panel (BuildingWorkersUI)
+  instead of new UI.
+- Needs unlock only through ServiceBuilding (+ repair state); the GuestNeedsManager
+  Unlocked Needs list in the scene stays empty.
+- Do not revert: timed repair/upgrade, paid Energy Boost, once-per-day boost limit,
+  XP only on completion.

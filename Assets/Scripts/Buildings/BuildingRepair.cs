@@ -41,6 +41,7 @@ public class BuildingRepair : MonoBehaviour
     private PlayerCoinsManager coinsManager;
     private ResortProgressionManager progressionManager;
     private BuildingLevelRequirements levelRequirements;
+    private ResortUnlockManager unlockManager;
 
     public int RepairCost => repairCost;
     public int XPReward => xpReward;
@@ -85,11 +86,33 @@ public class BuildingRepair : MonoBehaviour
         (progressionManager != null &&
          progressionManager.CurrentLevel >= MinimumRequiredResortLevel);
 
+    // Completed waves required before the repair unlocks.
+    public int MinimumRequiredCompletedWaves =>
+        levelRequirements != null
+            ? levelRequirements.MinimumRepairCompletedWaves
+            : 0;
+
+    public int CompletedWaves
+    {
+        get
+        {
+            if (unlockManager == null)
+                unlockManager = FindFirstObjectByType<ResortUnlockManager>();
+
+            return unlockManager != null ? unlockManager.LastCompletedWave : 0;
+        }
+    }
+
+    public bool MeetsWaveRequirement =>
+        MinimumRequiredCompletedWaves <= 0 ||
+        CompletedWaves >= MinimumRequiredCompletedWaves;
+
     public bool CanRepair =>
         !isRepaired &&
         !isRepairing &&
         isActiveAndEnabled &&
-        MeetsResortLevelRequirement;
+        MeetsResortLevelRequirement &&
+        MeetsWaveRequirement;
 
     public bool CanAfford =>
         CanRepair &&
@@ -124,6 +147,7 @@ public class BuildingRepair : MonoBehaviour
         coinsManager = FindFirstObjectByType<PlayerCoinsManager>();
         progressionManager = FindFirstObjectByType<ResortProgressionManager>();
         levelRequirements = GetComponent<BuildingLevelRequirements>();
+        unlockManager = FindFirstObjectByType<ResortUnlockManager>();
 
         // Timed repairs are runtime-only.
         isRepairing = false;
@@ -181,6 +205,16 @@ public class BuildingRepair : MonoBehaviour
         {
             Debug.LogWarning(
                 $"{name}: Repair requires Resort Level {MinimumRequiredResortLevel}.",
+                this
+            );
+            return false;
+        }
+
+        if (!MeetsWaveRequirement)
+        {
+            Debug.LogWarning(
+                $"{name}: Repair unlocks after wave {MinimumRequiredCompletedWaves} " +
+                $"({CompletedWaves}/{MinimumRequiredCompletedWaves} completed).",
                 this
             );
             return false;

@@ -117,9 +117,12 @@ public class TouristServiceRoute : MonoBehaviour
 
             if (pendingCandidates.Count == 0)
             {
-                Debug.LogWarning(
-                    $"{name}: No building with a ServiceNavigationTarget " +
-                    $"serves {need.ToDisplayName()}. Skipping.",
+                // Expected when the need is unlocked early but its
+                // building is still a ruin (e.g. Ocean View before the
+                // Bungalow is repaired): the demand counts as abandoned.
+                Debug.Log(
+                    $"{name}: No open building serves " +
+                    $"{need.ToDisplayName()} (missing or not repaired). Skipping.",
                     this
                 );
                 AbandonPendingNeed();
